@@ -9,15 +9,240 @@ from tick.hawkes.inference.base import LearnerHawkesNoParam
 from tick.hawkes.inference.build.hawkes_inference import (HawkesCumulant as
                                                           _HawkesCumulant)
 
-# Tensorflow is not a project requirement but is needed for this class
-try:
-    import tensorflow as tf
-except ImportError:
-    tf = None
-    pass
-
 
 class HawkesCumulantMatching(LearnerHawkesNoParam):
+    _attrinfos = {
+        '_cumulant_computer': {
+            'writable': False
+        },
+        '_solver': {
+            'writable': False
+        },
+        '_elastic_net_ratio': {
+            'writable': False
+        },
+        '_events_of_cumulants': {
+            'writable': False
+        }
+    }
+
+    def __init__(self, integration_support, C=1e3, penalty='none',
+                 solver='adam', step=1e-2, tol=1e-8, max_iter=1000,
+                 verbose=False, print_every=100, record_every=10,
+                 solver_kwargs=None, cs_ratio=None, elastic_net_ratio=0.95):
+
+        LearnerHawkesNoParam.__init__(
+            self, tol=tol, verbose=verbose, max_iter=max_iter,
+            print_every=print_every, record_every=record_every)
+
+        self._elastic_net_ratio = None
+        self.C = C
+        self.penalty = penalty
+        self.elastic_net_ratio = elastic_net_ratio
+        self.step = step
+        self.cs_ratio = cs_ratio
+        self.solver_kwargs = solver_kwargs
+        if self.solver_kwargs is None:
+            self.solver_kwargs = {}
+
+        self._cumulant_computer = _HawkesCumulantComputer(
+            integration_support=integration_support)
+        self._learner = self._cumulant_computer._learner
+        self._solver = solver
+        self._events_of_cumulants = None
+
+        self.history.print_order = ["n_iter", "objective", "rel_obj"]
+
+    def compute_cumulants(self, force=False):
+        """Compute estimated mean intensity, covariance and sliced skewness
+
+        Parameters
+        ----------
+        force : `bool`
+            If `True` previously computed cumulants are not reused
+        """
+        self._cumulant_computer.compute_cumulants(verbose=self.verbose,
+                                                  force=force)
+
+    @property
+    def mean_intensity(self):
+        if not self._cumulant_computer.cumulants_ready:
+            self.compute_cumulants()
+
+        return self._cumulant_computer.L
+
+    @property
+    def covariance(self):
+        if not self._cumulant_computer.cumulants_ready:
+            self.compute_cumulants()
+
+        return self._cumulant_computer.C
+
+    @property
+    def skewness(self):
+        if not self._cumulant_computer.cumulants_ready:
+            self.compute_cumulants()
+
+        return self._cumulant_computer.K_c
+
+    def objective(self, adjacency=None, R=None):
+        """Compute objective value for a given adjacency or variable R
+
+        Parameters
+        ----------
+        adjacency : `np.ndarray`, shape=(n_nodes, n_nodes), default=None
+            Adjacency matrix at which we compute objective.
+            If `None`, objective will be computed at `R`
+
+        R : `np.ndarray`, shape=(n_nodes, n_nodes), default=None
+            R variable at which objective is computed. Superseded by
+            adjacency if adjacency is not `None`
+
+        Returns
+        -------
+        Value of objective function
+        """
+        raise NotImplementedError()
+
+    def objective(self, adjacency=None, R=None):
+        raise NotImplementedError()
+
+    @property
+    def adjacency(self):
+        return np.eye(self.n_nodes) - scipy.linalg.inv(self.solution)
+
+    @property
+    def baseline(self):
+        return scipy.linalg.inv(self.solution).dot(self.mean_intensity)
+
+    def fit(self, events, end_times=None, adjacency_start=None, R_start=None):
+        """Fit the model according to the given training data.
+
+        Parameters
+        ----------
+        events : `list` of `list` of `np.ndarray`
+            List of Hawkes processes realizations.
+            Each realization of the Hawkes process is a list of n_node for
+            each component of the Hawkes. Namely `events[i][j]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component j of realization i.
+            If only one realization is given, it will be wrapped into a list
+
+        end_times : `np.ndarray` or `float`, default = None
+            List of end time of all hawkes processes that will be given to the
+            model. If None, it will be set to each realization's latest time.
+            If only one realization is provided, then a float can be given.
+
+        adjacency_start : `str` or `np.ndarray, shape=(n_nodes + n_nodes * n_nodes,), default=`None`
+            Initial guess for the adjacency matrix. Will be used as
+            starting point in optimization.
+            If `None` and `R_start` is also `None`, a default starting point
+            is estimated from the estimated cumulants
+            If `"random"`, a starting point is estimated from estimated
+            cumulants with a bit a randomness
+
+        R_start : `np.ndarray`, shape=(n_nodes, n_nodes), default=None
+            R variable at which we start optimization. Superseded by
+            adjacency_start if adjacency_start is not `None`
+        """
+        LearnerHawkesNoParam.fit(self, events, end_times=end_times)
+        self.solve(adjacency_start=adjacency_start, R_start=R_start)
+
+    def _solve(self, adjacency_start=None, R_start=None):
+        raise NotImplementedError()
+
+    def approximate_optimal_cs_ratio(self):
+        """Heuristic to set covariance skewness ratio close to its
+        optimal value
+        """
+        norm_sq_C = norm(self.covariance) ** 2
+        norm_sq_K_c = norm(self.skewness) ** 2
+        return norm_sq_K_c / (norm_sq_K_c + norm_sq_C)
+
+    def starting_point(self, random=False):
+        """Heuristic to find a starting point candidate
+
+        Parameters
+        ----------
+        random : `bool`
+            Use a random orthogonal matrix instead of identity
+
+        Returns
+        -------
+        startint_point : `np.ndarray`, shape=(n_nodes, n_nodes)
+            A starting point candidate
+        """
+        sqrt_C = sqrtm(self.covariance)
+        sqrt_L = np.sqrt(self.mean_intensity)
+        if random:
+            random_matrix = np.random.rand(self.n_nodes, self.n_nodes)
+            M, _ = qr(random_matrix)
+        else:
+            M = np.eye(self.n_nodes)
+        initial = np.dot(np.dot(sqrt_C, M), np.diag(1. / sqrt_L))
+        return initial
+
+    def get_kernel_values(self, i, j, abscissa_array):
+        raise ValueError('Hawkes cumulant cannot estimate kernel values')
+
+    def get_kernel_norms(self):
+        """Computes kernel norms. This makes our learner compliant with
+        `tick.plot.plot_hawkes_kernel_norms` API
+
+        Returns
+        -------
+        norms : `np.ndarray`, shape=(n_nodes, n_nodes)
+            2d array in which each entry i, j corresponds to the norm of
+            kernel i, j
+        """
+        return self.adjacency
+
+    @property
+    def solver(self):
+        return self._solver
+
+    @solver.setter
+    def solver(self, val):
+        available_solvers = [
+            'momentum', 'adam', 'adagrad', 'rmsprop', 'adadelta', 'gd'
+        ]
+        if val.lower() not in available_solvers:
+            raise ValueError('solver must be one of {}, received {}'.format(
+                available_solvers, val))
+
+        self._set('_solver', val)
+
+    @property
+    def elastic_net_ratio(self):
+        return self._elastic_net_ratio
+
+    @elastic_net_ratio.setter
+    def elastic_net_ratio(self, val):
+        if val < 0 or val > 1:
+            raise ValueError("`elastic_net_ratio` must be between 0 and 1, "
+                             "got %s" % str(val))
+        else:
+            self._set("_elastic_net_ratio", val)
+
+    @property
+    def strength_lasso(self):
+        if self.penalty == 'elasticnet':
+            return self.elastic_net_ratio / self.C
+        elif self.penalty == 'l1':
+            return 1. / self.C
+        else:
+            return 0.
+
+    @property
+    def strength_ridge(self):
+        if self.penalty == 'elasticnet':
+            return (1 - self.elastic_net_ratio) / self.C
+        elif self.penalty == 'l2':
+            return 1. / self.C
+        return 0.
+
+
+class HawkesCumulantMatchingTf(HawkesCumulantMatching):
     """This class is used for performing non parametric estimation of
     multi-dimensional Hawkes processes based cumulant matching.
 
@@ -137,6 +362,9 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
     .. _Tensorflow: https://www.tensorflow.org
     """
     _attrinfos = {
+        'tf': {
+            'writable': False
+        },
         '_cumulant_computer': {
             'writable': False
         },
@@ -157,68 +385,30 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
                  solver='adam', step=1e-2, tol=1e-8, max_iter=1000,
                  verbose=False, print_every=100, record_every=10,
                  solver_kwargs=None, cs_ratio=None, elastic_net_ratio=0.95):
-        try:
-            import tensorflow
-        except ImportError:
-            raise ImportError('`tensorflow` >= 1.4.0 must be available to use '
-                              'HawkesCumulantMatching')
+
+        import tensorflow.compat.v1 as tf
+        tf.disable_v2_behavior()
+        self.tf = tf
 
         self._tf_graph = tf.Graph()
-
-        LearnerHawkesNoParam.__init__(
-            self, tol=tol, verbose=verbose, max_iter=max_iter,
-            print_every=print_every, record_every=record_every)
-
-        self._elastic_net_ratio = None
-        self.C = C
-        self.penalty = penalty
-        self.elastic_net_ratio = elastic_net_ratio
-        self.step = step
-        self.cs_ratio = cs_ratio
-        self.solver_kwargs = solver_kwargs
-        if self.solver_kwargs is None:
-            self.solver_kwargs = {}
-
-        self._cumulant_computer = _HawkesCumulantComputer(
-            integration_support=integration_support)
-        self._learner = self._cumulant_computer._learner
-        self._solver = solver
         self._tf_feed_dict = None
-        self._events_of_cumulants = None
 
-        self.history.print_order = ["n_iter", "objective", "rel_obj"]
-
-    def compute_cumulants(self, force=False):
-        """Compute estimated mean intensity, covariance and sliced skewness
-
-        Parameters
-        ----------
-        force : `bool`
-            If `True` previously computed cumulants are not reused
-        """
-        self._cumulant_computer.compute_cumulants(verbose=self.verbose,
-                                                  force=force)
-
-    @property
-    def mean_intensity(self):
-        if not self._cumulant_computer.cumulants_ready:
-            self.compute_cumulants()
-
-        return self._cumulant_computer.L
-
-    @property
-    def covariance(self):
-        if not self._cumulant_computer.cumulants_ready:
-            self.compute_cumulants()
-
-        return self._cumulant_computer.C
-
-    @property
-    def skewness(self):
-        if not self._cumulant_computer.cumulants_ready:
-            self.compute_cumulants()
-
-        return self._cumulant_computer.K_c
+        HawkesCumulantMatching.__init__(
+            self,
+            integration_support=integration_support,
+            C=C,
+            penalty=penalty,
+            solver=solver,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every,
+            solver_kwargs=solver_kwargs,
+            cs_ratio=cs_ratio,
+            elastic_net_ratio=elastic_net_ratio,
+        )
 
     def objective(self, adjacency=None, R=None):
         """Compute objective value for a given adjacency or variable R
@@ -237,6 +427,7 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
         -------
         Value of objective function
         """
+        tf = self.tf
         cost = self._tf_objective_graph()
         L, C, K_c = self._tf_placeholders()
 
@@ -260,22 +451,16 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
         """Tensorflow variable of interest, used to perform minimization of
         objective function
         """
+        tf = self.tf
         with self._tf_graph.as_default():
             with tf.variable_scope("model", reuse=tf.AUTO_REUSE):
                 return tf.get_variable("R", [self.n_nodes, self.n_nodes],
                                        dtype=tf.float64)
 
-    @property
-    def adjacency(self):
-        return np.eye(self.n_nodes) - scipy.linalg.inv(self.solution)
-
-    @property
-    def baseline(self):
-        return scipy.linalg.inv(self.solution).dot(self.mean_intensity)
-
     def _tf_placeholders(self):
         """Tensorflow placeholders to manage cumulants data
         """
+        tf = self.tf
         d = self.n_nodes
         if self._tf_feed_dict is None:
             with self._tf_graph.as_default():
@@ -287,8 +472,9 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
         return self._tf_feed_dict
 
     def _tf_objective_graph(self):
-        """Objective fonction written as a tensorflow graph
+        """Objective function written as a tensorflow graph
         """
+        tf = self.tf
         d = self.n_nodes
 
         if self.cs_ratio is None:
@@ -323,46 +509,13 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
             # Add potential regularization
             cost = tf.cast(cost, tf.float64)
             if self.strength_lasso > 0:
-                reg_l1 = tf.contrib.layers.l1_regularizer(self.strength_lasso)
+                reg_l1 = tf.keras.regularizers.L1(self.strength_lasso)
                 cost += reg_l1((I - tf.matrix_inverse(R)))
             if self.strength_ridge > 0:
-                reg_l2 = tf.contrib.layers.l2_regularizer(self.strength_ridge)
+                reg_l2 = tf.keras.regularizers.L2(self.strength_ridge)
                 cost += reg_l2((I - tf.matrix_inverse(R)))
 
             return cost
-
-    def fit(self, events, end_times=None, adjacency_start=None, R_start=None):
-        """Fit the model according to the given training data.
-
-        Parameters
-        ----------
-        events : `list` of `list` of `np.ndarray`
-            List of Hawkes processes realizations.
-            Each realization of the Hawkes process is a list of n_node for
-            each component of the Hawkes. Namely `events[i][j]` contains a
-            one-dimensional `numpy.array` of the events' timestamps of
-            component j of realization i.
-            If only one realization is given, it will be wrapped into a list
-
-        end_times : `np.ndarray` or `float`, default = None
-            List of end time of all hawkes processes that will be given to the
-            model. If None, it will be set to each realization's latest time.
-            If only one realization is provided, then a float can be given.
-
-        adjacency_start : `str` or `np.ndarray, shape=(n_nodes + n_nodes * n_nodes,), default=`None`
-            Initial guess for the adjacency matrix. Will be used as
-            starting point in optimization.
-            If `None` and `R_start` is also `None`, a default starting point
-            is estimated from the estimated cumulants
-            If `"random"`, a starting point is estimated from estimated
-            cumulants with a bit a randomness
-
-        R_start : `np.ndarray`, shape=(n_nodes, n_nodes), default=None
-            R variable at which we start optimization. Superseded by
-            adjacency_start if adjacency_start is not `None`
-        """
-        LearnerHawkesNoParam.fit(self, events, end_times=end_times)
-        self.solve(adjacency_start=adjacency_start, R_start=R_start)
 
     def _solve(self, adjacency_start=None, R_start=None):
         """Launch optimization algorithm
@@ -387,6 +540,7 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
             Solver used to minimize the loss. As the loss is not convex, it
             cannot be optimized with `tick.optim.solver` solvers
         """
+        tf = self.tf
         self.compute_cumulants()
 
         if adjacency_start is None and R_start is not None:
@@ -449,69 +603,9 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
 
                 self._set('solution', sess.run(self._tf_model_coeffs))
 
-    def approximate_optimal_cs_ratio(self):
-        """Heuristic to set covariance skewness ratio close to its
-        optimal value
-        """
-        norm_sq_C = norm(self.covariance) ** 2
-        norm_sq_K_c = norm(self.skewness) ** 2
-        return norm_sq_K_c / (norm_sq_K_c + norm_sq_C)
-
-    def starting_point(self, random=False):
-        """Heuristic to find a starting point candidate
-
-        Parameters
-        ----------
-        random : `bool`
-            Use a random orthogonal matrix instead of identity
-
-        Returns
-        -------
-        startint_point : `np.ndarray`, shape=(n_nodes, n_nodes)
-            A starting point candidate
-        """
-        sqrt_C = sqrtm(self.covariance)
-        sqrt_L = np.sqrt(self.mean_intensity)
-        if random:
-            random_matrix = np.random.rand(self.n_nodes, self.n_nodes)
-            M, _ = qr(random_matrix)
-        else:
-            M = np.eye(self.n_nodes)
-        initial = np.dot(np.dot(sqrt_C, M), np.diag(1. / sqrt_L))
-        return initial
-
-    def get_kernel_values(self, i, j, abscissa_array):
-        raise ValueError('Hawkes cumulant cannot estimate kernel values')
-
-    def get_kernel_norms(self):
-        """Computes kernel norms. This makes our learner compliant with
-        `tick.plot.plot_hawkes_kernel_norms` API
-
-        Returns
-        -------
-        norms : `np.ndarray`, shape=(n_nodes, n_nodes)
-            2d array in which each entry i, j corresponds to the norm of
-            kernel i, j
-        """
-        return self.adjacency
-
-    @property
-    def solver(self):
-        return self._solver
-
-    @solver.setter
-    def solver(self, val):
-        available_solvers = [
-            'momentum', 'adam', 'adagrad', 'rmsprop', 'adadelta', 'gd'
-        ]
-        if val.lower() not in available_solvers:
-            raise ValueError('solver must be one of {}, recieved {}'.format(
-                available_solvers, val))
-
-        self._set('_solver', val)
-
     @property
     def tf_solver(self):
+        tf = self.tf
         if self.solver.lower() == 'momentum':
             return tf.train.MomentumOptimizer
         elif self.solver.lower() == 'adam':
@@ -525,34 +619,73 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
         elif self.solver.lower() == 'gd':
             return tf.train.GradientDescentOptimizer
 
-    @property
-    def elastic_net_ratio(self):
-        return self._elastic_net_ratio
 
-    @elastic_net_ratio.setter
-    def elastic_net_ratio(self, val):
-        if val < 0 or val > 1:
-            raise ValueError("`elastic_net_ratio` must be between 0 and 1, "
-                             "got %s" % str(val))
+class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
+    # TODO
+    _attrinfos = {
+        'pytorch': {
+            'writable': False
+        },
+        '_cumulant_computer': {
+            'writable': False
+        },
+        '_pyt_tensors': {
+        },
+        '_solver': {
+            'writable': False
+        },
+        '_elastic_net_ratio': {
+            'writable': False
+        },
+        '_events_of_cumulants': {
+            'writable': False
+        }
+    }
+
+    def __init__(self, integration_support, C=1e3, penalty='none',
+                 solver='adam', step=1e-2, tol=1e-8, max_iter=1000,
+                 verbose=False, print_every=100, record_every=10,
+                 solver_kwargs=None, cs_ratio=None, elastic_net_ratio=0.95):
+
+        import torch
+        self.torch = torch
+
+        HawkesCumulantMatching.__init__(
+            self,
+            integration_support=integration_support,
+            C=C,
+            penalty=penalty,
+            solver=solver,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every,
+            solver_kwargs=solver_kwargs,
+            cs_ratio=cs_ratio,
+            elastic_net_ratio=elastic_net_ratio,
+        )
+
+    def objective(self, adjacency=None, R=None):
+        raise NotImplementedError()
+
+    def _solve(self, adiacency_start=None, R_start=None):
+        raise NotImplementedError()
+
+    @property
+    def torch_solver(self):
+        torch = self.torch
+        if self.solver.lower() == 'adam':
+            return torch.optim.Adam
+        elif self.solver.lower() == 'adagrad':
+            return torch.optim.Adagrad
+        elif self.solver.lower() == 'rmsprop':
+            return torch.optim.RMSprop
+        elif self.solver.lower() == 'adadelta':
+            return torch.optim.Adadelta
         else:
-            self._set("_elastic_net_ratio", val)
-
-    @property
-    def strength_lasso(self):
-        if self.penalty == 'elasticnet':
-            return self.elastic_net_ratio / self.C
-        elif self.penalty == 'l1':
-            return 1. / self.C
-        else:
-            return 0.
-
-    @property
-    def strength_ridge(self):
-        if self.penalty == 'elasticnet':
-            return (1 - self.elastic_net_ratio) / self.C
-        elif self.penalty == 'l2':
-            return 1. / self.C
-        return 0.
+            raise NotImplementedError()
 
 
 class _HawkesCumulantComputer(Base):
@@ -705,7 +838,7 @@ class _HawkesCumulantComputer(Base):
     @property
     def cumulants_ready(self):
         events_didnt_change = self._events_of_cumulants is not None and \
-                              _HawkesCumulantComputer._same_realizations(
-                                  self._events_of_cumulants, self.realizations)
+            _HawkesCumulantComputer._same_realizations(
+                self._events_of_cumulants, self.realizations)
 
         return self._learner.get_are_cumulants_ready() and events_didnt_change
