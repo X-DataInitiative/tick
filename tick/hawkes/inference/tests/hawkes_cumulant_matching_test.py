@@ -39,8 +39,8 @@ class Test(InferenceTest):
 
         expected_L = [2.149652, 2.799746, 4.463995]
 
-        expected_C = [[15.685827, 16.980316,
-                       30.232248], [16.980316, 23.765304, 36.597161],
+        expected_C = [[15.685827, 16.980316,  30.232248],
+                      [16.980316, 23.765304, 36.597161],
                       [30.232248, 36.597161, 66.271089]]
 
         expected_K = [[49.179092, -959.246309, -563.529052],
@@ -68,7 +68,6 @@ class Test(InferenceTest):
     def test_hawkes_cumulants_tf_solve(self):
         self._test_hawkes_cumulants_solve(Learner=HawkesCumulantMatchingTf)
 
-    @unittest.skip("PyTorch yet to be implemented")
     def test_hawkes_cumulants_pyt_solve(self):
         self._test_hawkes_cumulants_solve(Learner=HawkesCumulantMatchingPyT)
 
@@ -84,8 +83,8 @@ class Test(InferenceTest):
                           solver='adam', C=1e-3, tol=1e-5)
         learner.fit(timestamps)
 
-        expected_R_pred = [[0.423305, -0.559607,
-                            -0.307212], [-0.30411, 0.27066, -0.347162],
+        expected_R_pred = [[0.423305, -0.559607, -0.307212],
+                           [-0.30411, 0.27066, -0.347162],
                            [0.484648, 0.331057, 1.591584]]
 
         np.testing.assert_array_almost_equal(learner.solution,
@@ -149,7 +148,6 @@ class Test(InferenceTest):
     def test_hawkes_cumulants_tf_solve_l1(self):
         self._test_hawkes_cumulants_solve_l1(Learner=HawkesCumulantMatchingTf)
 
-    @unittest.skip("PyTorch yet to be implemented")
     def test_hawkes_cumulants_pyt_solve_l1(self):
         self._test_hawkes_cumulants_solve_l1(Learner=HawkesCumulantMatchingPyT)
 
@@ -163,8 +161,8 @@ class Test(InferenceTest):
             solver='adam', penalty='l1', C=1, tol=1e-5)
         learner.fit(timestamps)
 
-        expected_R_pred = [[0.434197, -0.552021,
-                            -0.308883], [-0.299366, 0.272764, -0.347764],
+        expected_R_pred = [[0.434197, -0.552021, -0.308883],
+                           [-0.299366, 0.272764, -0.347764],
                            [0.48448, 0.331059, 1.591587]]
 
         np.testing.assert_array_almost_equal(learner.solution,
@@ -191,11 +189,11 @@ class Test(InferenceTest):
     def test_hawkes_cumulants_tf_solve_l2(self):
         self._test_hawkes_cumulants_solve_l2(Learner=HawkesCumulantMatchingTf)
 
-    @unittest.skip("PyTorch yet to be implemented")
+    # @unittest.skip("PyTorch yet to be implemented")
     def test_hawkes_cumulants_pyt_solve_l2(self):
         self._test_hawkes_cumulants_solve_l2(Learner=HawkesCumulantMatchingPyT)
 
-    def _test_hawkes_cumulants_solve_l2(self, Leraner=HawkesCumulantMatchingTf):
+    def _test_hawkes_cumulants_solve_l2(self, Learner=HawkesCumulantMatchingTf):
         """...Test that hawkes cumulant reached expected value with l2
         penalization
         """

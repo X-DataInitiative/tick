@@ -54,7 +54,8 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
         self.history.print_order = ["n_iter", "objective", "rel_obj"]
 
     def compute_cumulants(self, force=False):
-        """Compute estimated mean intensity, covariance and sliced skewness
+        """
+        Compute estimated mean intensity, covariance and sliced skewness
 
         Parameters
         ----------
@@ -299,7 +300,7 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
     elastic_net_ratio : `float`, default=0.95
         Ratio of elastic net mixing parameter with 0 <= ratio <= 1.
 
-        * For ratio = 0 this is ridge (L2 squared) regularization.
+        * For ratio = 0 this is ridge (L2 square) regularization.
         * For ratio = 1 this is lasso (L1) regularization.
         * For 0 < ratio < 1, the regularization is a linear combination
           of L1 and L2.
@@ -740,7 +741,7 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
     .. _PyTorch: https://www.pytorch.org
     """
     _attrinfos = {
-        'pytorch': {
+        'torch': {
             'writable': False
         },
         '_cumulant_computer': {
@@ -756,7 +757,19 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         },
         '_events_of_cumulants': {
             'writable': False
-        }
+        },
+        '_L': {
+            'writable': True
+        },
+        '_C': {
+            'writable': True
+        },
+        '_K_c': {
+            'writable': True
+        },
+        '_R': {
+            'writable': True
+        },
     }
 
     def __init__(self, integration_support, C=1e3, penalty='none',
@@ -802,29 +815,32 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         Value of objective function
         """
         torch = self.torch
-        if adiacency is not None:
-            assert R is None, "You can pass either `adiacency` or `R`, not both"
-            if isinstance(adiacency, np.ndarray):
-                adiacency = torch.Tensor(adiacency)
-            n, m = adiacency.size(dim=0), adiacency.size(dim=1)
+        if adjacency is not None:
+            assert R is None, "You can pass either `adjacency` or `R`, not both"
+            if isinstance(adjacency, np.ndarray):
+                adjacency = torch.Tensor(adjacency)
+            n, m = adjacency.size(dim=0), adjacency.size(dim=1)
             R = torch.autograd.Variable(
-                torch.linalg.inv(torch.eye(n, m) - adiacency)
+                torch.linalg.inv(torch.eye(n, m) - adjacency)
             )
         if R is None:
             R = self._torch_model_coeffs
         assert isinstance(R, torch.autograd.Variable)
         _L, _C, _K_c = self.cumulants
-        k = self.cs_ratio
+        return self._objective(R, _L, _C, _K_c, self.cs_ratio)
+
+    def _objective(self, R, _L, _C, _K_c, k):
+        torch = self.torch
         loss = (
             (1 - k) * torch.sum(
                 torch.square(
-                    torch.sqaure(R) @ torch.transpose(_C) +
-                    2 * (R * (_C - R @ _L)) @ torch.transpose(R) -
+                    torch.square(R) @ torch.transpose(_C, 0, 1) +
+                    2 * (R * (_C - R @ _L)) @ torch.transpose(R, 0, 1) -
                     _K_c
                 )) +
             k * torch.sum(
                 torch.square(
-                    R @ _L @ torch.transpose(R) - _C
+                    R @ _L @ torch.transpose(R, 0, 1) - _C
                 )
             )
         )
@@ -839,7 +855,7 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
     def _set_cumulants_from_estimates(self):
         torch = self.torch
         self._L = torch.Tensor(np.diag(self.mean_intensity))
-        self._C = torch.Tensor(self.convariance)
+        self._C = torch.Tensor(self.covariance)
         self._K_c = torch.Tensor(self.skewness)
 
     @property
@@ -853,9 +869,12 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
 
     def _set_torch_model_coeffs(self, random=False):
         self._R = self.torch.autograd.Variable(
-            self.starting_point(random=random))
+            self.torch.Tensor(
+                self.starting_point(random=random)),
+            requires_grad=True,
+        )
 
-    def _solve(self, adiacency_start=None, R_start=None):
+    def _solve(self, adjacency_start=None, R_start=None):
         """Launch optimization algorithm
 
         Parameters
@@ -893,10 +912,22 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
                     np.eye(self.n_nodes) - adjacency_start
                 ))
 
-        optimizer = self.torch_solver([R], lr=self.step, **self.solver_kwargs)
+        optimizer = self.torch_solver(
+            [self._torch_model_coeffs], lr=self.step, **self.solver_kwargs)
         _prev = 0.
+        _L, _C, _K_c = self.cumulants
+
+        def compute_loss():
+            return self._objective(
+                self._torch_model_coeffs,
+                _L,
+                _C,
+                _K_c,
+                self.cs_ratio,
+            )
+
         for n_iter in range(self.max_iter):
-            loss = self.objective()
+            loss = compute_loss()
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
