@@ -4,7 +4,7 @@ import itertools
 import unittest
 
 import numpy as np
-from sklearn.metrics.ranking import roc_auc_score
+from sklearn.metrics import roc_auc_score
 
 from tick.base.inference import InferenceTest
 from tick.linear_model import SimuLogReg, LogisticRegression
