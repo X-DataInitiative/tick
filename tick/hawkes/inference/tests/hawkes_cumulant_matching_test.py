@@ -106,8 +106,8 @@ class Test(InferenceTest):
         learner.fit(timestamps_2)
 
         expected_adjacency_2 = [[-0.021966, -0.178811, -0.107636],
-                                [0.775206, 0.384494,
-                                 0.613925], [0.800584, 0.581281, 0.60177]]
+                                [0.775206, 0.384494, 0.613925],
+                                [0.800584, 0.581281, 0.60177]]
 
         np.testing.assert_array_almost_equal(learner.adjacency,
                                              expected_adjacency_2)
