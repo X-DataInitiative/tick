@@ -9,7 +9,7 @@ import numpy as np
 from tick.base.inference import InferenceTest
 
 
-from tick.hawkes import HawkesCumulantMatching
+from tick.hawkes import HawkesCumulantMatching, HawkesCumulantMatchingTf, HawkesCumulantMatchingPyT
 
 
 class Test(InferenceTest):
@@ -65,13 +65,23 @@ class Test(InferenceTest):
         learner._set_data(timestamps)
         self.assertTrue(learner._cumulant_computer.cumulants_ready)
 
-    def test_hawkes_cumulants_solve(self):
+    def test_hawkes_cumulants_tf_solve(self):
+        self._test_hawkes_cumulants_solve(Learner=HawkesCumulantMatchingTf)
+
+    @unittest.skip("PyTorch yet to be implemented")
+    def test_hawkes_cumulants_pyt_solve(self):
+        self._test_hawkes_cumulants_solve(Learner=HawkesCumulantMatchingPyT)
+
+    def _test_hawkes_cumulants_solve(
+            self,
+            Learner=HawkesCumulantMatchingTf,
+    ):
         """...Test that hawkes cumulant reached expected value
         """
         timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
-        learner = HawkesCumulantMatching(100., cs_ratio=0.9, max_iter=300,
-                                         print_every=30, step=1e-2,
-                                         solver='adam', C=1e-3, tol=1e-5)
+        learner = Learner(100., cs_ratio=0.9, max_iter=300,
+                          print_every=30, step=1e-2,
+                          solver='adam', C=1e-3, tol=1e-5)
         learner.fit(timestamps)
 
         expected_R_pred = [[0.423305, -0.559607,
@@ -112,7 +122,7 @@ class Test(InferenceTest):
         np.testing.assert_array_almost_equal(learner.adjacency,
                                              expected_adjacency_2)
 
-        learner_2 = HawkesCumulantMatching(
+        learner_2 = Learner(
             100., cs_ratio=0.9, max_iter=299, print_every=30, step=1e-1,
             solver='adam', penalty='l2', C=1e-3, tol=1e-5)
         learner_2.fit(timestamps_2)
@@ -136,12 +146,19 @@ class Test(InferenceTest):
         with self.assertRaisesRegex(RuntimeError, msg):
             learner.compute_cumulants()
 
-    def test_hawkes_cumulants_solve_l1(self):
+    def test_hawkes_cumulants_tf_solve_l1(self):
+        self._test_hawkes_cumulants_solve_l1(Learner=HawkesCumulantMatchingTf)
+
+    @unittest.skip("PyTorch yet to be implemented")
+    def test_hawkes_cumulants_pyt_solve_l1(self):
+        self._test_hawkes_cumulants_solve_l1(Learner=HawkesCumulantMatchingPyT)
+
+    def _test_hawkes_cumulants_solve_l1(self, Learner=HawkesCumulantMatchingTf):
         """...Test that hawkes cumulant reached expected value with l1
         penalization
         """
         timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
-        learner = HawkesCumulantMatching(
+        learner = Learner(
             100., cs_ratio=0.9, max_iter=300, print_every=30, step=1e-2,
             solver='adam', penalty='l1', C=1, tol=1e-5)
         learner.fit(timestamps)
@@ -171,12 +188,19 @@ class Test(InferenceTest):
         np.testing.assert_array_almost_equal(
             learner.objective(R=learner.solution), 149061.5590630687)
 
-    def test_hawkes_cumulants_solve_l2(self):
+    def test_hawkes_cumulants_tf_solve_l2(self):
+        self._test_hawkes_cumulants_solve_l2(Learner=HawkesCumulantMatchingTf)
+
+    @unittest.skip("PyTorch yet to be implemented")
+    def test_hawkes_cumulants_pyt_solve_l2(self):
+        self._test_hawkes_cumulants_solve_l2(Learner=HawkesCumulantMatchingPyT)
+
+    def _test_hawkes_cumulants_solve_l2(self, Leraner=HawkesCumulantMatchingTf):
         """...Test that hawkes cumulant reached expected value with l2
         penalization
         """
         timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
-        learner = HawkesCumulantMatching(
+        learner = Learner(
             100., cs_ratio=0.9, max_iter=300, print_every=30, step=1e-2,
             solver='adam', penalty='l2', C=0.1, tol=1e-5)
         learner.fit(timestamps)
