@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
                                   HawkesKernelExp(0.1, 3)], [
                                       HawkesKernelPowerLaw(0.2, 4, 2),
                                       HawkesKernelSumExp([0.1, 0.4], [3, 4])
-                                  ]])
+        ]])
 
         self.baseline = np.random.rand(2)
 
@@ -142,6 +142,42 @@ class Test(unittest.TestCase):
 
         hawkes_multi = SimuHawkesMulti(hawkes, n_simulations=5, n_threads=4)
         hawkes_multi.simulate()
+
+    def test_compensator(self):
+        """...Test that compensators with time function kernels give residuals 
+        that are 1.0 on average
+        """
+        run_time = 1000
+
+        t_values1 = np.array([0, 1, 1.5], dtype=float)
+        y_values1 = np.array([0, .2, 0], dtype=float)
+        tf1 = TimeFunction([t_values1, y_values1],
+                           inter_mode=TimeFunction.InterConstRight, dt=0.1)
+        kernel1 = HawkesKernelTimeFunc(tf1)
+
+        t_values2 = np.array([0, 2, 2.5], dtype=float)
+        y_values2 = np.array([0, .6, 0], dtype=float)
+        tf2 = TimeFunction([t_values2, y_values2],
+                           inter_mode=TimeFunction.InterConstRight, dt=0.1)
+        kernel2 = HawkesKernelTimeFunc(tf2)
+
+        baseline = np.array([0.1, 0.3])
+
+        hawkes = SimuHawkes(baseline=baseline, end_time=run_time,
+                            verbose=False, seed=2334)
+
+        hawkes.set_kernel(0, 0, kernel1)
+        hawkes.set_kernel(0, 1, kernel1)
+        hawkes.set_kernel(1, 0, kernel2)
+        hawkes.set_kernel(1, 1, kernel2)
+
+        hawkes.simulate()
+        hawkes.store_compensator_values()
+        compensators = hawkes.tracked_compensator
+        residuals = [np.diff(c) for c in compensators]
+        for res in residuals:
+            self.assertAlmostEqual(np.mean(res), 1.0,   delta=0.15)
+            self.assertAlmostEqual(np.quantile(res, 0.65), 1.0, delta=0.15)
 
 
 if __name__ == "__main__":

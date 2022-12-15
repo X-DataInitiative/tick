@@ -24,6 +24,9 @@ class DLL_PUBLIC HawkesBaseline {
   //! @brief get value of the baseline at times t
   virtual SArrayDoublePtr get_value(ArrayDouble &t) = 0;
 
+  //! @brief get time integral of baseline
+  virtual double get_primitive_value(double t) = 0;
+
   //! @brief get the future maximum reachable value of the baseline after time t
   virtual double get_future_bound(double t) = 0;
 

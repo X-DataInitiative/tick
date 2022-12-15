@@ -7,8 +7,7 @@
 PP::PP(unsigned int n_nodes, int seed) : rand(seed), n_nodes(n_nodes) {
   // Setting the process
   timestamps.resize(n_nodes);
-  for (unsigned int i = 0; i < n_nodes; i++)
-    timestamps[i] = VArrayDouble::new_ptr();
+  for (unsigned int i = 0; i < n_nodes; i++) timestamps[i] = VArrayDouble::new_ptr();
 
   // Init current time
   time = 0;
@@ -54,9 +53,9 @@ void PP::reset() {
 
   intensity.init_to_zero();
 
-  for (unsigned int i = 0; i < n_nodes; ++i)
-    timestamps[i] = VArrayDouble::new_ptr();
+  for (unsigned int i = 0; i < n_nodes; ++i) timestamps[i] = VArrayDouble::new_ptr();
   activate_itr(itr_time_step);
+  activate_ctr();
 }
 
 void PP::activate_itr(double dt) {
@@ -72,6 +71,11 @@ void PP::activate_itr(double dt) {
   itr_times = VArrayDouble::new_ptr();
 }
 
+void PP::activate_ctr() {
+  ctr.resize(n_nodes);
+  for (unsigned int i = 0; i < n_nodes; i++) ctr[i] = VArrayDouble::new_ptr();
+}
+
 void PP::reseed_random_generator(int seed) { rand.reseed(seed); }
 
 void PP::itr_process() {
@@ -81,28 +85,21 @@ void PP::itr_process() {
   itr_times->append1(time);
 }
 
-void PP::update_time_shift(double delay, bool flag_compute_intensity_bound,
-                           bool flag_itr) {
+void PP::update_time_shift(double delay, bool flag_compute_intensity_bound, bool flag_itr) {
   flag_negative_intensity = update_time_shift_(
-      delay, intensity,
-      (flag_compute_intensity_bound ? &total_intensity_bound : nullptr));
+      delay, intensity, (flag_compute_intensity_bound ? &total_intensity_bound : nullptr));
 
   time += delay;
 
-  if (flag_compute_intensity_bound &&
-      max_total_intensity_bound < total_intensity_bound)
+  if (flag_compute_intensity_bound && max_total_intensity_bound < total_intensity_bound)
     max_total_intensity_bound = total_intensity_bound;
 
   if (flag_itr) itr_process();
 }
 
-void PP::simulate(ulong n_points) {
-  simulate(std::numeric_limits<double>::max(), n_points);
-}
+void PP::simulate(ulong n_points) { simulate(std::numeric_limits<double>::max(), n_points); }
 
-void PP::simulate(double run_time) {
-  simulate(run_time, std::numeric_limits<ulong>::max());
-}
+void PP::simulate(double run_time) { simulate(run_time, std::numeric_limits<ulong>::max()); }
 
 void PP::simulate(double end_time, ulong n_points) {
   // This causes deadlock, see MLPP-334 - Investigate deadlock in PP
@@ -120,8 +117,7 @@ void PP::simulate(double end_time, ulong n_points) {
   while (time < end_time && n_total_jumps < n_points &&
          (!flag_negative_intensity || threshold_negative_intensity)) {
     // We compute the time of the potential next random jump
-    const double time_of_next_jump =
-        time + rand.exponential(total_intensity_bound);
+    const double time_of_next_jump = time + rand.exponential(total_intensity_bound);
 
     // If we must track record the intensities we perform a loop
     if (itr_on()) {
@@ -209,9 +205,8 @@ void PP::set_timestamps(VArrayDoublePtrList1D &timestamps, double end_time) {
 
     // Find where is next jump
     for (ulong i = 0; i < n_nodes; ++i) {
-      const double next_jump_node_i = current_index[i] < timestamps[i]->size()
-                                          ? (*timestamps[i])[current_index[i]]
-                                          : inf;
+      const double next_jump_node_i =
+          current_index[i] < timestamps[i]->size() ? (*timestamps[i])[current_index[i]] : inf;
       if (next_jump_node_i < next_jump_time) {
         next_jump_node = i;
         next_jump_time = next_jump_node_i;
@@ -239,5 +234,19 @@ void PP::set_timestamps(VArrayDoublePtrList1D &timestamps, double end_time) {
 
     update_time_shift(next_jump_time - time, true, true);
     update_jump(next_jump_node);
+  }
+}
+
+void PP::store_compensator_values() {
+  activate_ctr();
+  for (unsigned int i = 0; i < n_nodes; ++i) {
+    auto &node_tracker = ctr[i];
+    const ArrayDouble &t_i = *timestamps[i];
+    ulong n_i = t_i.size();
+    for (ulong k = 0; k < n_i; ++k) {
+      double t_ik = t_i[k];
+      double val = evaluate_compensator(i, t_ik);
+      node_tracker->append1(val);
+    }
   }
 }

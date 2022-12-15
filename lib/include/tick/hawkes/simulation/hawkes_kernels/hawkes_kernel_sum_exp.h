@@ -42,12 +42,32 @@ class DLL_PUBLIC HawkesKernelSumExp : public HawkesKernel {
   //! last size of process is the last convolution computation
   ulong convolution_restart_index;
 
+  // Used for efficiency for the computation of the convolution of
+  // the process with the primitive of the kernel
+  //! last time the convolution was computed
+  double last_primitive_convolution_time;
+
+  //! last value obtained for the convolution of the process
+  // with the primitive of the kernel
+  ArrayDouble last_primitive_convolution_values;
+
+  //! last size of process in the last computation of the convolution
+  // of the process with the primitive of the kernel
+  ulong primitive_convolution_restart_index;
+
   //! Getting the value of the ith component of the kernel at the point x (where
   //! x is positive)
   inline double get_value_i(double x, ulong i);
 
   //! Getting the value of the kernel at the point x (where x is positive)
   double get_value_(double x) override;
+
+  //! Getting the value of the primitive of the ith component of the kernel at the point x (where
+  //! x is positive)
+  inline double get_primitive_value_i(double x, ulong i);
+
+  //!  Getting the value of the primitive of the kernel
+  double get_primitive_value_(double t) override;
 
   //! field telling if all intensities are positive. It is not a problem if some
   //! are negative except if we want to compute the future bound after a
@@ -60,8 +80,7 @@ class DLL_PUBLIC HawkesKernelSumExp : public HawkesKernel {
    * @param intensities: Array of the intensities of the kernel
    * @param decay: Array of the decays of the kernel
    */
-  explicit HawkesKernelSumExp(const ArrayDouble &intensities,
-                              const ArrayDouble &decays);
+  explicit HawkesKernelSumExp(const ArrayDouble &intensities, const ArrayDouble &decays);
 
   /**
    * Copy constructor
@@ -104,6 +123,18 @@ class DLL_PUBLIC HawkesKernelSumExp : public HawkesKernel {
   double get_convolution(const double time, const ArrayDouble &timestamps,
                          double *const bound) override;
 
+  /**
+   * Computes the convolution of the process with the primitive of the kernel
+   * \f[
+   *     \int_0^t \int_0^s \phi(s - u) dN(u) ds = \sum_{t_k} \int_{t_k}^{t}\phi(s - t_k) ds,
+   * \f]
+   * where \f$ \phi(t) = \alpha \beta \exp(-\beta t)\f$.
+   * @param time: The time \f$ t \f$ up to the convolution is computed
+   * @param timestamps: The process \f$ N \f$ with which the convolution is
+   * computed
+   **/
+  double get_primitive_convolution(const double time, const ArrayDouble &timestamps) override;
+
   //! simple setter
   static void set_fast_exp(bool flag) { use_fast_exp = flag; }
   //! simple getter
@@ -141,8 +172,7 @@ class DLL_PUBLIC HawkesKernelSumExp : public HawkesKernel {
 
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("HawkesKernel",
-                        cereal::base_class<HawkesKernel>(this)));
+    ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
 
     ar(CEREAL_NVP(use_fast_exp));
     ar(CEREAL_NVP(n_decays));

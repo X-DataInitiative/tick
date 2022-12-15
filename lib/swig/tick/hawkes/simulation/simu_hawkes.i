@@ -19,6 +19,7 @@ class Hawkes : public PP {
 
   SArrayDoublePtr get_baseline(unsigned int i, ArrayDouble &t);
   double get_baseline(unsigned int i, double t);
+  double evaluate_compensator(int, double) override;
 };
 
 TICK_MAKE_PICKLABLE(Hawkes, 0);

@@ -37,11 +37,18 @@ class DLL_PUBLIC HawkesKernel {
    */
   virtual double get_value_(double x) { return 0; }
 
+  /**
+   * Getting the value of the primitive of the kernel at points s < t.
+   * This is the function to be overloaded. It is called by the method get_primitive_value
+   * when \f$ t > 0 \f$.
+   **/
+  virtual double get_primitive_value_(double t) { return 0; }
+
  public:
   //! @brief Reset kernel for simulating a new realization
   virtual void rewind() {}
 
-  //! @brief Reset kernel for simulating a new realization
+  //! @brief constructor
   explicit HawkesKernel(double support = 0);
 
   //! @brief Copy constructor
@@ -65,6 +72,26 @@ class DLL_PUBLIC HawkesKernel {
 
   //! @brief Returns the value of the kernel at x
   double get_value(double x);
+
+  /**
+   * This function computes the integral
+   * \f[
+   *     \int_{0}{t} \phi(u) ds
+   * \f]
+   * where \f$ \phi \f$ is the kernel, and \f$ t > 0 \f$.
+   **/
+  double get_primitive_value(double t);
+
+  /**
+   * This function returns the integral
+   * \f[
+   *     \int_{s}{t} \phi(u-s) du = \int_{0}{t-s} \phi(u) du
+   * \f]
+   * where \f$ \phi \f$ is the kernel, and \f$ t > s >= 0 \f$.
+   * It is used in the computation of the convolution with the primitive of the kernel,
+   * and in the computation of the compensator of the Hawkes process.
+   **/
+  double get_primitive_value(double s, double t);
 
   //! @brief Returns the value of the kernel for each t in t_values
   SArrayDoublePtr get_values(const ArrayDouble &t_values);
@@ -92,18 +119,26 @@ class DLL_PUBLIC HawkesKernel {
    * @note Should be overloaded for efficiency if there is a faster way to
    * compute this convolution than just regular algorithm
    */
-  virtual double get_convolution(const double time,
-                                 const ArrayDouble &timestamps,
+  virtual double get_convolution(const double time, const ArrayDouble &timestamps,
                                  double *const bound);
+
+  /**
+   * Computes the convolution of the process with the primitive of the kernel
+   * \f[
+   *     \int_0^t \int_0^s \phi(s - u) dN(u) ds = \sum_{t_k} \int_{t_k}^{t}\phi(s - t_k) ds
+   * \f]
+   * @param time: The time \f$ t \f$ up to the convolution is computed
+   * @param timestamps: The process \f$ N \f$ with which the convolution is
+   * computed
+   */
+  virtual double get_primitive_convolution(const double time, const ArrayDouble &timestamps);
 
   /**
    * Returns the maximum of the kernel after time t
    * knowing that the value of the kernel at time t is value_at_t
    * @note default is value_at_t (decreasing kernel)
    */
-  virtual double get_future_max(double t, double value_at_t) {
-    return value_at_t;
-  }
+  virtual double get_future_max(double t, double value_at_t) { return value_at_t; }
 
   //! Returns support used to plot the kernel
   virtual double get_plot_support() { return get_support(); }
