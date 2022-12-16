@@ -13,7 +13,9 @@ from .simulation import (SimuPoissonProcess, SimuInhomogeneousPoisson,
                          HawkesKernelSumExp, HawkesKernelTimeFunc)
 from .inference import (HawkesADM4, HawkesExpKern, HawkesSumExpKern,
                         HawkesBasisKernels, HawkesConditionalLaw, HawkesEM,
-                        HawkesSumGaussians, HawkesCumulantMatching)
+                        HawkesSumGaussians, HawkesCumulantMatching,
+                        HawkesCumulantMatchingTf, HawkesCumulantMatchingPyT
+                        )
 
 __all__ = [
     "HawkesADM4",
@@ -39,4 +41,6 @@ __all__ = [
     "HawkesKernelSumExp",
     "HawkesKernelTimeFunc",
     "HawkesCumulantMatching",
+    "HawkesCumulantMatchingTf",
+    "HawkesCumulantMatchingPyT",
 ]

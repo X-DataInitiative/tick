@@ -9,6 +9,9 @@ from tick.hawkes.inference.base import LearnerHawkesNoParam
 from tick.hawkes.inference.build.hawkes_inference import (HawkesCumulant as
                                                           _HawkesCumulant)
 
+from tick.hawkes.inference.build.hawkes_inference import (HawkesTheoreticalCumulant as
+                                                          _HawkesTheoreticalCumulant)
+
 
 class HawkesCumulantMatching(LearnerHawkesNoParam):
     _attrinfos = {
@@ -686,6 +689,67 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             return torch.optim.Adadelta
         else:
             raise NotImplementedError()
+
+
+class HawkesTheoreticalCumulant(Base):
+    _cpp_obj_name = '_cumulant'
+    _attrinfos = {
+        'dimension': {
+        },
+        '_cumulant': {},
+        '_adjacency': {},
+    }
+
+    def __init__(self, dim: int):
+        Base.__init__(self)
+        self._cumulant = _HawkesTheoreticalCumulant(dim)
+
+    @property
+    def dimension(self):
+        return self._cumulant.get_dimension()
+
+    @property
+    def baseline(self):
+        return self._cumulant.get_baseline()
+
+    @baseline.setter
+    def baseline(self, mu):
+        _mu = np.array(mu, dtype=float, copy=True)
+        self._cumulant.set_baseline(_mu)
+
+    @property
+    def adjacency(self):
+        return np.array(self._adjacency, copy=True)
+
+    @adjacency.setter
+    def adjacency(self, adjacency):
+        G = np.array(adjacency, dtype=float, copy=True)
+        R = np.ascontiguousarray(
+            scipy.linalg.inv(
+                np.eye(self.dimension, dtype=float) - G),
+            dtype=float,
+        )
+        self._cumulant.set_R(R)
+        self._adjacency = G
+
+    @property
+    def _R(self):
+        return self._cumulant.get_R()
+
+    @property
+    def mean_intensity(self):
+        return self._cumulant.mean_intensity()
+
+    @property
+    def covariance(self):
+        return self._cumulant.covariance()
+
+    @property
+    def skewness(self):
+        return self._cumulant.skewness()
+
+    def compute_cumulants(self):
+        self._cumulant.compute_cumulants()
 
 
 class _HawkesCumulantComputer(Base):

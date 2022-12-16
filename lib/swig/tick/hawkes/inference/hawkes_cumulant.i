@@ -24,3 +24,17 @@ public:
   bool get_are_cumulants_ready() const;
   void set_are_cumulants_ready(const bool recompute_cumulants);
 };
+
+class HawkesTheoreticalCumulant{
+public:
+  HawkesTheoreticalCumulant(int);
+  int get_dimension();
+  void set_baseline(const SArrayDoublePtr mu);
+  SArrayDoublePtr get_baseline();
+  void set_R(const SArrayDouble2dPtr R);
+  SArrayDouble2dPtr get_R();
+  void compute_cumulants();
+  SArrayDoublePtr mean_intensity();
+  SArrayDouble2dPtr covariance();
+  SArrayDouble2dPtr skewness();
+};
