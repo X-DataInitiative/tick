@@ -1089,9 +1089,6 @@ class HawkesTheoreticalCumulant(Base):
         self._cumulant.compute_cumulants()
 
 
->>>>>> > tensorflow-v1-hawkes-cumulants
-
-
 class _HawkesCumulantComputer(Base):
     """Private class to compute Hawkes cumulants
     """
