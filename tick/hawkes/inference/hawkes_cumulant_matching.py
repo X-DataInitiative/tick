@@ -9,6 +9,9 @@ from tick.hawkes.inference.base import LearnerHawkesNoParam
 from tick.hawkes.inference.build.hawkes_inference import (HawkesCumulant as
                                                           _HawkesCumulant)
 
+from tick.hawkes.inference.build.hawkes_inference import (HawkesTheoreticalCumulant as
+                                                          _HawkesTheoreticalCumulant)
+
 
 class HawkesCumulantMatching(LearnerHawkesNoParam):
     _attrinfos = {
@@ -54,8 +57,7 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
         self.history.print_order = ["n_iter", "objective", "rel_obj"]
 
     def compute_cumulants(self, force=False):
-        """
-        Compute estimated mean intensity, covariance and sliced skewness
+        """Compute estimated mean intensity, covariance and sliced skewness
 
         Parameters
         ----------
@@ -956,6 +958,138 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             return torch.optim.Adadelta
         else:
             raise NotImplementedError()
+
+
+class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
+    # TODO
+    _attrinfos = {
+        'pytorch': {
+            'writable': False
+        },
+        '_cumulant_computer': {
+            'writable': False
+        },
+        '_pyt_tensors': {
+        },
+        '_solver': {
+            'writable': False
+        },
+        '_elastic_net_ratio': {
+            'writable': False
+        },
+        '_events_of_cumulants': {
+            'writable': False
+        }
+    }
+
+    def __init__(self, integration_support, C=1e3, penalty='none',
+                 solver='adam', step=1e-2, tol=1e-8, max_iter=1000,
+                 verbose=False, print_every=100, record_every=10,
+                 solver_kwargs=None, cs_ratio=None, elastic_net_ratio=0.95):
+
+        import torch
+        self.torch = torch
+
+        HawkesCumulantMatching.__init__(
+            self,
+            integration_support=integration_support,
+            C=C,
+            penalty=penalty,
+            solver=solver,
+            step=step,
+            tol=tol,
+            max_iter=max_iter,
+            verbose=verbose,
+            print_every=print_every,
+            record_every=record_every,
+            solver_kwargs=solver_kwargs,
+            cs_ratio=cs_ratio,
+            elastic_net_ratio=elastic_net_ratio,
+        )
+
+    def objective(self, adjacency=None, R=None):
+        raise NotImplementedError()
+
+    def _solve(self, adiacency_start=None, R_start=None):
+        raise NotImplementedError()
+
+    @property
+    def torch_solver(self):
+        torch = self.torch
+        if self.solver.lower() == 'adam':
+            return torch.optim.Adam
+        elif self.solver.lower() == 'adagrad':
+            return torch.optim.Adagrad
+        elif self.solver.lower() == 'rmsprop':
+            return torch.optim.RMSprop
+        elif self.solver.lower() == 'adadelta':
+            return torch.optim.Adadelta
+        else:
+            raise NotImplementedError()
+
+
+class HawkesTheoreticalCumulant(Base):
+    _cpp_obj_name = '_cumulant'
+    _attrinfos = {
+        'dimension': {
+        },
+        '_cumulant': {},
+        '_adjacency': {},
+    }
+
+    def __init__(self, dim: int):
+        Base.__init__(self)
+        self._cumulant = _HawkesTheoreticalCumulant(dim)
+
+    @property
+    def dimension(self):
+        return self._cumulant.get_dimension()
+
+    @property
+    def baseline(self):
+        return self._cumulant.get_baseline()
+
+    @baseline.setter
+    def baseline(self, mu):
+        _mu = np.array(mu, dtype=float, copy=True)
+        self._cumulant.set_baseline(_mu)
+
+    @property
+    def adjacency(self):
+        return np.array(self._adjacency, copy=True)
+
+    @adjacency.setter
+    def adjacency(self, adjacency):
+        G = np.array(adjacency, dtype=float, copy=True)
+        R = np.ascontiguousarray(
+            scipy.linalg.inv(
+                np.eye(self.dimension, dtype=float) - G),
+            dtype=float,
+        )
+        self._cumulant.set_R(R)
+        self._adjacency = G
+
+    @property
+    def _R(self):
+        return self._cumulant.get_R()
+
+    @property
+    def mean_intensity(self):
+        return self._cumulant.mean_intensity()
+
+    @property
+    def covariance(self):
+        return self._cumulant.covariance()
+
+    @property
+    def skewness(self):
+        return self._cumulant.skewness()
+
+    def compute_cumulants(self):
+        self._cumulant.compute_cumulants()
+
+
+>>>>>> > tensorflow-v1-hawkes-cumulants
 
 
 class _HawkesCumulantComputer(Base):

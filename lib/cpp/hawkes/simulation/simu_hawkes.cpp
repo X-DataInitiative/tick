@@ -13,8 +13,7 @@ Hawkes::Hawkes(unsigned int n_nodes, int seed)
   }
 }
 
-void Hawkes::init_intensity_(ArrayDouble &intensity,
-                             double *total_intensity_bound) {
+void Hawkes::init_intensity_(ArrayDouble &intensity, double *total_intensity_bound) {
   *total_intensity_bound = 0;
   for (unsigned int i = 0; i < n_nodes; i++) {
     intensity[i] = get_baseline(i, 0.);
@@ -30,16 +29,14 @@ bool Hawkes::update_time_shift_(double delay, ArrayDouble &intensity,
   // We loop on the contributions
   for (unsigned int i = 0; i < n_nodes; i++) {
     intensity[i] = get_baseline(i, get_time());
-    if (total_intensity_bound1)
-      *total_intensity_bound1 += get_baseline_bound(i, get_time());
+    if (total_intensity_bound1) *total_intensity_bound1 += get_baseline_bound(i, get_time());
 
     for (unsigned int j = 0; j < n_nodes; j++) {
       HawkesKernelPtr &k = kernels[i * n_nodes + j];
 
       if (k->get_support() == 0) continue;
       double bound = 0;
-      intensity[i] +=
-          k->get_convolution(get_time() + delay, *timestamps[j], &bound);
+      intensity[i] += k->get_convolution(get_time() + delay, *timestamps[j], &bound);
 
       if (total_intensity_bound1) {
         *total_intensity_bound1 += bound;
@@ -56,15 +53,13 @@ bool Hawkes::update_time_shift_(double delay, ArrayDouble &intensity,
 void Hawkes::reset() {
   for (unsigned int i = 0; i < n_nodes; i++) {
     for (unsigned int j = 0; j < n_nodes; j++) {
-      if (kernels[i * n_nodes + j] != nullptr)
-        kernels[i * n_nodes + j]->rewind();
+      if (kernels[i * n_nodes + j] != nullptr) kernels[i * n_nodes + j]->rewind();
     }
   }
   PP::reset();
 }
 
-void Hawkes::set_kernel(unsigned int i, unsigned int j,
-                        HawkesKernelPtr &kernel) {
+void Hawkes::set_kernel(unsigned int i, unsigned int j, HawkesKernelPtr &kernel) {
   if (i >= n_nodes) TICK_BAD_INDEX(0, n_nodes, i);
   if (j >= n_nodes) TICK_BAD_INDEX(0, n_nodes, j);
 
@@ -100,8 +95,7 @@ void Hawkes::set_baseline(unsigned int i, TimeFunction time_function) {
   set_baseline(i, std::make_shared<HawkesTimeFunctionBaseline>(time_function));
 }
 
-void Hawkes::set_baseline(unsigned int i, ArrayDouble &times,
-                          ArrayDouble &values) {
+void Hawkes::set_baseline(unsigned int i, ArrayDouble &times, ArrayDouble &values) {
   set_baseline(i, std::make_shared<HawkesTimeFunctionBaseline>(times, values));
 }
 
