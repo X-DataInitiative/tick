@@ -918,6 +918,10 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             [self._torch_model_coeffs], lr=self.step, **self.solver_kwargs)
         _prev = 0.
         _L, _C, _K_c = self.cumulants
+        if self.cs_ratio is None:
+            k = self.approximate_optimal_cs_ratio()
+        else:
+            k = self.cs_ratio
 
         def compute_loss():
             return self._objective(
@@ -925,7 +929,7 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
                 _L,
                 _C,
                 _K_c,
-                self.cs_ratio,
+                k,
             )
 
         for n_iter in range(self.max_iter):
@@ -944,74 +948,6 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             else:
                 _prev = _new
         self._set('solution', self._torch_model_coeffs.data.numpy())
-
-    @property
-    def torch_solver(self):
-        torch = self.torch
-        if self.solver.lower() == 'adam':
-            return torch.optim.Adam
-        elif self.solver.lower() == 'adagrad':
-            return torch.optim.Adagrad
-        elif self.solver.lower() == 'rmsprop':
-            return torch.optim.RMSprop
-        elif self.solver.lower() == 'adadelta':
-            return torch.optim.Adadelta
-        else:
-            raise NotImplementedError()
-
-
-class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
-    # TODO
-    _attrinfos = {
-        'pytorch': {
-            'writable': False
-        },
-        '_cumulant_computer': {
-            'writable': False
-        },
-        '_pyt_tensors': {
-        },
-        '_solver': {
-            'writable': False
-        },
-        '_elastic_net_ratio': {
-            'writable': False
-        },
-        '_events_of_cumulants': {
-            'writable': False
-        }
-    }
-
-    def __init__(self, integration_support, C=1e3, penalty='none',
-                 solver='adam', step=1e-2, tol=1e-8, max_iter=1000,
-                 verbose=False, print_every=100, record_every=10,
-                 solver_kwargs=None, cs_ratio=None, elastic_net_ratio=0.95):
-
-        import torch
-        self.torch = torch
-
-        HawkesCumulantMatching.__init__(
-            self,
-            integration_support=integration_support,
-            C=C,
-            penalty=penalty,
-            solver=solver,
-            step=step,
-            tol=tol,
-            max_iter=max_iter,
-            verbose=verbose,
-            print_every=print_every,
-            record_every=record_every,
-            solver_kwargs=solver_kwargs,
-            cs_ratio=cs_ratio,
-            elastic_net_ratio=elastic_net_ratio,
-        )
-
-    def objective(self, adjacency=None, R=None):
-        raise NotImplementedError()
-
-    def _solve(self, adiacency_start=None, R_start=None):
-        raise NotImplementedError()
 
     @property
     def torch_solver(self):

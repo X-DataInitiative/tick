@@ -193,7 +193,7 @@ class Test(InferenceTest):
             tol=1e-16,
         )
 
-    @unittest.skip("pytorch not implemented yet")
+    @unittest.skipIf(SKIP_TORCH, "PyTorch not available")
     def test_hawkes_cumulants_pyt_solve_l1(self):
         self._test_hawkes_cumulants_solve(
             Learner=HawkesCumulantMatchingPyT,
