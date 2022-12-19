@@ -16,6 +16,12 @@ from tick.hawkes import (
 )
 from tick.hawkes.inference.hawkes_cumulant_matching import HawkesTheoreticalCumulant
 
+SKIP_TF = False
+try:
+    import tensorflow as tf
+except ImportError:
+    SKIP_TF = True
+
 
 class Test(InferenceTest):
     def setUp(self):
@@ -143,6 +149,7 @@ class Test(InferenceTest):
         with self.assertRaisesRegex(RuntimeError, msg):
             learner.compute_cumulants()
 
+    @unittest.skipIf(SKIP_TF, "Tensorflow not available")
     def test_hawkes_cumulants_tf_solve(self):
         self._test_hawkes_cumulants_solve(
             Learner=HawkesCumulantMatchingTf,
@@ -167,6 +174,7 @@ class Test(InferenceTest):
             tol=1e-16,
         )
 
+    @unittest.skipIf(SKIP_TF, "Tensorflow not available")
     def test_hawkes_cumulants_tf_solve_l1(self):
         self._test_hawkes_cumulants_solve(
             Learner=HawkesCumulantMatchingTf,
@@ -191,6 +199,7 @@ class Test(InferenceTest):
             tol=1e-16,
         )
 
+    @unittest.skipIf(SKIP_TF, "Tensorflow not available")
     def test_hawkes_cumulants_tf_solve_l2(self):
         self._test_hawkes_cumulants_solve(
             Learner=HawkesCumulantMatchingTf,
@@ -302,11 +311,4 @@ class Test(InferenceTest):
 
 
 if __name__ == "__main__":
-    skip = False
-    try:
-        import tensorflow.compat.v1 as tf
-    except ImportError:
-        print("tensorflow not found, skipping HawkesCumulantMatching test")
-        skip = True
-    if not skip:
-        unittest.main()
+    unittest.main()
