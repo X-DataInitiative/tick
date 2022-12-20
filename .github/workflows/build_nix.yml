@@ -20,25 +20,43 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: ['3.7']
+        python-version: ['3.7', '3.10']
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
 
-    - name: install swig
+    - name: install gtest
+      # release-1.12.1 == last C++11 release
       run: |
-        git clone https://github.com/swig/swig -b rel-4.0.2 swig
-        cd swig && ./autogen.sh && ./configure --without-pcre
-        make && sudo make install && cd .. && rm -rf swig
+        git clone https://github.com/google/googletest -b release-1.12.1
+        (cd googletest && mkdir build && cd build && cmake .. && make && sudo make install)
+        rm -rf googletest
 
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
 
-    - run: |
+    - name: info
+      run: |
+        gcc -v
+        swig -version
+
+    - name: pip
+      run: |
         python3 -m pip install wheel pip --upgrade
         python3 -m pip install -r requirements.txt
-        python3 setup.py build_ext --inplace cpptest pytest
+
+    - name: build
+      run: |
+        python3 setup.py build_ext --inplace
+
+    - name: cpptest
+      run: |
+        python3 setup.py cpptest
+
+    - name: pytest
+      run: |
+        python3 setup.py pytest

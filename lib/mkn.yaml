@@ -25,7 +25,7 @@ property:
     nixish_cargs: -fwrapv -O2 -Wall
                   -fstack-protector-strong
                   -Wformat -Werror -Wdate-time
-                  -D_FORTIFY_SOURCE=2 -fPIC -std=c++11
+                  -D_FORTIFY_SOURCE=2 -fPIC -std=c++17
                   -ffast-math -Wno-uninitialized
 
     nix_cargs: ${nixish_cargs}
@@ -40,7 +40,7 @@ property:
                -Wl,-z,relro -Wl,-z,relro
     bsd_largs: ${nixish_largs}
 
-    nixish_test_cargs: -Wno-error=unused-local-typedefs
+    nixish_test_cargs: -Wno-error=unused-local-typedefs -fPIC
                        -Wno-error=sign-compare -Wno-sign-compare
 
 profile:

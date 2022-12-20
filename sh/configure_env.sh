@@ -44,11 +44,16 @@ LIB_POSTFIX=$($PY -c "import distutils; from distutils import sysconfig; print(s
 [ -z "$LIB_POSTFIX" ] && echo "LIB_POSTFIX undefined: ERROR" && exit 1
 unameOut="$(uname -s)"
 
+IS_WINDOWS=0
+if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
+  IS_WINDOWS=1
+fi
+
 function relpath(){
   echo $($PY -c "import os.path; print(os.path.relpath('$1', '$2'))")
 }
 function linkread(){
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
+if (( $IS_WINDOWS )); then
   echo $(readlink -f $1)
 else
   echo $($PY -c "import os; print(os.path.realpath(\"$1\"))")
@@ -56,7 +61,7 @@ fi
 }
 
 #################
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
+if (( $IS_WINDOWS )); then
   function pathreal(){
     P=$1
     which cygpath.exe 2>&1 > /dev/null
@@ -72,7 +77,7 @@ fi
 #################
 
 # if windows - python-config does not exist
-if [[ "$unameOut" == "CYGWIN"* ]] || [[ "$unameOut" == "MINGW"* ]] || [[ "$unameOut" == "MSYS_NT"* ]]; then
+if (( $IS_WINDOWS )); then
   echo "Windows detected"
 
   CL_PATH=0
@@ -130,6 +135,7 @@ else
   PY_INCS="${PINC}:${PNIC}"
 
   LDARGS="$($PCONF --ldflags)"
+  (($PYVER >= 3)) && (($PYVER_MIN > 8)) && LDARGS="$($PCONF --ldflags --embed)"
   B_PATH="."
   [ -z "$LIB_POSTEXT" ] && LIB_POSTEXT="${LIB_POSTFIX##*.}"
 fi

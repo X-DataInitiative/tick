@@ -8,7 +8,6 @@ for each feature. We then perform a cross validation of the ConvSCCS model
 and compare the estimated coefficients to the relative incidences used for
 the simulation.
 """
-from time import time
 import numpy as np
 from scipy.sparse import csr_matrix, hstack
 from matplotlib import cm
