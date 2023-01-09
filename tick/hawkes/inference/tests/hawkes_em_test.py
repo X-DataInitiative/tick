@@ -83,7 +83,8 @@ class Test(unittest.TestCase):
         def approximate_likelihood(em, events, end_times, precision=2):
             n_total_jumps = sum(map(len, events))
             kernels_func = [[
-                lambda t, i=i, j=j: em.get_kernel_values(i, j, np.array([t]))[0]
+                lambda t, i=i, j=j: em.get_kernel_values(
+                    i, j, np.array([t]))[0]
                 for j in range(n_nodes)
             ] for i in range(n_nodes)]
             intensities = hawkes_intensities(events, em.baseline, kernels_func)
@@ -223,6 +224,18 @@ class Test(unittest.TestCase):
         self.assertEqual(learner._learner.get_kernel_fixed_dt(),
                          0.19047619047619047)
         self.assertEqual(learner.kernel_size, 21)
+
+    def test_hawkes_em_cumulative_kernels(self):
+        kernel_support = 4
+        kernel_size = 10
+        kernel = np.random.uniform(
+            size=(self.n_nodes, self.n_nodes, kernel_size))
+        em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
+                      n_threads=2, max_iter=11, verbose=False)
+        em.fit(self.events)
+        vals = em._cumulative_kernels
+        self.assertEqual(vals.shape, (self.n_nodes, self.n_nodes, kernel_size))
+        self.assertTrue(np.all(np.diff(vals, axis=2) >= 0))
 
 
 if __name__ == "__main__":

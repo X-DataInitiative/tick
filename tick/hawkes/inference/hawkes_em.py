@@ -239,6 +239,12 @@ class HawkesEM(LearnerHawkesNoParam):
         kernel_values[indices_in_support] = self.kernel[i, j, index]
         return kernel_values
 
+    def compute_primitive_kernel_values(self, i, j, abscissa_array):
+        idx = np.maximum(0, np.searchsorted(
+            self.kernel_discretization, abscissa_array) - 1)
+        vals = np.empty_like(abscissa_array)
+        return vals
+
     def get_kernel_norms(self):
         """Computes kernel norms. This makes our learner compliant with
         `tick.plot.plot_hawkes_kernel_norms` API
@@ -328,6 +334,17 @@ class HawkesEM(LearnerHawkesNoParam):
     def _flat_kernels(self):
         return self.kernel.reshape((self.n_nodes,
                                     self.n_nodes * self.kernel_size))
+
+    @property
+    def _cumulative_kernels(self):
+        steps = np.diff(self.kernel_discretization)
+        n_steps = len(steps)
+        n_nodes = self.n_nodes
+        steps = np.repeat(steps.reshape((1, n_steps)),
+                          repeats=n_nodes, axis=0)
+        steps = np.repeat(steps.reshape((1, n_nodes, n_steps)),
+                          repeats=n_nodes, axis=0)
+        return np.cumsum(steps * self.kernel, axis=2)
 
     @property
     def kernel_support(self):
