@@ -225,17 +225,23 @@ class Test(unittest.TestCase):
                          0.19047619047619047)
         self.assertEqual(learner.kernel_size, 21)
 
-    def test_hawkes_em_cumulative_kernels(self):
+    def test_hawkes_em_kernel_primitives(self):
         kernel_support = 4
         kernel_size = 10
-        kernel = np.random.uniform(
-            size=(self.n_nodes, self.n_nodes, kernel_size))
         em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
                       n_threads=2, max_iter=11, verbose=False)
         em.fit(self.events)
-        vals = em._cumulative_kernels
-        self.assertEqual(vals.shape, (self.n_nodes, self.n_nodes, kernel_size))
-        self.assertTrue(np.all(np.diff(vals, axis=2) >= 0))
+        primitives = em.get_kernel_primitives()
+        self.assertEqual(primitives.shape,
+                         (self.n_nodes, self.n_nodes, kernel_size))
+        self.assertTrue(np.all(np.diff(primitives, axis=2) >= 0))
+        norms = em.get_kernel_norms()
+        self.assertTrue(np.allclose(norms, primitives[:, :,  -1]))
+        for i in range(self.n_nodes):
+            for j in range(self.n_nodes):
+                vals = em.compute_primitive_kernel_values(
+                    i, j, em.kernel_discretization[1:])
+                self.assertTrue(np.allclose(vals, primitives[i, j, :]))
 
 
 if __name__ == "__main__":

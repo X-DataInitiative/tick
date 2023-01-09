@@ -34,11 +34,9 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   ArrayDouble2d unnormalized_kernels;
 
  public:
-  HawkesEM(const double kernel_support, const ulong kernel_size,
-           const int max_n_threads = 1);
+  HawkesEM(const double kernel_support, const ulong kernel_size, const int max_n_threads = 1);
 
-  explicit HawkesEM(const SArrayDoublePtr kernel_discretization,
-                    const int max_n_threads = 1);
+  explicit HawkesEM(const SArrayDoublePtr kernel_discretization, const int max_n_threads = 1);
 
   //! @brief allocate buffer arrays once data has been given
   void allocate_weights();
@@ -50,6 +48,8 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   double loglikelihood(const ArrayDouble &mu, ArrayDouble2d &kernels);
 
   SArrayDouble2dPtr get_kernel_norms(ArrayDouble2d &kernels) const;
+
+  SArrayDouble2dPtr get_kernel_primitives(ArrayDouble2d &kernels) const;
 
   double get_kernel_support() const { return kernel_support; }
 
@@ -80,8 +80,7 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   //! @brief A method called in parallel by the method 'loglikelihood'
   //! @param r_u : r * n_realizations + u, tells which realization and which
   //! node
-  double loglikelihood_ur(const ulong r_u, const ArrayDouble &mu,
-                          ArrayDouble2d &kernels);
+  double loglikelihood_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernels);
 
   //! @brief A method called by solve_ur and logliklihood_ur to compute all
   //! intensities at all timestamps occuring in node u of realization r
@@ -92,16 +91,15 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   //! @param store_unnormalized_kernel : solve_ur method needs to store an
   //! unnormalized version of the kernels in the class variable
   //! unnormalized_kernels
-  void compute_intensities_ur(const ulong r_u, const ArrayDouble &mu,
-                              ArrayDouble2d &kernels,
+  void compute_intensities_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernels,
                               std::function<void(double)> intensity_func,
                               bool store_unnormalized_kernel);
 
-  double compute_compensator_ur(const ulong r_u, const ArrayDouble &mu,
-                                ArrayDouble2d &kernels);
+  double compute_compensator_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernels);
 
-  void check_baseline_and_kernels(const ArrayDouble &mu,
-                                  ArrayDouble2d &kernels) const;
+  double evaluate_primitive_of_intensity(const ulong i, const double t);
+
+  void check_baseline_and_kernels(const ArrayDouble &mu, ArrayDouble2d &kernels) const;
 
   //! @brief Discretization parameter of the kernel
   //! If kernel_discretization is a nullptr then it is equal to kernel_support /
