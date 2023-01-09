@@ -20,6 +20,7 @@ class HawkesEM : public ModelHawkesList {
   void solve(ArrayDouble &mu, ArrayDouble2d &kernels);
 
   SArrayDouble2dPtr get_kernel_norms(ArrayDouble2d &kernels) const;
+  SArrayDouble2dPtr get_kernel_primitives(ArrayDouble2d &kernels) const;
   double loglikelihood(ArrayDouble &mu, ArrayDouble2d &kernels);
 
   double get_kernel_support() const;

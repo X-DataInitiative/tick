@@ -240,9 +240,33 @@ class HawkesEM(LearnerHawkesNoParam):
         return kernel_values
 
     def compute_primitive_kernel_values(self, i, j, abscissa_array):
-        idx = np.maximum(0, np.searchsorted(
+        """Computes value of the integral in time of the specified kernel 
+        on given time values. 
+
+        Parameters
+        ----------
+        i : `int`
+            First index of the kernel
+
+        j : `int`
+            Second index of the kernel
+
+        abscissa_array : `np.ndarray`, shape=(n_points, )
+            1d array containing all the times at which this kernel will
+            computes it value
+
+        Returns
+        -------
+        output : `np.ndarray`, shape=(n_points, )
+            1d array containing the values of the integral in time of the specified 
+            kernels at the given times.
+        """
+        n = self.n_nodes
+        index = np.maximum(0, np.searchsorted(
             self.kernel_discretization, abscissa_array) - 1)
-        vals = np.empty_like(abscissa_array)
+        primitives = self.get_kernel_primitives()
+        assert primitives.shape == (n, n, self.kernel_size)
+        vals = primitives[i, j, index]
         return vals
 
     def get_kernel_norms(self):
@@ -256,6 +280,21 @@ class HawkesEM(LearnerHawkesNoParam):
             kernel i, j
         """
         return self._learner.get_kernel_norms(self._flat_kernels)
+
+    def get_kernel_primitives(self):
+        """Computes integral in time of the kernel.
+
+        Returns
+        -------
+        primitives : `np.ndarray`, shape=(n_nodes, n_nodes, kernel_size)
+            3d array in which each entry i, j, t  corresponds to the values of the 
+            integral in time of the kernel i, j evaluated at 
+            the discretization point indexed by t.
+        """
+        n = self.n_nodes
+        primitives = self._learner.get_kernel_primitives(self._flat_kernels)
+        assert primitives.shape == (n * n, self.kernel_size)
+        return primitives.reshape(n, n, self.kernel_size)
 
     def objective(self, coeffs, loss: float = None):
         raise NotImplementedError()
@@ -334,17 +373,6 @@ class HawkesEM(LearnerHawkesNoParam):
     def _flat_kernels(self):
         return self.kernel.reshape((self.n_nodes,
                                     self.n_nodes * self.kernel_size))
-
-    @property
-    def _cumulative_kernels(self):
-        steps = np.diff(self.kernel_discretization)
-        n_steps = len(steps)
-        n_nodes = self.n_nodes
-        steps = np.repeat(steps.reshape((1, n_steps)),
-                          repeats=n_nodes, axis=0)
-        steps = np.repeat(steps.reshape((1, n_nodes, n_steps)),
-                          repeats=n_nodes, axis=0)
-        return np.cumsum(steps * self.kernel, axis=2)
 
     @property
     def kernel_support(self):
