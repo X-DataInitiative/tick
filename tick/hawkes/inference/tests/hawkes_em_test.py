@@ -149,6 +149,22 @@ class Test(unittest.TestCase):
                 approximate_likelihood(em, test_events, test_end_times, 4),
                 delta=1e-3, msg='Failed on test for {}'.format(kwargs))
 
+    def test_hawkes_em_kernel_shape(self):
+        kernel_support = 4
+        kernel_size = 10
+        em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
+                      n_threads=2, max_iter=11, verbose=False)
+        em.fit(self.events)
+        reshaped_kernel = em._flat_kernels.reshape((
+            em.n_nodes, em.n_nodes, em.kernel_size))
+        self.assertTrue(
+            np.allclose(em.kernel,                reshaped_kernel
+                        ),
+            "Reshaping of kernel is inconsistent:"
+            f"kernel: {em.kernel}\n"
+            f"reshaped kernel: {reshaped_kernel}\n"
+        )
+
     def test_hawkes_em_kernel_support(self):
         """...Test that Hawkes em kernel support parameter is correctly
         synchronized
@@ -231,17 +247,65 @@ class Test(unittest.TestCase):
         em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
                       n_threads=2, max_iter=11, verbose=False)
         em.fit(self.events)
-        primitives = em.get_kernel_primitives()
+        # Pre-test 1
+        self.assertTrue(np.all(em.kernel >= 0.),
+                        "Error: kernel cannot take negative values!")
+        # Pre-test 2
+        primitives = em._get_kernel_primitives()
         self.assertEqual(primitives.shape,
-                         (self.n_nodes, self.n_nodes, kernel_size))
-        self.assertTrue(np.all(np.diff(primitives, axis=2) >= 0))
+                         (self.n_nodes, self.n_nodes, kernel_size),
+                         "Erorr : Shape of primitives does not match expected shape"
+                         )
+
+        # Test 0
+        # Primitives must be non-decreasing  functions, since kernels are non-negative
+#        for i in range(em.n_nodes):
+#            for j in range(em.n_nodes):
+#                if np.any(np.diff(primitives[i, j, :]) < -1.e-64):
+#                    print(f'\nKernel({i}, {j}):\n{em.kernel[i, j, :]}')
+#                    print(f'primitive({i}, {j}):\n{primitives[i, j, :]}\n\n')
+        self.assertTrue(
+            np.all(np.diff(primitives, axis=2) >= 0.),
+            "Error: primitives is not non-decreasing"
+        )
+
+        # Test 1
+        # Since kernels are positive, their primitive evaluated at the
+        # rightmost point of their support is expected to be equal to their norm
         norms = em.get_kernel_norms()
-        self.assertTrue(np.allclose(norms, primitives[:, :,  -1]))
+        self.assertTrue(
+            np.allclose(norms, primitives[:, :,  -1]),
+            "The values of the kernel primitives at the end of the kernel supports,"
+            "must agree with the kernel norms."
+        )
+
+        # Test 2
+        # The method `_compute_primitive_kernel_values` when evaluated at the
+        # discrtetization point of the kernel must yield the values stored in `primitive`
         for i in range(self.n_nodes):
             for j in range(self.n_nodes):
-                vals = em.compute_primitive_kernel_values(
+                vals = em._compute_primitive_kernel_values(
                     i, j, em.kernel_discretization[1:])
                 self.assertTrue(np.allclose(vals, primitives[i, j, :]))
+
+        # Test 3
+        # We test that the values of the primitives computed via the class method agree
+        # with the primitives of the kernels computed using numpy arrays
+        def _compute_primitive_with_numpy(kernel, kernel_discretization):
+            n = kernel.shape[0]
+            m = kernel.shape[1]
+            l = kernel.shape[2]
+            assert len(kernel_discretization) == l + 1
+            steps = np.diff(kernel_discretization)
+            steps = np.repeat(steps.reshape((1, l)), repeats=m, axis=0)
+            steps = np.repeat(steps.reshape((1, m, l)), repeats=n, axis=0)
+            assert steps.shape == (n, m, l)
+            assert steps.shape == kernel.shape
+            primitives = np.cumsum(kernel*steps, axis=2)
+            assert primitives.shape == (n, m, l)
+            return primitives
+        self.assertTrue(np.allclose(primitives, _compute_primitive_with_numpy(
+            em.kernel, em.kernel_discretization)))
 
 
 if __name__ == "__main__":

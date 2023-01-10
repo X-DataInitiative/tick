@@ -4,7 +4,9 @@
 
 // License: BSD 3 clause
 
+#include <vector>
 #include "tick/base/base.h"
+#include "tick/base/time_func.h"
 #include "tick/hawkes/model/base/model_hawkes_list.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,6 +35,12 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   ArrayDouble2d next_kernels;
   ArrayDouble2d unnormalized_kernels;
 
+  //! "brief buffer variable for evaluation of integral of intensity
+  ArrayDouble _baseline;
+  ArrayDouble2d _adjacency;
+  std::vector<TimeFunction> kernel_time_func;
+  bool is_kernel_time_func = 0;
+
  public:
   HawkesEM(const double kernel_support, const ulong kernel_size, const int max_n_threads = 1);
 
@@ -50,6 +58,8 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   SArrayDouble2dPtr get_kernel_norms(ArrayDouble2d &kernels) const;
 
   SArrayDouble2dPtr get_kernel_primitives(ArrayDouble2d &kernels) const;
+
+  std::vector<TimeFunction> &get_kernel_time_func() { return kernel_time_func; }
 
   double get_kernel_support() const { return kernel_support; }
 
@@ -71,20 +81,25 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
 
   void set_kernel_discretization(const SArrayDoublePtr kernel_discretization);
 
+  void init_kernel_time_func(ArrayDouble2d &kernels);
+
+  SArrayDoublePtr primitive_of_intensity_at_jump_times(const ulong r_u, ArrayDouble &mu,
+                                                       ArrayDouble2d &kernels);
+
  private:
   //! @brief A method called in parallel by the method 'solve'
-  //! @param r_u : r * n_realizations + u, tells which realization and which
+  //! @param r_u : r * n_nodes + u, tells which realization and which
   //! node
   void solve_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernel);
 
   //! @brief A method called in parallel by the method 'loglikelihood'
-  //! @param r_u : r * n_realizations + u, tells which realization and which
+  //! @param r_u : r * n_nodes + u, tells which realization and which
   //! node
   double loglikelihood_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernels);
 
   //! @brief A method called by solve_ur and logliklihood_ur to compute all
   //! intensities at all timestamps occuring in node u of realization r
-  //! @param r_u : r * n_realizations + u, tells which realization and which
+  //! @param r_u : r * n_nodes + u, tells which realization and which
   //! node
   //! @param intensity_func : function that will be called for all timestamps
   //! with the intensity at this timestamp as argument
@@ -97,7 +112,7 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
 
   double compute_compensator_ur(const ulong r_u, const ArrayDouble &mu, ArrayDouble2d &kernels);
 
-  double evaluate_primitive_of_intensity(const ulong i, const double t);
+  double _evaluate_primitive_of_intensity(const double t, const ulong r, const ulong u);
 
   void check_baseline_and_kernels(const ArrayDouble &mu, ArrayDouble2d &kernels) const;
 
