@@ -134,20 +134,44 @@ SArrayDouble2dPtr HawkesEM::get_kernel_primitives(ArrayDouble2d &kernels) const 
     discretization_intervals[m] = get_kernel_dt(m);
   }
 
-  ArrayDouble2d vals(n_nodes * n_nodes, kernel_size);
-  for (ulong node_u = 0; node_u < n_nodes; ++node_u) {
-    ArrayDouble2d kernel_u(n_nodes, kernel_size, view_row(kernels, node_u).data());
-    for (ulong node_v = 0; node_v < n_nodes; ++node_v) {
-      ArrayDouble kernel_uv = view_row(kernel_u, node_v);
+  ArrayDouble2d vals(n_nodes, n_nodes * kernel_size);
+  for (ulong u = 0; u < n_nodes; ++u) {
+    ArrayDouble2d kernel_u(n_nodes, kernel_size, view_row(kernels, u).data());
+    for (ulong v = 0; v < n_nodes; ++v) {
+      ArrayDouble kernel_uv = view_row(kernel_u, v);
       double val = 0.;
-      for (ulong t = 0; t < kernel_size; ++t) {
-        val += kernel_uv[t] * discretization_intervals[t];
-        vals(node_u * n_nodes + node_v, t) = val;
+      for (ulong k = 0; k < kernel_size; ++k) {
+        ulong vk = v * kernel_size + k;
+        double increment = kernel_uv[k] * discretization_intervals[k];
+        if (increment < 0) {
+          throw std::runtime_error(
+              "Error in computing primitive of the kernel: increment is negative!");
+        }
+        val += increment;
+        vals(u, vk) = val;
       }
     }
   }
 
   return vals.as_sarray2d_ptr();
+}
+
+void HawkesEM::init_kernel_time_func(ArrayDouble2d &kernels) {
+  // `kernels` is expected in the shape (n_nodes, n_nodes * kernel_size)
+  kernel_time_func.clear();
+  kernel_time_func.reserve(n_nodes * n_nodes);
+  ArrayDouble abscissa(kernel_size);
+  for (ulong t = 0; t < kernel_size; ++t) abscissa[t] = (*kernel_discretization)[t + 1];
+  for (ulong u = 0; u < n_nodes; ++u) {
+    ArrayDouble2d kernel_u(n_nodes, kernel_size, view_row(kernels, u).data());
+    for (ulong v = 0; v < n_nodes; ++v) {
+      ArrayDouble kernel_uv = view_row(kernel_u, v);
+      kernel_time_func[u * n_nodes + v] =
+          TimeFunction(abscissa, kernel_uv, TimeFunction::BorderType::Border0,
+                       TimeFunction::InterMode::InterConstLeft);
+    }
+  }
+  is_kernel_time_func = 1;
 }
 
 void HawkesEM::compute_intensities_ur(const ulong r_u, const ArrayDouble &mu,
@@ -321,7 +345,50 @@ double HawkesEM::compute_compensator_ur(const ulong r_u, const ArrayDouble &mu,
   return compensator;
 }
 
-double HawkesEM::evaluate_primitive_of_intensity(const ulong i, const double t) { return 0.; }
+SArrayDoublePtr HawkesEM::primitive_of_intensity_at_jump_times(const ulong r_u, ArrayDouble &mu,
+                                                               ArrayDouble2d &kernels) {
+  _baseline = mu;
+  _adjacency = kernels;
+  init_kernel_time_func(_adjacency);
+  // Obtain realization and node index from r_u
+  const ulong r = static_cast<const ulong>(r_u / n_nodes);
+  const ulong u = r_u % n_nodes;
+
+  // Fetch corresponding data
+  SArrayDoublePtrList1D &realization = timestamps_list[r];
+  ArrayDouble timestamps_u = view(*realization[u]);
+  ulong n = timestamps_u.size();
+  ArrayDouble res = ArrayDouble(n);
+  for (ulong k = 0; k < n; ++k) {
+    double t_uk = timestamps_u[k];
+    res[k] = _evaluate_primitive_of_intensity(t_uk, r, u);
+  }
+  return res.as_sarray_ptr();
+}
+
+double HawkesEM::_evaluate_primitive_of_intensity(const double t, const ulong r, const ulong u) {
+  if (is_kernel_time_func == 0) {
+    throw std::runtime_error("kernel_time_func has not been initialised yet.");
+  }
+
+  // Fetch corresponding data
+  SArrayDoublePtrList1D &realization = timestamps_list[r];
+  const double mu_u = _baseline[u];
+
+  double res = 0.;
+  // Iterate over components and timestamps
+  for (ulong v = 0; v < n_nodes; ++v) {
+    ArrayDouble timestamps_v = view(*realization[v]);
+    ulong n = timestamps_v.size();
+    for (ulong k = 0; k < n; k++) {
+      double t_vk = timestamps_v[k];
+      if (t_vk >= t) break;
+      res += kernel_time_func[u * n_nodes + v].primitive(t - t_vk);
+    }
+  }
+  res += mu_u * t;
+  return res;
+}
 
 double HawkesEM::get_kernel_dt(const ulong m) const {
   if (kernel_discretization == nullptr) {
