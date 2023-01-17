@@ -121,6 +121,7 @@ class DLL_PUBLIC HawkesKernel {
    */
   virtual double get_convolution(const double time, const ArrayDouble &timestamps,
                                  double *const bound);
+  // Do we need to include `get_convolution` in the swig interface?
 
   /**
    * Computes the convolution of the process with the primitive of the kernel
@@ -132,6 +133,7 @@ class DLL_PUBLIC HawkesKernel {
    * computed
    */
   virtual double get_primitive_convolution(const double time, const ArrayDouble &timestamps);
+  // Do we need to include `get_primitive_convolution` in the swig interface?
 
   /**
    * Returns the maximum of the kernel after time t

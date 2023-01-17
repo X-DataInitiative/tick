@@ -14,6 +14,13 @@ class HawkesKernel {
   double get_primitive_value(double t);
   double get_primitive_value(double s, double t);
   virtual double get_norm(int nsteps = 10000);
+  virtual double get_convolution(
+       const double time, 
+       const ArrayDouble &timestamps, 
+       double *const bound);
+  virtual double get_primitive_convolution(
+       const double time, 
+       const ArrayDouble &timestamps);
 };
 
 
