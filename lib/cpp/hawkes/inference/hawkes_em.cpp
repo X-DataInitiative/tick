@@ -344,11 +344,20 @@ double HawkesEM::compute_compensator_ur(const ulong r_u, const ArrayDouble &mu,
   return compensator;
 }
 
-SArrayDoublePtr HawkesEM::primitive_of_intensity_at_jump_times(const ulong r_u, ArrayDouble &mu,
-                                                               ArrayDouble2d &kernels) {
+void HawkesEM::set_buffer_variables_for_integral_of_intensity(ArrayDouble &mu,
+                                                              ArrayDouble2d &kernels) {
   _baseline = mu;
   _adjacency = kernels;
   init_kernel_time_func(_adjacency);
+}
+
+SArrayDoublePtr HawkesEM::primitive_of_intensity_at_jump_times(const ulong r_u, ArrayDouble &mu,
+                                                               ArrayDouble2d &kernels) {
+  set_buffer_variables_for_integral_of_intensity(mu, kernels);
+  return primitive_of_intensity_at_jump_times(r_u);
+}
+
+SArrayDoublePtr HawkesEM::primitive_of_intensity_at_jump_times(const ulong r_u) {
   // Obtain realization and node index from r_u
   const ulong r = static_cast<const ulong>(r_u / n_nodes);
   const ulong u = r_u % n_nodes;
