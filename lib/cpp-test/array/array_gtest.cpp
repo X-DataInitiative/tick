@@ -195,6 +195,10 @@ TYPED_TEST(ArrayTest, Contains) {
 
   typename TypeParam::value_type value_3 = arrA[3] + 0.;
   typename TypeParam::value_type new_value = 7032;
+
+  int retries = 0;
+  while(retries++ < 5 && arrA.contains(new_value)) arrA = ::GenerateRandomArray<TypeParam>();
+
   EXPECT_TRUE(arrA.contains(value_3));
   EXPECT_FALSE(arrA.contains(new_value));
   arrA[3] = new_value;

@@ -44,7 +44,7 @@ source $ROOT/sh/configure_env.sh
 
 CARGS=""
 if (( ! $IS_WINDOWS )); then
-  CARGS=" -fPIC "
+  CARGS=" -fPIC -std=c++11 "
 fi
 
 pushd $ROOT/lib 2>&1 > /dev/null

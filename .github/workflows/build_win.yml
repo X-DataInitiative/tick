@@ -9,7 +9,8 @@ on:
 
 env:
   TICK_DEBUG: 0
-#  TICK_CMAKE_GENERATOR: Visual Studio 16 2022
+  TICK_WERROR: 0
+  MKN_CL_PREFERRED: 1
 
 jobs:
   build:
@@ -20,7 +21,7 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: ['3.9', '3.10']
+        python-version: ['3.7'] # '3.8', '3.9', '3.10',  have dll init issues
 
     steps:
     - uses: actions/checkout@v2
@@ -32,24 +33,31 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
 
+    - uses: ilammy/msvc-dev-cmd@v1 # setup vcvars for cl.exe
+      with:
+        arch: amd64
+
     - name: info
       run: |
+        python3 -V
         swig -version
+        cl
 
     - name: pip
       run: |
-        pip install wheel pip --upgrade
-        pip install -r requirements.txt
-
-    - name: info
-      run: |
-        swig -version
+        python3 -m pip install wheel pip --upgrade
+        python3 -m pip install -r requirements.txt
 
     - name: build
-      run: |
-        python setup.py build_ext --inplace
+      run: | # MINGW link interferres with MSVC link.exe
+        bash -c "rm /bin/link"
+        bash -c "curl -Lo mkn.exe https://github.com/mkn/mkn/releases/download/latest/mkn.exe"
+        bash -c 'PATH=$PWD:$PATH KLOG=3 ./sh/mkn.sh'
 
-    - name: test
+    - name: cpptest
       run: |
-        python setup.py cpptest
+        bash -c 'PATH=$PWD:$PATH KLOG=3 ./sh/gtest.sh'
+
+    - name: pytest
+      run: |
         python -m unittest discover -v . "*_test.py"

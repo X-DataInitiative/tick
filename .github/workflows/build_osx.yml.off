@@ -11,6 +11,7 @@ env:
   TICK_DEBUG: 0
   TICK_WERROR: 0
 
+
 jobs:
   build:
     name: Python ${{ matrix.python-version }}
@@ -20,7 +21,7 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.7', '3.9', '3.10'] # '3.8' has "'tp_print' is deprecated [-Werror,-Wdeprecated-declarations]"
 
     steps:
     - uses: actions/checkout@v2
@@ -32,24 +33,31 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
 
+
+
+
+
     - name: info
       run: |
+        python3 -V
+        clang -v
         swig -version
 
     - name: pip
       run: |
-        pip install wheel pip --upgrade
-        pip install -r requirements.txt
-
-    - name: info
-      run: |
-        swig -version
+        python3 -m pip install wheel pip --upgrade
+        python3 -m pip install -r requirements.txt
 
     - name: build
       run: |
-        python setup.py build_ext --inplace
+        curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn_osx
+        chmod +x mkn
+        PATH=$PWD:$PATH KLOG=3 ./sh/mkn.sh
 
-    - name: test
+    - name: cpptest
       run: |
-        python setup.py cpptest
+        PATH=$PWD:$PATH KLOG=3 ./sh/gtest.sh
+
+    - name: pytest
+      run: |
         python -m unittest discover -v . "*_test.py"

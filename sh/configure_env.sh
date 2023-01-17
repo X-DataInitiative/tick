@@ -17,7 +17,7 @@
 #
 ######################################################################
 
-set -e
+set -ex
 
 echo "Entering configure_env.sh"
 
@@ -76,6 +76,8 @@ else
 fi
 #################
 
+PY_LIBDIR=$(python3 -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+
 # if windows - python-config does not exist
 if (( $IS_WINDOWS )); then
   echo "Windows detected"
@@ -129,14 +131,14 @@ else
   [ -z "$PCONF"  ] && echo "python-config or python3-config not found on PATH, exiting with error" && exit 1;
 
   # Deducing include paths for python and numpy
-  [ -z "$PINC" ] && for i in $($PCONF --includes); do PINC="${PINC}${i:2}:"; done
+  [ -z "$PINC" ] && for i in $($PCONF --includes | tr ' ' '\n' | sort -u); do PINC="${PINC}${i:2}:"; done
   [ -z "$PNIC" ] && PNIC=$($PY -c "import numpy as np; print(np.get_include())");
 
   PY_INCS="${PINC}:${PNIC}"
 
   LDARGS="$($PCONF --ldflags)"
   (($PYVER >= 3)) && (($PYVER_MIN > 8)) && LDARGS="$($PCONF --ldflags --embed)"
-  B_PATH="."
+  B_PATH=".:${PY_LIBDIR}"
   [ -z "$LIB_POSTEXT" ] && LIB_POSTEXT="${LIB_POSTFIX##*.}"
 fi
 LIB_POSTFIX="${LIB_POSTFIX%.*}"
@@ -324,9 +326,12 @@ MKN_O=${MKN_O:-9}
 MKN_G=${MKN_G:-0}
 MKN=${MKN:-mkn}
 
+export MKN_LIB_LINK_LIB=1
 export TICK_CONFIGURED=1
 
-echo "Finished configure_env.sh"
+echo "Finished configure_env.sh for python (${PYVER}.${PYVER_MIN}) with the following args"
+echo "LDARGS = ${LDARGS}"
+echo ""
 ##
 
 

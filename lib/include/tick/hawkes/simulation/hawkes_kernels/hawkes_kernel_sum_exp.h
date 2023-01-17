@@ -80,7 +80,7 @@ class DLL_PUBLIC HawkesKernelSumExp : public HawkesKernel {
    * @param intensities: Array of the intensities of the kernel
    * @param decay: Array of the decays of the kernel
    */
-  explicit HawkesKernelSumExp(const ArrayDouble &intensities, const ArrayDouble &decays);
+  HawkesKernelSumExp(const ArrayDouble &intensities, const ArrayDouble &decays);
 
   /**
    * Copy constructor
