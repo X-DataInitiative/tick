@@ -32,4 +32,11 @@ class HawkesEM : public ModelHawkesList {
   void set_kernel_size(const ulong kernel_size);
   void set_kernel_dt(const double kernel_dt);
   void set_kernel_discretization(const SArrayDoublePtr kernel_discretization);
+
+  void set_buffer_variables_for_integral_of_intensity(ArrayDouble &mu, ArrayDouble2d &kernels);
+  SArrayDoublePtr primitive_of_intensity_at_jump_times(const ulong r_u, ArrayDouble &mu,
+                                                       ArrayDouble2d &kernels);
+
+  SArrayDoublePtr primitive_of_intensity_at_jump_times(const ulong r_u);
+
 };

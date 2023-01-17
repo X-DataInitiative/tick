@@ -83,8 +83,12 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
 
   void init_kernel_time_func(ArrayDouble2d &kernels);
 
+  void set_buffer_variables_for_integral_of_intensity(ArrayDouble &mu, ArrayDouble2d &kernels);
+
   SArrayDoublePtr primitive_of_intensity_at_jump_times(const ulong r_u, ArrayDouble &mu,
                                                        ArrayDouble2d &kernels);
+
+  SArrayDoublePtr primitive_of_intensity_at_jump_times(const ulong r_u);
 
  private:
   //! @brief A method called in parallel by the method 'solve'

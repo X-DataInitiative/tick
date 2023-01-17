@@ -94,7 +94,7 @@ class Test(unittest.TestCase):
         # We use only 2 nodes otherwise integral approximation might be very
         # slow
         n_nodes = 2
-        kernel_support = 1
+        kernel_support = 1.
         kernel_size = 3
         baseline = np.random.rand(n_nodes) + .2
         kernel = np.random.rand(n_nodes, n_nodes, kernel_size) + .4
@@ -259,11 +259,6 @@ class Test(unittest.TestCase):
 
         # Test 0
         # Primitives must be non-decreasing  functions, since kernels are non-negative
-#        for i in range(em.n_nodes):
-#            for j in range(em.n_nodes):
-#                if np.any(np.diff(primitives[i, j, :]) < -1.e-64):
-#                    print(f'\nKernel({i}, {j}):\n{em.kernel[i, j, :]}')
-#                    print(f'primitive({i}, {j}):\n{primitives[i, j, :]}\n\n')
         self.assertTrue(
             np.all(np.diff(primitives, axis=2) >= 0.),
             "Error: primitives is not non-decreasing"
@@ -306,6 +301,30 @@ class Test(unittest.TestCase):
             return primitives
         self.assertTrue(np.allclose(primitives, _compute_primitive_with_numpy(
             em.kernel, em.kernel_discretization)))
+
+    def _test_time_changed_interarrival_times(self, fit: bool):
+        # TODO: Finish this test
+        kernel_support = 4
+        kernel_size = 10
+        em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
+                      n_threads=2, max_iter=11, verbose=False)
+        import pdb
+        pdb.set_trace()
+
+        res: List[List[np.ndarray]]
+        if fit:
+            em.fit(self.events)
+            res = em.time_changed_interarrival_times()
+        else:
+            em.baseline = np.random.rand(self.n_nodes) + .05
+            em.kernel = np.random.rand(
+                self.n_nodes, self.n_nodes, kernel_size) + .1
+            res = em.time_changed_interarrival_times(events=self.events)
+
+        print(res)
+
+    def test_time_changed_interarrival_times_no_fitting(self):
+        self._test_time_changed_interarrival_times(fit=False)
 
 
 if __name__ == "__main__":
