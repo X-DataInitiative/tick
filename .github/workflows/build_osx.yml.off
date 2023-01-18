@@ -11,6 +11,7 @@ env:
   TICK_DEBUG: 0
   TICK_WERROR: 0
 
+
 jobs:
   build:
     name: Python ${{ matrix.python-version }}
@@ -20,30 +21,43 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: ['3.7', '3.8', '3.9']
+        python-version: ['3.7', '3.9', '3.10'] # '3.8' has "'tp_print' is deprecated [-Werror,-Wdeprecated-declarations]"
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
 
-    - name: install swig
-      run: |
-        brew update
-        brew install automake m4
-        git clone https://github.com/swig/swig -b rel-4.0.2 swig
-        cd swig && ./autogen.sh && ./configure --without-pcre
-        make && make install && cd .. && rm -rf swigkey
-
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
 
-    - run: |
-        pip install pip --upgrade
-        pip install wheel
-        pip install -r requirements.txt
-        python setup.py build_ext --inplace cpptest
-        python -m unittest discover -v . "*_test.py"
 
+
+
+
+    - name: info
+      run: |
+        python3 -V
+        clang -v
+        swig -version
+
+    - name: pip
+      run: |
+        python3 -m pip install wheel pip --upgrade
+        python3 -m pip install -r requirements.txt
+
+    - name: build
+      run: |
+        curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn_osx
+        chmod +x mkn
+        PATH=$PWD:$PATH KLOG=3 ./sh/mkn.sh
+
+    - name: cpptest
+      run: |
+        PATH=$PWD:$PATH KLOG=3 ./sh/gtest.sh
+
+    - name: pytest
+      run: |
+        python -m unittest discover -v . "*_test.py"

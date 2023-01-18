@@ -188,10 +188,11 @@ void HawkesEM::compute_intensities_ur(const ulong r_u, const ArrayDouble &mu,
   const ulong node_u = r_u % n_nodes;
 
   ArrayDouble2d kernel_norms = *get_kernel_norms(kernels);
-  double marginal_int_intensity = 0;
-  for (ulong node_v = 0; node_v < n_nodes; ++node_v) {
-    marginal_int_intensity += kernel_norms(node_v, node_u);
-  }
+  // ?
+  // double marginal_int_intensity = 0;
+  // for (ulong node_v = 0; node_v < n_nodes; ++node_v) {
+  //   marginal_int_intensity += kernel_norms(node_v, node_u);
+  // }
 
   // Fetch corresponding data
   SArrayDoublePtrList1D &realization = timestamps_list[r];

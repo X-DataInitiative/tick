@@ -21,15 +21,20 @@ import warnings
 
 from abc import ABC
 
-import distutils
-from distutils import sysconfig
-from distutils.version import LooseVersion
-from distutils.command.build import build
-from distutils.command.clean import clean
-
 from setuptools import find_packages, setup, Command
 from setuptools.command.install import install
 from setuptools.extension import Extension
+
+# deprecated!
+import distutils
+from distutils.command.build import build
+from distutils.command.clean import clean
+from distutils import sysconfig as distconfig
+# deprecated!
+
+
+
+from packaging import version
 
 force_blas = False
 if "--force-blas" in sys.argv:
@@ -89,7 +94,7 @@ if python_ver < python_min_ver:
 #
 # Snippet from http://stackoverflow.com/a/32765319/2299947
 if sys.platform == 'darwin':
-    vars = sysconfig.get_config_vars()
+    vars = distconfig.get_config_vars()
     vars['LDSHARED'] = vars['LDSHARED'].replace('-bundle', '-dynamiclib')
 
 # If we're installing via a wheel or not
@@ -155,7 +160,6 @@ if os.environ.get('TICK_NO_OPTS') is not None:
 # arrays
 sparse_indices_flag = "-DTICK_SPARSE_INDICES_INT32"
 try:
-    import numpy as np
     from scipy.sparse import sputils
 
     sparsearray_type = sputils.get_index_dtype()
@@ -174,7 +178,7 @@ if os.name == 'posix':
         # keep only major + minor
         os_version = '.'.join(os_version.split('.')[:2])
 
-        if LooseVersion(os_version) < LooseVersion('10.9'):
+        if version.parse(os_version) < version.parse('10.9'):
             raise ValueError(
                 'You need to have at least mac os 10.9 to build this package')
 
@@ -202,7 +206,7 @@ if os.environ.get('PYVER') is not None:
 # E.g. build/lib.macosx-10.11-x86_64-3.5
 build_dir = "build/lib.{}-{}"+PYVER_DBG
 build_dir = build_dir.format(distutils.util.get_platform(),
-                                     sys.version[0:3])
+                             ".".join(sys.version.split(".")[:2]))
 
 class SwigExtension(Extension):
     """This only adds information about extension construction, useful for
@@ -318,9 +322,6 @@ def create_extension(extension_name, module_dir,
     elif TICK_WERROR == 1 or TICK_WERROR == "1":
         ## Added -Wall to get all warnings and -Werror to treat them as errors
         extra_compile_args.append("-Werror")
-
-    # Include directory of module
-    mod = SwigPath(module_dir, extension_name)
 
     libraries = []
     library_dirs = []
@@ -756,9 +757,8 @@ class BuildCPPTests(TickCommand):
         relpath = os.path.relpath(self.tick_dir, self.cpp_build_dir)
         cmake_exe = os.environ.get('TICK_CMAKE', 'cmake')
 
-        inc_dir = sysconfig.get_python_inc()
+
         cmake_cmd = [cmake_exe,
-                     '-DPYTHON_INCLUDE_DIR={}'.format(inc_dir),
                      '-DTICK_REBUILD_LIBS=OFF',
                      '-DBENCHMARK=OFF',
                      relpath + '/../lib']
@@ -775,7 +775,6 @@ class BuildCPPTests(TickCommand):
             cmake_cmd.append(
                 '-DTICK_LIB_{}={}'.format(mod.ext_name.upper(), full_path))
 
-        define_macros = []
         if 'define_macros' in blas_info and \
                 any(key == 'HAVE_CBLAS' for key, _ in blas_info['define_macros']):
             cmake_cmd.append('-DUSE_BLAS=ON')

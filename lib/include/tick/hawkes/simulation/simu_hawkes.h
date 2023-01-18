@@ -62,7 +62,7 @@ class DLL_PUBLIC Hawkes : public PP {
   Hawkes(Hawkes &hawkes) = delete;
 
  public:
-  virtual void reset();
+  void reset() override;
 
   /**
    * @brief Set kernel for a specific row and column
@@ -129,7 +129,7 @@ class DLL_PUBLIC Hawkes : public PP {
    * \param total_intensity_bound : A pointer to the variable that will hold a
    * bound of future total intensity
    */
-  virtual void init_intensity_(ArrayDouble &intensity, double *total_intensity_bound);
+  void init_intensity_(ArrayDouble &intensity, double *total_intensity_bound) override;
 
   /**
    * @brief Updates the current time so that it goes forward of delay seconds
@@ -140,8 +140,8 @@ class DLL_PUBLIC Hawkes : public PP {
    * \param total_intensity_bound : If not NULL then used to set a bound of
    * total future intensity
    */
-  virtual bool update_time_shift_(double delay, ArrayDouble &intensity,
-                                  double *total_intensity_bound);
+  bool update_time_shift_(double delay, ArrayDouble &intensity,
+                                  double *total_intensity_bound) override;
 
   /**
    * @brief Get future baseline maximum reachable value for a specific dimension

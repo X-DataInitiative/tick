@@ -52,7 +52,7 @@ def plot_point_process(point_process, plot_intensity=None, n_points=10000,
     if node_names is None:
         node_names = list(map(lambda n: 'ticks #{}'.format(n), plot_nodes))
     elif len(node_names) != len(plot_nodes):
-        ValueError('node_names must be a list of length {} but has length {}'
+        raise ValueError('node_names must be a list of length {} but has length {}'
                    .format(len(plot_nodes), len(node_names)))
     labels = []
     for name, node in zip(node_names, plot_nodes):
