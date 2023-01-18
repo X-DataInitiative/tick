@@ -3,13 +3,13 @@
 #include "tick/hawkes/inference/hawkes_em.h"
 
 HawkesEM::HawkesEM(const double kernel_support, const ulong kernel_size, const int max_n_threads)
-    : ModelHawkesList(max_n_threads, 0), kernel_discretization(nullptr) {
+    : ModelHawkesList(max_n_threads, 0), kernel_discretization(nullptr), kernel_time_func() {
   set_kernel_support(kernel_support);
   set_kernel_size(kernel_size);
 }
 
 HawkesEM::HawkesEM(const SArrayDoublePtr kernel_discretization, const int max_n_threads)
-    : ModelHawkesList(max_n_threads, 0) {
+    : ModelHawkesList(max_n_threads, 0), kernel_time_func() {
   set_kernel_discretization(kernel_discretization);
 }
 
@@ -158,20 +158,25 @@ SArrayDouble2dPtr HawkesEM::get_kernel_primitives(ArrayDouble2d &kernels) const 
 
 void HawkesEM::init_kernel_time_func(ArrayDouble2d &kernels) {
   // `kernels` is expected in the shape (n_nodes, n_nodes * kernel_size)
+  std::cout << "Ready to init_kernel_time_func" << std::endl;
   kernel_time_func.clear();
   kernel_time_func.reserve(n_nodes * n_nodes);
   ArrayDouble abscissa(kernel_size);
   for (ulong t = 0; t < kernel_size; ++t) abscissa[t] = (*kernel_discretization)[t + 1];
+  std::cout << "Entering nested loops" << std::endl;
   for (ulong u = 0; u < n_nodes; ++u) {
     ArrayDouble2d kernel_u(n_nodes, kernel_size, view_row(kernels, u).data());
+    std::cout << "kernel_u:\n" << kernel_u << std::endl;
     for (ulong v = 0; v < n_nodes; ++v) {
       ArrayDouble kernel_uv = view_row(kernel_u, v);
+      std::cout << "kernel_uv:\n" << kernel_uv << std::endl;
       kernel_time_func[u * n_nodes + v] =
           TimeFunction(abscissa, kernel_uv, TimeFunction::BorderType::Border0,
                        TimeFunction::InterMode::InterConstLeft);
     }
   }
   is_kernel_time_func = 1;
+  std::cout << "init_kernel_time_func terminates" << std::endl;
 }
 
 void HawkesEM::compute_intensities_ur(const ulong r_u, const ArrayDouble &mu,
@@ -358,6 +363,7 @@ SArrayDoublePtr HawkesEM::primitive_of_intensity_at_jump_times(const ulong r_u, 
 }
 
 SArrayDoublePtr HawkesEM::primitive_of_intensity_at_jump_times(const ulong r_u) {
+  std::cout << "Ready to compute primitive_of_intensity_at_jump_times " << std::endl;
   // Obtain realization and node index from r_u
   const ulong r = static_cast<const ulong>(r_u / n_nodes);
   const ulong u = r_u % n_nodes;
@@ -378,6 +384,7 @@ double HawkesEM::_evaluate_primitive_of_intensity(const double t, const ulong r,
   if (is_kernel_time_func == 0) {
     throw std::runtime_error("kernel_time_func has not been initialised yet.");
   }
+  std::cout << "Ready to _evaluate_primitive_of_intensity" << std::endl;
 
   // Fetch corresponding data
   SArrayDoublePtrList1D &realization = timestamps_list[r];
