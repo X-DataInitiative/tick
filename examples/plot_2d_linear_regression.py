@@ -25,7 +25,6 @@ from tick import linear_model
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.utils import shuffle
 from sklearn.datasets import load_boston
-from mpl_toolkits.mplot3d import axes3d
 from matplotlib import cm
 
 # Load the Boston Housing Dataset

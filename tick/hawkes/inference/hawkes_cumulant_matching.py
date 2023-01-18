@@ -14,7 +14,6 @@ try:
     import tensorflow as tf
 except ImportError:
     tf = None
-    pass
 
 
 class HawkesCumulantMatching(LearnerHawkesNoParam):
@@ -370,9 +369,9 @@ class HawkesCumulantMatching(LearnerHawkesNoParam):
         Parameters
         ----------
         adjacency_start : `str` or `np.ndarray, shape=(n_nodes + n_nodes * n_nodes,), default=`None`
-            Initial guess for the adjacency matrix. Will be used as 
+            Initial guess for the adjacency matrix. Will be used as
             starting point in optimization.
-            If `None`, a default starting point is estimated from the 
+            If `None`, a default starting point is estimated from the
             estimated cumulants
             If `"random"`, as with `None`, a starting point is estimated from
             estimated cumulants with a bit a randomness

@@ -100,8 +100,7 @@ void Rand::reseed(const int seed) {
     std::seed_seq seed_seq{r(), r(), r(), r(), r(), r(), r(), r()};
     generator = std::mt19937_64(seed_seq);
   } else {
-    unsigned int useed = seed < 0 ? 0 : static_cast<unsigned int>(seed);
-    generator = std::mt19937_64(useed);
+    generator = std::mt19937_64(seed);
   }
 
   Rand::seed = seed;

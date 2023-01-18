@@ -25,7 +25,7 @@ class LinearSystemTest : public ::testing::Test {
 };
 
 typedef ::testing::Types<ArrayFloat, ArrayDouble> MyArrayTypes;
-TYPED_TEST_CASE(LinearSystemTest, MyArrayTypes);
+TYPED_TEST_SUITE(LinearSystemTest, MyArrayTypes);
 
 
 

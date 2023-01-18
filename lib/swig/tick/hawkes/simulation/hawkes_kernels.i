@@ -43,6 +43,9 @@ public:
   SArrayDoublePtr get_intensities();
   SArrayDoublePtr get_decays();
   ulong get_n_decays() { return n_decays; }
+
+  double get_convolution(const double time, const ArrayDouble &timestamps,
+                         double *const bound) override;
 };
 
 TICK_MAKE_PICKLABLE(HawkesKernelSumExp);

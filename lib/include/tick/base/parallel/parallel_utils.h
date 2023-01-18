@@ -18,6 +18,11 @@ namespace tick {
  */
 template <typename T, typename S, typename... Args>
 using FuncResultType = typename std::result_of<T(S, ulong, Args...)>::type;
+/*
+// this in future will be for C++17
+using FuncResultType = typename std::result_of<T(S, ulong, Args...)>::type;
+*/
+
 
 /**
  * Determine if return type of function call is a Python primitive or not

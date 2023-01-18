@@ -203,10 +203,8 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
       throw std::runtime_error("SparseArray2d Reference count unexpected in SWIG layer - recompile with -DDEBUG_SHAREDARRAY and check");
     }
 
-    // these lines are required for the following arrays to be de-allocated properly when owned by python
+    // is required for arrays to be de-allocated properly when owned by python
     if(((PyObject *)array)->ob_refcnt > 2) Py_DECREF(array);
-    if(((PyObject *)indices)->ob_refcnt > 1) Py_DECREF(indices);
-    if(((PyObject *)row_indices)->ob_refcnt > 1) Py_DECREF(row_indices);
 
     return (PyObject *) instance;
 }
