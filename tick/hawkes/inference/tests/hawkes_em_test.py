@@ -308,8 +308,6 @@ class Test(unittest.TestCase):
         kernel_size = 10
         em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
                       n_threads=2, max_iter=11, verbose=False)
-        import pdb
-        pdb.set_trace()
 
         res: List[List[np.ndarray]]
         if fit:
@@ -323,6 +321,7 @@ class Test(unittest.TestCase):
 
         print(res)
 
+    # @unittest.skip('Investigating segfault')
     def test_time_changed_interarrival_times_no_fitting(self):
         self._test_time_changed_interarrival_times(fit=False)
 

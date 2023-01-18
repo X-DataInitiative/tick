@@ -35,7 +35,7 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   ArrayDouble2d next_kernels;
   ArrayDouble2d unnormalized_kernels;
 
-  //! "brief buffer variable for evaluation of integral of intensity
+  //! @brief buffer variables for evaluation of integral of intensity
   ArrayDouble _baseline;
   ArrayDouble2d _adjacency;
   std::vector<TimeFunction> kernel_time_func;
