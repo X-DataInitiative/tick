@@ -170,9 +170,12 @@ void HawkesEM::init_kernel_time_func(ArrayDouble2d &kernels) {
     for (ulong v = 0; v < n_nodes; ++v) {
       ArrayDouble kernel_uv = view_row(kernel_u, v);
       std::cout << "kernel_uv:\n" << kernel_uv << std::endl;
-      kernel_time_func[u * n_nodes + v] =
-          TimeFunction(abscissa, kernel_uv, TimeFunction::BorderType::Border0,
+      TimeFunction ktf(abscissa, kernel_uv, TimeFunction::BorderType::Border0,
                        TimeFunction::InterMode::InterConstLeft);
+      std::cout << "ktf: " << ktf << std::endl;
+      kernel_time_func.push_back(ktf);
+      std::cout << "successfully pushed back!" << std::endl;
+      kernel_time_func[u * n_nodes + v] = ktf;
     }
   }
   is_kernel_time_func = 1;
