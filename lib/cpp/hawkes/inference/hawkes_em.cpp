@@ -158,28 +158,48 @@ SArrayDouble2dPtr HawkesEM::get_kernel_primitives(ArrayDouble2d &kernels) const 
 
 void HawkesEM::init_kernel_time_func(ArrayDouble2d &kernels) {
   // `kernels` is expected in the shape (n_nodes, n_nodes * kernel_size)
-  std::cout << "Ready to init_kernel_time_func" << std::endl;
+  // Check that indeed this is the case!
+  check_baseline_and_kernels(ArrayDouble(n_nodes), kernels);
   kernel_time_func.clear();
   kernel_time_func.reserve(n_nodes * n_nodes);
   ArrayDouble abscissa(kernel_size);
-  for (ulong t = 0; t < kernel_size; ++t) abscissa[t] = (*kernel_discretization)[t + 1];
-  std::cout << "Entering nested loops" << std::endl;
+  ArrayDouble kerdis = *get_kernel_discretization();
+  // std::cout << "HawkesEM::init_kernel_time_func" << std::endl;
+  for (ulong t = 0; t < kernel_size; ++t) {
+    abscissa[t] = kerdis[t + 1];
+    // std::cout << "abscissa[" << t << "] = " << abscissa[t] << std::endl;
+  }
   for (ulong u = 0; u < n_nodes; ++u) {
     ArrayDouble2d kernel_u(n_nodes, kernel_size, view_row(kernels, u).data());
-    std::cout << "kernel_u:\n" << kernel_u << std::endl;
     for (ulong v = 0; v < n_nodes; ++v) {
+      /*
+std::cout << "\n\nu= " << u << std::endl;
+std::cout << "v= " << v << std::endl;
+*/
       ArrayDouble kernel_uv = view_row(kernel_u, v);
-      std::cout << "kernel_uv:\n" << kernel_uv << std::endl;
-      TimeFunction ktf(abscissa, kernel_uv, TimeFunction::BorderType::Border0,
-                       TimeFunction::InterMode::InterConstLeft);
-      std::cout << "ktf: " << ktf << std::endl;
-      kernel_time_func.push_back(ktf);
-      std::cout << "successfully pushed back!" << std::endl;
-      kernel_time_func[u * n_nodes + v] = ktf;
+      if (kernel_discretization == nullptr)
+        kernel_time_func.emplace_back(TimeFunction(kernel_uv, TimeFunction::BorderType::Border0,
+                                                   TimeFunction::InterMode::InterConstLeft,
+                                                   get_kernel_fixed_dt(), .0));
+      else
+        kernel_time_func.emplace_back(TimeFunction(abscissa, kernel_uv,
+                                                   TimeFunction::BorderType::Border0,
+                                                   TimeFunction::InterMode::InterConstLeft));
+      /*
+      for (ulong t = 0; t < kernel_size; t++) {
+        std::cout << "kernel_uv[" << t << "] = " << kernel_uv[t] << std::endl;
+        std::cout << "ktf.value(abscissa[" << t << "]) = " << kernel_time_func[u * n_nodes +
+      v].value(abscissa[t]) << std::endl;
+      }
+      */
+      std::cout << std::endl;
     }
   }
-  is_kernel_time_func = 1;
-  std::cout << "init_kernel_time_func terminates" << std::endl;
+  if (kernel_time_func.empty()) {
+    throw std::runtime_error("Could not set kernel_time_func");
+  } else {
+    is_kernel_time_func = 1;
+  }
 }
 
 void HawkesEM::compute_intensities_ur(const ulong r_u, const ArrayDouble &mu,
@@ -367,7 +387,6 @@ SArrayDoublePtr HawkesEM::primitive_of_intensity_at_jump_times(const ulong r_u, 
 }
 
 SArrayDoublePtr HawkesEM::primitive_of_intensity_at_jump_times(const ulong r_u) {
-  std::cout << "Ready to compute primitive_of_intensity_at_jump_times " << std::endl;
   // Obtain realization and node index from r_u
   const ulong r = static_cast<const ulong>(r_u / n_nodes);
   const ulong u = r_u % n_nodes;
@@ -385,10 +404,9 @@ SArrayDoublePtr HawkesEM::primitive_of_intensity_at_jump_times(const ulong r_u) 
 }
 
 double HawkesEM::_evaluate_primitive_of_intensity(const double t, const ulong r, const ulong u) {
-  if (is_kernel_time_func == 0) {
+  if ((is_kernel_time_func == 0) | (kernel_time_func.empty())) {
     throw std::runtime_error("kernel_time_func has not been initialised yet.");
   }
-  std::cout << "Ready to _evaluate_primitive_of_intensity" << std::endl;
 
   // Fetch corresponding data
   SArrayDoublePtrList1D &realization = timestamps_list[r];

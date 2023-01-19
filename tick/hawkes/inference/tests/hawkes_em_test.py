@@ -241,6 +241,32 @@ class Test(unittest.TestCase):
                          0.19047619047619047)
         self.assertEqual(learner.kernel_size, 21)
 
+    def test_hawkes_em_get_kernel_values(self):
+        kernel_support = 4
+        kernel_size = 10
+        em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
+                      n_threads=2, max_iter=11, verbose=False)
+        em.fit(self.events)
+
+        # Test 0
+        self.assertEqual(em.kernel.shape, (self.n_nodes, self.n_nodes, kernel_size),
+                         'Estimated kernel has wrong shape'
+                         f'Expected shape: {(self.n_nodes, self.n_nodes, kernel_size)}\n'
+                         f'Shape of estimated kernel: {em.kernel.shape}\n'
+                         )
+        # Test 1
+        self.assertTrue(np.all(em.kernel >= 0.),
+                        "Error: kernel cannot take negative values!")
+
+        # Test 2
+        # The method `get_kernel_values` when evaluated at the
+        # discrtetization point of the kernel must yield the values stored in `kernel`
+        for i in range(self.n_nodes):
+            for j in range(self.n_nodes):
+                vals = em.get_kernel_values(
+                    i, j, em.kernel_discretization[1:])
+                self.assertTrue(np.allclose(vals, em.kernel[i, j, :]))
+
     def test_hawkes_em_kernel_primitives(self):
         kernel_support = 4
         kernel_size = 10
@@ -321,7 +347,7 @@ class Test(unittest.TestCase):
 
         print(res)
 
-    # @unittest.skip('Investigating segfault')
+    @unittest.skip('Investigating segfault')
     def test_time_changed_interarrival_times_no_fitting(self):
         self._test_time_changed_interarrival_times(fit=False)
 

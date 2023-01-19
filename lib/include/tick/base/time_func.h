@@ -70,6 +70,8 @@ class DLL_PUBLIC TimeFunction {
 
   SArrayDoublePtr get_sampled_y() const { return sampled_y; }
 
+  ulong get_sample_size() const { return sampled_y->size(); }
+
   SArrayDoublePtr get_future_max() const { return future_max; }
 
   double get_dt() const { return dt; }

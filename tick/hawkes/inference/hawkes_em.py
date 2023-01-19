@@ -426,8 +426,6 @@ class HawkesEM(LearnerHawkesNoParam):
 
         # TODO: Test this
         for r in range(learner.n_realizations):
-            import pdb
-            pdb.set_trace()
             res_r: List[np.ndarray] = []
             for u in range(n_nodes):
                 r_u = r * n_nodes + u
