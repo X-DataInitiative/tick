@@ -8,10 +8,14 @@ class HawkesEMTest : public ::testing::Test {
   ulong n_nodes = 2;
   double kernel_support = 1.;
   ulong kernel_size = 10;
+  double dt = kernel_support / kernel_size;
+  ArrayDouble kernel_discretization;
   ArrayDouble mu;
   ArrayDouble2d kernels;
   HawkesEM em{kernel_support, kernel_size, 1};
   void SetUp() override {
+    kernel_discretization = ArrayDouble{.0, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.};
+    em.set_n_nodes(n_nodes);
     mu = ArrayDouble{.05, .05};
     kernels = ArrayDouble2d(n_nodes, n_nodes * kernel_size);
     kernels[0] = .1;
@@ -20,6 +24,7 @@ class HawkesEMTest : public ::testing::Test {
     kernels[3] = .1;
     kernels[4] = .1;
     kernels[5] = .1;
+    kernels[6] = .1;
     kernels[7] = .1;
     kernels[8] = .1;
     kernels[9] = .1;
@@ -29,6 +34,7 @@ class HawkesEMTest : public ::testing::Test {
     kernels[13] = .0;
     kernels[14] = .0;
     kernels[15] = .0;
+    kernels[16] = .0;
     kernels[17] = .1;
     kernels[18] = .2;
     kernels[19] = .2;
@@ -38,6 +44,7 @@ class HawkesEMTest : public ::testing::Test {
     kernels[23] = .0;
     kernels[24] = .0;
     kernels[25] = .0;
+    kernels[26] = .0;
     kernels[27] = .0;
     kernels[28] = .0;
     kernels[29] = .0;
@@ -47,6 +54,7 @@ class HawkesEMTest : public ::testing::Test {
     kernels[33] = .1;
     kernels[34] = .1;
     kernels[35] = .0;
+    kernels[36] = .0;
     kernels[37] = .0;
     kernels[38] = .0;
     kernels[39] = .0;
@@ -55,18 +63,92 @@ class HawkesEMTest : public ::testing::Test {
 
 TEST_F(HawkesEMTest, can_get_kernel_size) { EXPECT_EQ(em.get_kernel_size(), kernel_size); }
 
-/*
-TEST_F(HawkesEMTest, init_kernel_time_func) {
+TEST_F(HawkesEMTest, can_get_n_nodes) { EXPECT_EQ(em.get_n_nodes(), n_nodes); }
+
+TEST_F(HawkesEMTest, kernel_dt) {
+  EXPECT_DOUBLE_EQ(em.get_kernel_dt(), dt);
+  EXPECT_DOUBLE_EQ(em.get_kernel_fixed_dt(), dt);
+}
+
+TEST_F(HawkesEMTest, kernel_discretization_test) {
+  ArrayDouble ks = *em.get_kernel_discretization();
+  EXPECT_EQ(kernel_discretization.size(), ks.size());
+  for (ulong t = 0; t < ks.size(); t++) {
+    EXPECT_DOUBLE_EQ(ks[t], kernel_discretization[t]);
+  }
+  em.set_kernel_discretization(kernel_discretization.as_sarray_ptr());
+  EXPECT_EQ(em.get_kernel_size(), kernel_size);
+  EXPECT_DOUBLE_EQ(em.get_kernel_dt(), dt);
+}
+
+TEST_F(HawkesEMTest, kernel_time_func_dt) {
   em.init_kernel_time_func(kernels);
   std::vector<TimeFunction>& timefunc = em.get_kernel_time_func();
+  ASSERT_FALSE(timefunc.empty());
+  for (ulong u = 0; u < n_nodes; ++u) {
+    for (ulong v = 0; v < n_nodes; ++v) {
+      ulong uv = u * n_nodes + v;
+      EXPECT_DOUBLE_EQ(timefunc[uv].get_dt(), dt);
+    }
+  }
+}
+
+TEST_F(HawkesEMTest, kernel_time_func_data) {
+  em.init_kernel_time_func(kernels);
+  std::vector<TimeFunction>& timefunc = em.get_kernel_time_func();
+  ASSERT_FALSE(timefunc.empty());
+  for (ulong u = 0; u < n_nodes; ++u) {
+    for (ulong v = 0; v < n_nodes; ++v) {
+      ulong uv = u * n_nodes + v;
+      ArrayDouble data_uv = *(timefunc[uv].get_sampled_y());
+      EXPECT_EQ(data_uv.size(), kernel_size);
+      for (ulong k = 0; k < kernel_size; ++k) {
+        ulong vk = v * kernel_size + k;
+        EXPECT_DOUBLE_EQ(data_uv[k], kernels(u, vk))
+            << "Kernel[" << u << ", " << v << "]: "
+            << "Value of " << k << "-th sample data  gives a mismatch.";
+      }
+    }
+  }
+}
+
+/*
+TEST_F(HawkesEMTest, kernel_time_func_values) {
+  em.init_kernel_time_func(kernels);
+  std::vector<TimeFunction>& timefunc = em.get_kernel_time_func();
+  ASSERT_FALSE(timefunc.empty());
   ArrayDouble kernel_discretization = *em.get_kernel_discretization();
   for (ulong u = 0; u < n_nodes; ++u) {
     for (ulong v = 0; v < n_nodes; ++v) {
       ulong uv = u * n_nodes + v;
       for (ulong k = 0; k < kernel_size; ++k) {
         ulong vk = v * kernel_size + k;
-        double t = kernel_discretization[k];
-        EXPECT_DOUBLE_EQ(timefunc[uv].evaluate(t), kernels(u, vk));
+        double t = kernel_discretization[k + 1];
+        EXPECT_DOUBLE_EQ(timefunc[uv].value(t), kernels(u, vk))
+            << "Kernel[" << u << ", " << v << "]: "
+            << "Value at time t = " << t << " gives a mismatch.";
+      }
+    }
+  }
+}
+*/
+/*
+TEST_F(HawkesEMTest, kernel_time_func_primitive) {
+  em.init_kernel_time_func(kernels);
+  std::vector<TimeFunction>& timefunc = em.get_kernel_time_func();
+  ASSERT_FALSE(timefunc.empty());
+  ArrayDouble kernel_discretization = *em.get_kernel_discretization();
+  for (ulong u = 0; u < n_nodes; ++u) {
+    for (ulong v = 0; v < n_nodes; ++v) {
+      ulong uv = u * n_nodes + v;
+      double discrete_integral = .0;
+      for (ulong k = 0; k < kernel_size; ++k) {
+        ulong vk = v * kernel_size + k;
+        double t = kernel_discretization[k + 1];
+        discrete_integral += kernels(u, vk) * (t - kernel_discretization[k]);
+        EXPECT_DOUBLE_EQ(timefunc[uv].primitive(t), discrete_integral)
+            << "Kernel[" << u << ", " << v << "]: "
+            << "Primitive at time t=" << t << " gives a mismatch.";
       }
     }
   }

@@ -32,16 +32,13 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
   //! negative, the number of physical cores will be used \param
   //! optimization_level : 0 corresponds to no optimization and 1 to use of
   //! faster (approximated) exponential function
-  ModelHawkesList(const int max_n_threads = 1,
-                  const unsigned int optimization_level = 0);
+  ModelHawkesList(const int max_n_threads = 1, const unsigned int optimization_level = 0);
 
   virtual void set_data(const SArrayDoublePtrList2D &timestamps_list,
                         const VArrayDoublePtr end_times);
 
   //! @brief returns the number of jumps per realization
-  SArrayULongPtr get_n_jumps_per_realization() const {
-    return n_jumps_per_realization;
-  }
+  SArrayULongPtr get_n_jumps_per_realization() const { return n_jumps_per_realization; }
 
   VArrayDoublePtr get_end_times() const { return end_times; }
 
@@ -62,8 +59,7 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
 
   BoolStrReport compare(const ModelHawkesList &that, std::stringstream &ss) {
     ss << get_class_name() << std::endl;
-    auto are_equal = ModelHawkes::compare(that, ss) &&
-                     TICK_CMP_REPORT(ss, n_realizations) &&
+    auto are_equal = ModelHawkes::compare(that, ss) && TICK_CMP_REPORT(ss, n_realizations) &&
                      TICK_CMP_REPORT_VECTOR_SPTR_2D(ss, timestamps_list, double) &&
                      TICK_CMP_REPORT_PTR(ss, end_times) &&
                      TICK_CMP_REPORT_PTR(ss, n_jumps_per_realization);
@@ -73,9 +69,7 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
     std::stringstream ss;
     return compare(that, ss);
   }
-  BoolStrReport operator==(const ModelHawkesList &that) {
-    return ModelHawkesList::compare(that);
-  }
+  BoolStrReport operator==(const ModelHawkesList &that) { return ModelHawkesList::compare(that); }
 };
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_BASE_MODEL_HAWKES_LIST_H_

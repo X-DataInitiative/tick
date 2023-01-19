@@ -65,6 +65,12 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
 
   ulong get_kernel_size() const { return kernel_size; }
 
+  //! @brief Discretization parameter of the kernel
+  //! If kernel_discretization is a nullptr then it is equal to kernel_support /
+  //! kernel_size otherwise it is equal to the difference of
+  //! kernel_discretization[m+1] - kernel_discretization[m]
+  double get_kernel_dt(const ulong m = 0) const;
+
   double get_kernel_fixed_dt() const;
 
   SArrayDoublePtr get_kernel_discretization() const;
@@ -119,12 +125,6 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   double _evaluate_primitive_of_intensity(const double t, const ulong r, const ulong u);
 
   void check_baseline_and_kernels(const ArrayDouble &mu, ArrayDouble2d &kernels) const;
-
-  //! @brief Discretization parameter of the kernel
-  //! If kernel_discretization is a nullptr then it is equal to kernel_support /
-  //! kernel_size otherwise it is equal to the difference of
-  //! kernel_discretization[m+1] - kernel_discretization[m]
-  double get_kernel_dt(const ulong m = 0) const;
 };
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_INFERENCE_HAWKES_EM_H_
