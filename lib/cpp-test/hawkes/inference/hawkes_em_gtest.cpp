@@ -178,7 +178,6 @@ TEST_F(HawkesEMTest, kernel_time_func_values) {
   }
 }
 
-/*
 TEST_F(HawkesEMTest, kernel_time_func_values_with_explicit_abscissa) {
   em.set_kernel_discretization(kernel_discretization.as_sarray_ptr());
   em.init_kernel_time_func(kernels);
@@ -200,7 +199,6 @@ TEST_F(HawkesEMTest, kernel_time_func_values_with_explicit_abscissa) {
     }
   }
 }
-*/
 
 /*
 TEST_F(HawkesEMTest, kernel_time_func_primitive) {
