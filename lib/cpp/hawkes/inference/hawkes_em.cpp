@@ -162,37 +162,28 @@ void HawkesEM::init_kernel_time_func(ArrayDouble2d &kernels) {
   check_baseline_and_kernels(ArrayDouble(n_nodes), kernels);
   kernel_time_func.clear();
   kernel_time_func.reserve(n_nodes * n_nodes);
-  ArrayDouble abscissa(kernel_size);
-  ArrayDouble kerdis = *get_kernel_discretization();
-  // std::cout << "HawkesEM::init_kernel_time_func" << std::endl;
-  for (ulong t = 0; t < kernel_size; ++t) {
-    abscissa[t] = kerdis[t + 1];
-    // std::cout << "abscissa[" << t << "] = " << abscissa[t] << std::endl;
+  ArrayDouble abscissa(kernel_size);  // Use abscissa only if kernel_discretization is explictly set
+  if (kernel_discretization == nullptr) {
+    std::cout << "Setting up kernel time functions with implicit abscissa" << std::endl;
+  } else {
+    std::cout << "Setting up kernel time functions with explicit abscissa" << std::endl;
+    ArrayDouble kerdis = *get_kernel_discretization();
+    std::copy(kerdis.data(), kerdis.data() + kernel_size, abscissa.data());
+    // Notice that this will not copy the last value of `kerdis`. This is intentional
   }
   for (ulong u = 0; u < n_nodes; ++u) {
     ArrayDouble2d kernel_u(n_nodes, kernel_size, view_row(kernels, u).data());
     for (ulong v = 0; v < n_nodes; ++v) {
-      /*
-std::cout << "\n\nu= " << u << std::endl;
-std::cout << "v= " << v << std::endl;
-*/
       ArrayDouble kernel_uv = view_row(kernel_u, v);
+      // Use abscissa only if kernel_discretization is explictly set
       if (kernel_discretization == nullptr)
         kernel_time_func.emplace_back(TimeFunction(kernel_uv, TimeFunction::BorderType::Border0,
-                                                   TimeFunction::InterMode::InterConstLeft,
+                                                   TimeFunction::InterMode::InterConstRight,
                                                    get_kernel_fixed_dt(), .0));
       else
         kernel_time_func.emplace_back(TimeFunction(abscissa, kernel_uv,
                                                    TimeFunction::BorderType::Border0,
-                                                   TimeFunction::InterMode::InterConstLeft));
-      /*
-      for (ulong t = 0; t < kernel_size; t++) {
-        std::cout << "kernel_uv[" << t << "] = " << kernel_uv[t] << std::endl;
-        std::cout << "ktf.value(abscissa[" << t << "]) = " << kernel_time_func[u * n_nodes +
-      v].value(abscissa[t]) << std::endl;
-      }
-      */
-      std::cout << std::endl;
+                                                   TimeFunction::InterMode::InterConstRight));
     }
   }
   if (kernel_time_func.empty()) {
@@ -432,6 +423,14 @@ double HawkesEM::get_kernel_dt(const ulong m) const {
     return kernel_support / kernel_size;
   } else {
     return (*kernel_discretization)[m + 1] - (*kernel_discretization)[m];
+  }
+}
+
+double HawkesEM::get_kernel_t0() {
+  if (kernel_discretization == nullptr) {
+    return 0.;
+  } else {
+    return (*kernel_discretization)[0];
   }
 }
 

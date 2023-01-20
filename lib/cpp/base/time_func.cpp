@@ -19,6 +19,7 @@ TimeFunction::TimeFunction(double y) {
 TimeFunction::TimeFunction(const ArrayDouble &Y, BorderType type, InterMode mode, double dt,
                            double border_value)
     : inter_mode(mode), border_type(type), dt(dt), border_value(border_value) {
+  set_t0(0.);  // Implicitly we are assuming that support starts at 0
   ulong size = Y.size();
   sampled_y = SArrayDouble::new_ptr(size);
   std::copy(Y.data(), Y.data() + size, sampled_y->data());
@@ -86,7 +87,8 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y, BorderTyp
   if (dt < 10 * FLOOR_THRESHOLD)
     TICK_ERROR("dt is too small, we currently cannot reach this precision");
 
-  t0 = T[0];
+  set_t0(T[0]);
+
   last_value_before_border = T[size - 1];
   switch (border_type) {
     case (BorderType::Border0):
@@ -129,16 +131,20 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y, BorderTyp
 
   for (ulong i = 0; i < sampled_y->size(); ++i) {
     while (t > t_right + FLOOR_THRESHOLD && index_left < size - 2) {
-      // Ensure we are not behind the last point. This might happen if dt does
-      // not divides length In this case we keep the last two points to
-      // interpolate
       index_left += 1;
       t_left = T[index_left];
       y_left = Y[index_left];
       t_right = T[index_left + 1];
       y_right = Y[index_left + 1];
     }
-    double y_i = interpolation(t_left, y_left, t_right, y_right, t);
+    double y_i;
+    if (t_left <= t) {
+      if (t < t_right)
+        y_i = interpolation(t_left, y_left, t_right, y_right, t);
+      else
+        y_i = y_right;
+    } else
+      y_i = y_left;
     (*sampled_y)[i] = y_i;
     if (i == 0)
       (*sampled_y_primitive)[0] = 0;
@@ -216,12 +222,12 @@ double TimeFunction::value(double t) {
     return 0.0;
   }
 
-  const ulong i_left = get_index_(t);
-
-  const double t_left = get_t_from_index_(i_left);
+  const ulong i_left = _idx_left(t);
+  const ulong i_right = _idx_right(t);
+  const double t_left = _t_left(t);
+  const double t_right = _t_right(t);
   const double y_left = (*sampled_y)[i_left];
-  const double t_right = get_t_from_index_(i_left + 1);
-  const double y_right = (*sampled_y)[i_left + 1];
+  const double y_right = (*sampled_y)[i_right];
 
   return interpolation(t_left, y_left, t_right, y_right, t);
 }
@@ -385,6 +391,10 @@ double TimeFunction::linear_interpolation(double t_left, double y_left, double t
 
 double TimeFunction::interpolation(double t_left, double y_left, double t_right, double y_right,
                                    double t) {
+  if (t < t_left)
+    throw std::runtime_error("TimeFunction::interpolation error: t_left cannot be larger than t");
+  if (t > t_right)
+    throw std::runtime_error("TimeFunction::interpolation error: t_right cannot be smaller than t");
   // Second do the right interpolation
   switch (inter_mode) {
     case (InterMode::InterLinear):
@@ -401,3 +411,23 @@ double TimeFunction::interpolation(double t_left, double y_left, double t_right,
 ulong TimeFunction::get_index_(double t) { return (ulong)std::ceil((t - t0) / dt); }
 
 double TimeFunction::get_t_from_index_(ulong i) { return t0 + dt * i; }
+
+ulong TimeFunction::_idx_left(double t) {
+  ulong k = std::floor((t - t0) / dt);
+  return k;
+}
+
+ulong TimeFunction::_idx_right(double t) {
+  ulong k = std::ceil((t - t0 + FLOOR_THRESHOLD) / dt);
+  return k;
+}
+
+double TimeFunction::_t_left(double t) {
+  ulong k = std::floor((t - t0) / dt);
+  return t0 + k * dt;
+}
+
+double TimeFunction::_t_right(double t) {
+  ulong k = std::ceil((t - t0 + FLOOR_THRESHOLD) / dt);
+  return t0 + k * dt;
+}

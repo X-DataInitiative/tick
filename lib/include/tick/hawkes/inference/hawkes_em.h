@@ -28,6 +28,7 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   ulong kernel_size;
 
   //! @brief explicit discretization of the kernel
+  //! It holds kernel_discretization.size() = kernel_size - 1
   SArrayDoublePtr kernel_discretization;
 
   //! @brief buffer variables
@@ -64,6 +65,11 @@ class DLL_PUBLIC HawkesEM : public ModelHawkesList {
   double get_kernel_support() const { return kernel_support; }
 
   ulong get_kernel_size() const { return kernel_size; }
+
+  //! @brief Left point of kernel discretization.
+  //! Returns 0. if kernel _scretization is Implicitly set,
+  //! otherwise it returns the left most entry of the array.
+  double get_kernel_t0();
 
   //! @brief Discretization parameter of the kernel
   //! If kernel_discretization is a nullptr then it is equal to kernel_support /
