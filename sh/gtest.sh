@@ -70,7 +70,7 @@ pushd $ROOT/lib 2>&1 > /dev/null
 
       echo FILE $FILE
 
-      mkn clean build -p gtest -a "${CARGS} -DGTEST_LINKED_AS_SHARED_LIBRARY" \
+      mkn clean build -p gtest -a "${CARGS} -DGTEST_LINKED_AS_SHARED_LIBRARY" -g 9 -O 0 \
           -tl "${LDARGS} ${LIB}" -b "$PY_INCS" \
           -M "${FILE}" -P "${MKN_P}" "${MKN_WITH[@]}" \
           -B $B_PATH ${RUN} ${MKN_X_FILE[@]}
