@@ -6,7 +6,7 @@
 
 #include "tick/base/time_func.h"
 #include <float.h>
-#define FLOOR_THRESHOLD 1e-32
+#define FLOOR_THRESHOLD 1e-10
 
 TimeFunction::TimeFunction(double y) {
   // Little trick so that it will predict y after 0 and 0 before
@@ -130,7 +130,7 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y, BorderTyp
   double y_right = Y[index_left + 1];
 
   for (ulong i = 0; i < sampled_y->size(); ++i) {
-    while (t > t_right + FLOOR_THRESHOLD && index_left < size - 2) {
+    while (t > t_right && index_left < size - 2) {
       index_left += 1;
       t_left = T[index_left];
       y_left = Y[index_left];
@@ -138,13 +138,25 @@ TimeFunction::TimeFunction(const ArrayDouble &T, const ArrayDouble &Y, BorderTyp
       y_right = Y[index_left + 1];
     }
     double y_i;
-    if (t_left <= t) {
-      if (t < t_right)
+    if (t_left + FLOOR_THRESHOLD < t) {
+      if (t < t_right - FLOOR_THRESHOLD)
         y_i = interpolation(t_left, y_left, t_right, y_right, t);
       else
         y_i = y_right;
     } else
       y_i = y_left;
+    /*
+    std::cout << "\nTimeFunction::TimeFunction  " << std::endl
+              << " i = " << i << ", " << std::endl
+              << " index_left = " << index_left << ", " << std::endl
+              << " t_left: " << t_left << std::endl
+              << " t: " << t << std::endl
+              << " t_right: " << t_right << std::endl
+              << " y_left: " << y_left << std::endl
+              << " y_i: " << y_i << std::endl
+              << " y_right: " << y_right << std::endl
+              << std::endl;
+              */
     (*sampled_y)[i] = y_i;
     if (i == 0)
       (*sampled_y_primitive)[0] = 0;

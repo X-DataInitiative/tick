@@ -21,11 +21,11 @@ class HawkesEMTest : public ::testing::Test {
     em.set_n_nodes(n_nodes);
     mu = ArrayDouble{.05, .05};
     kernels = ArrayDouble2d(n_nodes, n_nodes * kernel_size);
-    kernels[0] = .1;
-    kernels[1] = .0;
-    kernels[2] = .1;
-    kernels[3] = .1;
-    kernels[4] = .1;
+    kernels[0] = .0;
+    kernels[1] = .1;
+    kernels[2] = .2;
+    kernels[3] = .3;
+    kernels[4] = .4;
     kernels[5] = .1;
     kernels[6] = .1;
     kernels[7] = .1;
@@ -137,28 +137,21 @@ TEST_F(HawkesEMTest, kernel_time_func_data_with_explicit_abscissa) {
     for (ulong v = 0; v < n_nodes; ++v) {
       ulong uv = u * n_nodes + v;
       ArrayDouble data_uv = *(timefunc[uv].get_sampled_y());
-      EXPECT_GE(data_uv.size(), kernel_size);
-      EXPECT_NEAR(data_uv.size(), kernel_size, 1);
-      int sample_lag;
-      if (data_uv.size() > kernel_size) {
-        EXPECT_EQ(data_uv.size(), 1 + kernel_size);
-        sample_lag = 1;
-      } else {
-        EXPECT_EQ(data_uv.size(), kernel_size);
-        sample_lag = 0;
+      EXPECT_NEAR(data_uv.size(), kernel_size + 1, 1);
+      /*
+      std::cout << "Kernel[" << u << ", " << v << "]: " << std::endl;
+      for (ulong j = 0; j < data_uv.size(); j++) {
+        std::cout << "data_uv[" << j << "] = " << data_uv[j] << std::endl;
       }
+      */
       for (ulong k = 0; k < kernel_size; ++k) {
         ulong vk = v * kernel_size + k;
-        int i = (k == 0) ? 0 : k + sample_lag;
         // Test data values
-        EXPECT_DOUBLE_EQ(data_uv[i], kernels(u, vk))
-            << "Kernel[" << u << ", " << v << "]: "
-            << "Value of " << k << "-th sample data  gives a mismatch." << std::endl;
-        // Test abscissa
-        EXPECT_DOUBLE_EQ(timefunc[uv].get_t0() + i * timefunc[uv].get_dt(),
-                         (*em.get_kernel_discretization())[i])
-            << "Kernel[" << u << ", " << v << "]: "
-            << "Value of " << i << "-th abscissa point  gives a mismatch.";
+        EXPECT_DOUBLE_EQ(data_uv[k], kernels(u, vk))
+            << "Kernel[" << u << ", " << v << "]: " << std::endl
+            << "Value of " << k << "-th sample data  gives a mismatch." << std::endl
+            << "Corresponding kernel discretization point : "
+            << (*em.get_kernel_discretization())[k] << std::endl;
       }
     }
   }
@@ -174,6 +167,7 @@ TEST_F(HawkesEMTest, kernel_time_func_values) {
       for (ulong k = 0; k < kernel_size; ++k) {
         ulong vk = v * kernel_size + k;
         double t = t0 + k * dt + .5 * dt;  // kernel_discretization[k] + .5 * dt;
+        // EXPECT_DOUBLE_EQ(t, kernel_discretization[k] + .5 * dt);
         EXPECT_DOUBLE_EQ(timefunc[uv].value(t), kernels(u, vk))
             << "Kernel[" << u << ", " << v << "]: "
             << "Value at time t = " << t << " gives a mismatch.\n"

@@ -162,28 +162,29 @@ void HawkesEM::init_kernel_time_func(ArrayDouble2d &kernels) {
   check_baseline_and_kernels(ArrayDouble(n_nodes), kernels);
   kernel_time_func.clear();
   kernel_time_func.reserve(n_nodes * n_nodes);
-  ArrayDouble abscissa(kernel_size);  // Use abscissa only if kernel_discretization is explictly set
   if (kernel_discretization == nullptr) {
     std::cout << "Setting up kernel time functions with implicit abscissa" << std::endl;
   } else {
     std::cout << "Setting up kernel time functions with explicit abscissa" << std::endl;
-    ArrayDouble kerdis = *get_kernel_discretization();
-    std::copy(kerdis.data(), kerdis.data() + kernel_size, abscissa.data());
-    // Notice that this will not copy the last value of `kerdis`. This is intentional
   }
   for (ulong u = 0; u < n_nodes; ++u) {
     ArrayDouble2d kernel_u(n_nodes, kernel_size, view_row(kernels, u).data());
     for (ulong v = 0; v < n_nodes; ++v) {
       ArrayDouble kernel_uv = view_row(kernel_u, v);
       // Use abscissa only if kernel_discretization is explictly set
-      if (kernel_discretization == nullptr)
+      if (kernel_discretization == nullptr) {
         kernel_time_func.emplace_back(TimeFunction(kernel_uv, TimeFunction::BorderType::Border0,
                                                    TimeFunction::InterMode::InterConstRight,
                                                    get_kernel_fixed_dt(), .0));
-      else
-        kernel_time_func.emplace_back(TimeFunction(abscissa, kernel_uv,
+      } else {
+        ArrayDouble kerdis = *get_kernel_discretization();
+        ArrayDouble kernel_uv_(1 + kernel_size);
+        std::copy(kernel_uv.data(), kernel_uv.data() + kernel_size, kernel_uv_.data());
+        kernel_uv_[kernel_size] = 0.;
+        kernel_time_func.emplace_back(TimeFunction(kerdis, kernel_uv_,
                                                    TimeFunction::BorderType::Border0,
                                                    TimeFunction::InterMode::InterConstRight));
+      }
     }
   }
   if (kernel_time_func.empty()) {
