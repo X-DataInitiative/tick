@@ -74,6 +74,10 @@ class DLL_PUBLIC TimeFunction {
 
   SArrayDoublePtr get_future_max() const { return future_max; }
 
+  double get_t0() const { return t0; }
+
+  void set_t0(double t0) { this->t0 = t0; }
+
   double get_dt() const { return dt; }
 
   double get_support_right() const { return support_right; }
@@ -112,6 +116,14 @@ class DLL_PUBLIC TimeFunction {
   inline ulong get_index_(double t);
 
   inline double get_t_from_index_(ulong i);
+
+  inline double _t_left(double t);
+
+  inline double _t_right(double t);
+
+  inline ulong _idx_left(double t);
+
+  inline ulong _idx_right(double t);
 
   inline double constant_left_interpolation(double x_left, double y_left, double x_right,
                                             double y_right, double x_value);

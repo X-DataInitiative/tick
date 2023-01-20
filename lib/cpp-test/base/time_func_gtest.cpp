@@ -22,6 +22,7 @@ class TimeFunctionTest : public ::testing::Test {
 TEST_F(TimeFunctionTest, implicit_abscissa_data) {
   TimeFunction tf(Y, TimeFunction::BorderType::Border0, TimeFunction::InterMode::InterConstRight,
                   dt, border_value);
+  EXPECT_DOUBLE_EQ(tf.get_t0(), T[0]);
   SArrayDoublePtr sampled_y = tf.get_sampled_y();
   EXPECT_EQ(tf.get_sample_size(), sample_size);
   EXPECT_EQ(sampled_y->size(), Y.size());
@@ -32,6 +33,7 @@ TEST_F(TimeFunctionTest, implicit_abscissa_data) {
 TEST_F(TimeFunctionTest, explicit_abscissa_data) {
   TimeFunction tf(T, Y, TimeFunction::BorderType::Border0,
                   TimeFunction::InterMode::InterConstRight);
+  EXPECT_DOUBLE_EQ(tf.get_t0(), T[0]);
   SArrayDoublePtr sampled_y = tf.get_sampled_y();
   EXPECT_EQ(tf.get_sample_size(), sample_size);
   EXPECT_EQ(sampled_y->size(), Y.size());
