@@ -9,6 +9,59 @@ from tick.hawkes.model.tests.model_hawkes_test_utils import (
     hawkes_intensities, hawkes_log_likelihood)
 
 
+def simulate_hawkes_exp_kern(
+        decays=[[1., 1.5], [0.1, 0.5]],
+        baseline=[0.12, 0.07],
+        adjacency=[[.1, .4], [.2, 0.5]],
+        end_time=3000,
+        max_jumps=1000,
+        verbose=False,
+        force_simulation=False,
+):
+    from tick.hawkes import SimuHawkesExpKernels
+    model = SimuHawkesExpKernels(
+        adjacency=adjacency,
+        decays=decays,
+        baseline=baseline,
+        end_time=end_time,
+        max_jumps=max_jumps,
+        verbose=verbose,
+        force_simulation=force_simulation,
+    )
+    model.track_intensity(intensity_track_step=0.1)
+    model.simulate()
+    return model
+
+
+def compute_approx_support_of_exp_kernel(a, b, eps):
+    return np.maximum(0., np.squeeze(np.max(- np.log(eps / (a*b)) / b)))
+
+
+def discretization_of_exp_kernel(
+        n_nodes, a, b,  kernel_support, kernel_size):
+    assert (n_nodes, n_nodes) == a.shape
+    assert a.shape == b.shape
+    assert kernel_size > 0
+    assert kernel_support > .0
+    abscissa = np.linspace(0, kernel_support, kernel_size)
+    abscissa_ = np.expand_dims(abscissa, axis=0)
+    abscissa_ = np.repeat(abscissa_, repeats=n_nodes, axis=0)
+    abscissa__ = np.expand_dims(abscissa_, axis=0)
+    abscissa__ = np.repeat(abscissa__, repeats=n_nodes, axis=0)
+    assert abscissa_.shape == (n_nodes, kernel_size)
+    assert abscissa__.shape == (n_nodes, n_nodes, kernel_size)
+    a_ = np.repeat(np.expand_dims(a, axis=-1),
+                   repeats=kernel_size, axis=2)
+    b_ = np.repeat(np.expand_dims(b, axis=-1),
+                   repeats=kernel_size, axis=2)
+    assert a_.shape == (n_nodes, n_nodes, kernel_size)
+    assert a_.shape == b_.shape
+    assert a_.shape == abscissa__.shape
+    res_ = a_ * b_ * np.exp(-b_ * abscissa__)
+    assert res_.shape == (n_nodes, n_nodes, kernel_size)
+    return res_
+
+
 class Test(unittest.TestCase):
     def setUp(self):
         np.random.seed(123269)
@@ -27,7 +80,142 @@ class Test(unittest.TestCase):
         self.assertEqual(em.n_nodes, self.n_nodes)
         self.assertEqual(em.n_realizations, self.n_realizations)
 
-    def test_hawkes_em_fit(self):
+    # With simulated data from parametric (exponential) model
+    def test_hawkes_em_fit_2(self):
+        n_nodes = 2
+        n_realizations = 1
+        decays = np.array([[1., 1.5], [0.1, 0.5]])
+        baseline = np.array([0.12, 0.07])
+        adjacency = np.array([[.1, .4], [.2, 0.03]])
+        end_time = 30000
+        simu_model = simulate_hawkes_exp_kern(
+            decays=decays,
+            baseline=baseline,
+            adjacency=adjacency,
+            end_time=end_time,
+            max_jumps=200000,
+            verbose=True,
+            force_simulation=False,
+        )
+
+        kernel_support = compute_approx_support_of_exp_kernel(
+            adjacency, decays, 1e-4)
+        # print(f'kernel_suppport = {kernel_support}')
+        kernel_size = 20
+
+        events = simu_model.timestamps
+        baseline_start = np.array([.05 * np.mean(np.diff(ts))
+                                   for ts in simu_model.timestamps])
+        # print(f'baseline_start = {baseline_start}')
+        kernel_start = np.zeros((n_nodes, n_nodes, kernel_size))
+        kernel_start[:, :, :kernel_size-1] = .01 * np.cumsum(
+            np.random.uniform(size=(n_nodes, n_nodes, kernel_size-1)), axis=2)[:, :, ::-1]
+        # print(f'kernel_start = {kernel_start}')
+        em = HawkesEM(kernel_support=kernel_support,
+                      kernel_size=kernel_size,
+                      tol=1e-9,
+                      print_every=50,
+                      record_every=10,
+                      max_iter=1200,
+                      verbose=True)
+        em.fit(events, baseline_start=baseline_start,
+               kernel_start=kernel_start)
+
+        expected_kernel = discretization_of_exp_kernel(
+            n_nodes,
+            adjacency,
+            decays,
+            kernel_support,
+            kernel_size,
+        )
+        expected_baseline = baseline
+
+        # Test 1.1: shape of baseline
+        self.assertEqual(
+            expected_baseline.shape,
+            em.baseline.shape,
+            'Expected baseline and estimated baseline do not have the same shape\n'
+            'expected_baseline.shape: {expected_baseline.shape}\n'
+            'em.baseline.shape: {em.baseline.shape}\n'
+        )
+
+        # Test 1.2: relative magnitudes of baseline
+        np.testing.assert_array_equal(
+            np.argsort(em.baseline),
+            np.argsort(expected_baseline),
+            err_msg='Relative magnitudes are not consistent'
+            'between expected baseline and estimated baseline',
+        )
+
+        # Test 1.3: approximate equality of baseline
+        np.testing.assert_array_almost_equal(
+            em.baseline,
+            expected_baseline,
+            decimal=1,
+        )
+
+        # Test 2.1: shape of kernel
+        self.assertEqual(
+            expected_kernel.shape,
+            em.kernel.shape,
+            'Expected kernel and estimated kernel do not have the same shape\n'
+            'expected_kernel.shape: {expected_kernel.shape}\n'
+            'em.kernel.shape: {em.kernel.shape}\n'
+        )
+
+        # Test 2.2: estimated kernel must be non-negative
+        self.assertTrue(
+            np.all(em.kernel >= 0),
+            f'Estimated kernel takes negative values'
+        )
+
+        # Test 2.3: estimated kernel must be non-increasing
+        significance_threshold = 9e-3  # Can we do better?
+        estimated_kernel_increments = np.diff(em.kernel, append=0., axis=2)
+        estimated_kernel_significant_increments = estimated_kernel_increments[
+            np.abs(estimated_kernel_increments) > significance_threshold
+        ]
+        assert estimated_kernel_increments.shape == (
+            n_nodes, n_nodes, kernel_size)
+
+        self.assertTrue(
+            np.all(
+                estimated_kernel_significant_increments <= 0.
+            ),
+            'Estimated kernel are not non-increasing functions. '
+            'This is not compatible with the simulation '
+            'being performed with exponential kernels.\n'
+            f'estimated_kernel_increments:\n{estimated_kernel_increments}\n'
+            f'estimated_kernel_significant_increments:\n{estimated_kernel_significant_increments}\n'
+            f'estimated_kernel_significant_increments bigger than 0:\n{estimated_kernel_significant_increments[estimated_kernel_significant_increments>.0]}\n'
+        )
+
+        # Test 2.4: relative magnitudes of kernel at zero
+        expected_kernel_at_zero = expected_kernel[:, :, 0].flatten()
+        estimated_kernel_at_zero = np.array(em.kernel, copy=True)[
+            :, :, 0].flatten()
+        np.testing.assert_array_equal(
+            np.argsort(
+                estimated_kernel_at_zero[estimated_kernel_at_zero > .0]),
+            np.argsort(expected_kernel_at_zero[expected_kernel_at_zero > .0]),
+            err_msg='Relative magnitudes are not consistent '
+            'between expected kernel and estimated kernel\n'
+            f'expected_kernel_at_zero:\n{expected_kernel_at_zero}\n'
+            f'estimated_kernel_at_zero:\n{estimated_kernel_at_zero}\n'
+        )
+
+        # Test 2.5: approximate equality of kernel at zero
+        np.testing.assert_array_almost_equal(
+            expected_kernel_at_zero,
+            estimated_kernel_at_zero,
+            decimal=0,
+            err_msg='estimated kernel at zero deviates '
+            'from expected  kernel at zero.\n'
+            f'expected_kernel_at_zero:\n{expected_kernel_at_zero}\n'
+            f'estimated_kernel_at_zero:\n{estimated_kernel_at_zero}\n'
+        )
+
+    def test_hawkes_em_fit_1(self):  # hard-coded
         """...Test fit method of HawkesEM
         """
         kernel_support = 3
@@ -328,28 +516,9 @@ class Test(unittest.TestCase):
         self.assertTrue(np.allclose(primitives, _compute_primitive_with_numpy(
             em.kernel, em.kernel_discretization)))
 
-    def _test_time_changed_interarrival_times(self, fit: bool):
-        # TODO: Finish this test
-        kernel_support = 4
-        kernel_size = 10
-        em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
-                      n_threads=2, max_iter=11, verbose=False)
-
-        res: List[List[np.ndarray]]
-        if fit:
-            em.fit(self.events)
-            res = em.time_changed_interarrival_times()
-        else:
-            em.baseline = np.random.rand(self.n_nodes) + .05
-            em.kernel = np.random.rand(
-                self.n_nodes, self.n_nodes, kernel_size) + .1
-            res = em.time_changed_interarrival_times(events=self.events)
-
-        print(res)
-
-    @unittest.skip('Investigating segfault')
+    @unittest.skip('TODO')
     def test_time_changed_interarrival_times_no_fitting(self):
-        self._test_time_changed_interarrival_times(fit=False)
+        pass
 
 
 if __name__ == "__main__":
