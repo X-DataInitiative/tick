@@ -7,6 +7,9 @@ import numpy as np
 from tick.hawkes.inference import HawkesEM
 from tick.hawkes.model.tests.model_hawkes_test_utils import (
     hawkes_intensities, hawkes_log_likelihood)
+from tick.hawkes import (SimuHawkes, HawkesKernelTimeFunc,
+                         HawkesKernelExp, SimuHawkesExpKernels)
+from tick.base import TimeFunction
 
 
 def simulate_hawkes_exp_kern(
@@ -17,8 +20,8 @@ def simulate_hawkes_exp_kern(
         max_jumps=1000,
         verbose=False,
         force_simulation=False,
+        seed=None,
 ):
-    from tick.hawkes import SimuHawkesExpKernels
     model = SimuHawkesExpKernels(
         adjacency=adjacency,
         decays=decays,
@@ -27,6 +30,7 @@ def simulate_hawkes_exp_kern(
         max_jumps=max_jumps,
         verbose=verbose,
         force_simulation=force_simulation,
+        seed=seed,
     )
     model.track_intensity(intensity_track_step=0.1)
     model.simulate()
@@ -35,6 +39,38 @@ def simulate_hawkes_exp_kern(
 
 def compute_approx_support_of_exp_kernel(a, b, eps):
     return np.maximum(0., np.squeeze(np.max(- np.log(eps / (a*b)) / b)))
+
+
+def simulate_hawkes_nonparam_kern(
+        end_time=30000,
+        seed=None
+):
+    t_values1 = np.array([0, 1, 1.5, 2., 3.5], dtype=float)
+    y_values1 = np.array([0, 0.2, 0, 0.1, 0.], dtype=float)
+    tf1 = TimeFunction([t_values1, y_values1],
+                       inter_mode=TimeFunction.InterConstRight, dt=0.1)
+    kernel1 = HawkesKernelTimeFunc(tf1)
+
+    t_values2 = np.linspace(0, 4, 20)
+    y_values2 = np.maximum(0., np.sin(t_values2) / 4)
+    tf2 = TimeFunction([t_values2, y_values2])
+    kernel2 = HawkesKernelTimeFunc(tf2)
+
+    baseline = np.array([0.1, 0.3])
+
+    hawkes = SimuHawkes(
+        baseline=baseline,
+        end_time=end_time,
+        verbose=False,
+        seed=seed,
+    )
+
+    hawkes.set_kernel(0, 0, kernel1)
+    hawkes.set_kernel(0, 1, HawkesKernelExp(.5, .7))
+    hawkes.set_kernel(1, 1, kernel2)
+
+    hawkes.simulate()
+    return hawkes
 
 
 def discretization_of_exp_kernel(
@@ -80,8 +116,62 @@ class Test(unittest.TestCase):
         self.assertEqual(em.n_nodes, self.n_nodes)
         self.assertEqual(em.n_realizations, self.n_realizations)
 
+    def test_hawkes_em_fit_1(self):  # hard-coded
+        """...Test fit method of HawkesEM
+        """
+        kernel_support = 3
+        kernel_size = 3
+        baseline = np.zeros(self.n_nodes) + .2
+        kernel = np.zeros((self.n_nodes, self.n_nodes, kernel_size)) + .4
+
+        em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
+                      n_threads=2, max_iter=11, verbose=False)
+        em.fit(self.events, baseline_start=baseline, kernel_start=kernel)
+
+        np.testing.assert_array_almost_equal(
+            em.baseline, [1.2264, 0.2164, 1.6782], decimal=4)
+
+        expected_kernel = [[[2.4569e-02, 2.5128e-06,
+                             0.0000e+00], [1.8072e-02, 5.4332e-11, 0.0000e+00],
+                            [2.7286e-03, 4.0941e-08, 3.5705e-15]],
+                           [[8.0077e-01, 2.2624e-02,
+                             6.7577e-10], [2.7503e-02, 3.1840e-05, 0.0000e+00],
+                            [1.4984e-01, 7.8428e-06, 2.8206e-12]],
+                           [[1.2163e-01, 1.0997e-02,
+                             5.4724e-05], [4.7348e-02, 6.6093e-03, 5.5433e-12],
+                            [1.0662e-03, 5.3920e-05, 1.4930e-08]]]
+
+        np.testing.assert_array_almost_equal(em.kernel, expected_kernel,
+                                             decimal=4)
+
+        em2 = HawkesEM(
+            kernel_discretization=np.array([0., 1., 2., 3.]), n_threads=1,
+            max_iter=11, verbose=False)
+        em2.fit(self.events, baseline_start=baseline, kernel_start=kernel)
+        np.testing.assert_array_almost_equal(em2.kernel, expected_kernel,
+                                             decimal=4)
+
+        np.testing.assert_array_almost_equal(
+            em.get_kernel_values(1, 0, np.linspace(0, 3, 5)),
+            [0.0000e+00, 8.0077e-01, 2.2624e-02, 6.7577e-10, 0.0000e+00],
+            decimal=4)
+
+        np.testing.assert_array_almost_equal(
+            em.get_kernel_norms(),
+            [[0.0246, 0.0181, 0.0027], [0.8234, 0.0275, 0.1499],
+             [0.1327, 0.054, 0.0011]], decimal=3)
+
+        np.testing.assert_array_equal(
+            em.get_kernel_supports(),
+            np.ones((self.n_nodes, self.n_nodes)) * 3)
+
     # With simulated data from parametric (exponential) model
     def test_hawkes_em_fit_2(self):
+        """
+        Test estimation on simulated data from a parametric 
+        Hawkes model with exponential kernels
+        """
+        seed = 12345
         n_nodes = 2
         n_realizations = 1
         decays = np.array([[1., 1.5], [0.1, 0.5]])
@@ -96,6 +186,7 @@ class Test(unittest.TestCase):
             max_jumps=200000,
             verbose=True,
             force_simulation=False,
+            seed=seed,
         )
 
         kernel_support = compute_approx_support_of_exp_kernel(
@@ -170,7 +261,7 @@ class Test(unittest.TestCase):
         )
 
         # Test 2.3: estimated kernel must be non-increasing
-        significance_threshold = 9e-3  # Can we do better?
+        significance_threshold = 7e-3  # Can we do better?
         estimated_kernel_increments = np.diff(em.kernel, append=0., axis=2)
         estimated_kernel_significant_increments = estimated_kernel_increments[
             np.abs(estimated_kernel_increments) > significance_threshold
@@ -208,61 +299,52 @@ class Test(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             expected_kernel_at_zero,
             estimated_kernel_at_zero,
-            decimal=0,
+            decimal=0,  # Can we do better?
             err_msg='estimated kernel at zero deviates '
             'from expected  kernel at zero.\n'
             f'expected_kernel_at_zero:\n{expected_kernel_at_zero}\n'
             f'estimated_kernel_at_zero:\n{estimated_kernel_at_zero}\n'
         )
 
-    def test_hawkes_em_fit_1(self):  # hard-coded
-        """...Test fit method of HawkesEM
+    def test_hawkes_em_fit_3(self):
+        """Test estimation on simulated data from a non-parametric Hawkes model
+
+        The test compares the time-integral of Hawkes kernels: 
+        expected (i.e. exact, coming from the model used to simulate the data)
+        and estimated (i.e. coming from the estimated kernels).
         """
-        kernel_support = 3
-        kernel_size = 3
-        baseline = np.zeros(self.n_nodes) + .2
-        kernel = np.zeros((self.n_nodes, self.n_nodes, kernel_size)) + .4
+        simu_model = simulate_hawkes_nonparam_kern(
+            end_time=30000,
+            seed=2334,
+        )
 
-        em = HawkesEM(kernel_support=kernel_support, kernel_size=kernel_size,
-                      n_threads=2, max_iter=11, verbose=False)
-        em.fit(self.events, baseline_start=baseline, kernel_start=kernel)
+        em = HawkesEM(
+            kernel_support=4.,
+            kernel_size=32,
+            n_threads=8,
+            verbose=True,
+            max_iter=500,
+            tol=1e-6)
+        em.fit(simu_model.timestamps)
 
-        np.testing.assert_array_almost_equal(
-            em.baseline, [1.2264, 0.2164, 1.6782], decimal=4)
-
-        expected_kernel = [[[2.4569e-02, 2.5128e-06,
-                             0.0000e+00], [1.8072e-02, 5.4332e-11, 0.0000e+00],
-                            [2.7286e-03, 4.0941e-08, 3.5705e-15]],
-                           [[8.0077e-01, 2.2624e-02,
-                             6.7577e-10], [2.7503e-02, 3.1840e-05, 0.0000e+00],
-                            [1.4984e-01, 7.8428e-06, 2.8206e-12]],
-                           [[1.2163e-01, 1.0997e-02,
-                             5.4724e-05], [4.7348e-02, 6.6093e-03, 5.5433e-12],
-                            [1.0662e-03, 5.3920e-05, 1.4930e-08]]]
-
-        np.testing.assert_array_almost_equal(em.kernel, expected_kernel,
-                                             decimal=4)
-
-        em2 = HawkesEM(
-            kernel_discretization=np.array([0., 1., 2., 3.]), n_threads=1,
-            max_iter=11, verbose=False)
-        em2.fit(self.events, baseline_start=baseline, kernel_start=kernel)
-        np.testing.assert_array_almost_equal(em2.kernel, expected_kernel,
-                                             decimal=4)
-
-        np.testing.assert_array_almost_equal(
-            em.get_kernel_values(1, 0, np.linspace(0, 3, 5)),
-            [0.0000e+00, 8.0077e-01, 2.2624e-02, 6.7577e-10, 0.0000e+00],
-            decimal=4)
-
-        np.testing.assert_array_almost_equal(
-            em.get_kernel_norms(),
-            [[0.0246, 0.0181, 0.0027], [0.8234, 0.0275, 0.1499],
-             [0.1327, 0.054, 0.0011]], decimal=3)
-
-        np.testing.assert_array_equal(
-            em.get_kernel_supports(),
-            np.ones((self.n_nodes, self.n_nodes)) * 3)
+        evaluation_points = np.linspace(0, 4., num=10)
+        for i in range(2):
+            for j in range(2):
+                estimated_primitive_kernel_values = em._compute_primitive_kernel_values(
+                    i, j, evaluation_points)
+                expected_primitive_kernel_values = simu_model.kernels[i, j].get_primitive_values(
+                    evaluation_points)
+                self.assertTrue(
+                    np.allclose(
+                        expected_primitive_kernel_values,
+                        estimated_primitive_kernel_values,
+                        atol=3e-2,
+                        rtol=3e-1,
+                    ),
+                    f'Kernel[{i}, {j}]: Estimation error\n'
+                    f'Estimated values:\n{estimated_primitive_kernel_values}\n'
+                    f'Expected values:\n{expected_primitive_kernel_values}\n'
+                )
 
     def test_hawkes_em_score(self):
         """...Test score (ie. likelihood) function of Hawkes EM

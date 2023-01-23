@@ -40,6 +40,16 @@ class HawkesKernel(Base):
         """
         return self._kernel.get_values(t_values)
 
+    def get_primitive_value(self, t):
+        """Returns the value of the time-integral of the kernel at t
+        """
+        return self._kernel.get_primitive_value(t)
+
+    def get_primitive_values(self, t_values):
+        """Returns the value of the time-integral of the kernel for all times in t_values
+        """
+        return self._kernel.get_primitive_values(t_values)
+
     def get_norm(self, n_steps=10000):
         """Computes L1 norm
 

@@ -96,6 +96,9 @@ class DLL_PUBLIC HawkesKernel {
   //! @brief Returns the value of the kernel for each t in t_values
   SArrayDoublePtr get_values(const ArrayDouble &t_values);
 
+  //! @brief Returns the value of the time-integral of the kernel for each t in t_values
+  SArrayDoublePtr get_primitive_values(const ArrayDouble &t_values);
+
   /**
    * Computes L1 norm
    * @param nsteps: number of steps used for integral discretization
