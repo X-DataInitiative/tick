@@ -86,7 +86,7 @@ class Test(unittest.TestCase):
             created_sample_y = tf.sampled_y[:-1]
 
             sampled_times = t_array[0] + \
-                            tf.dt * np.arange(len(created_sample_y))
+                tf.dt * np.arange(len(created_sample_y))
 
             true_sample_y = dichotomic_value(sampled_times, t_array, y_array,
                                              inter_mode=inter_mode)
@@ -144,26 +144,46 @@ class Test(unittest.TestCase):
 
         tf = TimeFunction([T, Y], inter_mode=TimeFunction.InterConstLeft,
                           dt=0.3)
-        self.assertAlmostEqual(tf.get_norm(), -1.1)
+        self.assertAlmostEqual(tf.get_norm(), -1.2)
 
         tf = TimeFunction([T, Y], inter_mode=TimeFunction.InterConstRight,
                           dt=0.3)
         self.assertAlmostEqual(tf.get_norm(), 1.2)
 
         tf = TimeFunction([T, Y], inter_mode=TimeFunction.InterLinear, dt=0.3)
-        self.assertAlmostEqual(tf.get_norm(), 0)
+        self.assertAlmostEqual(tf.get_norm(), -.09, places=2)
 
     def test_cyclic(self):
         """...Test cyclic border type
         """
-        last_value = 2.3
-        T = np.linspace(0, last_value)
-        Y = np.cos(T * np.pi)
+        period = 1.
+        discretization_points = 200
 
+        T = np.linspace(0, period, num=discretization_points)
+        Y = np.cos(2 * np.pi * T)
         tf = TimeFunction([T, Y], border_type=TimeFunction.Cyclic)
+        self.assertEqual(
+            tf.border_type,
+            TimeFunction.Cyclic,
+        )
+        evaluation_points = np.random.uniform(
+            low=0.,
+            high=period,
+            size=100,
+        )
+        expected_values = np.cos(2 * np.pi * evaluation_points)
 
-        self.assertAlmostEqual(
-            tf.value(0.3), tf.value(last_value + 0.3), delta=1e-8)
+        np.testing.assert_array_almost_equal(
+            tf.value(evaluation_points),
+            expected_values,
+            decimal=3,
+        )
+
+        np.testing.assert_array_almost_equal(
+            tf.value(evaluation_points),
+            tf.value(period + evaluation_points),
+            decimal=3,
+        )
 
 
 if __name__ == "__main__":

@@ -223,9 +223,14 @@ double TimeFunction::value(double t) {
     } else {
       // If border type is cyclic then we simply return the value it would have
       // in the first cycle
-      const double divider = last_value_before_border;
-      const int quotient = static_cast<int>(std::ceil(t / divider));
-      return value(t - quotient * divider);
+      const double period = last_value_before_border;
+      const int k = static_cast<int>(std::floor(t / period));
+      double t_ = t - k * period;
+      if ((t_ > period) || (t_ < 0.)) {
+        throw std::runtime_error(
+            "TimeFunction - periodic function error: Could not fallback to base period");
+      }
+      return value(t_);
     }
   } else if (t < t0) {
     // which behavior do we want if t < t0 ?
@@ -240,7 +245,6 @@ double TimeFunction::value(double t) {
   const double t_right = _t_right(t);
   const double y_left = (*sampled_y)[i_left];
   const double y_right = (*sampled_y)[i_right];
-
   return interpolation(t_left, y_left, t_right, y_right, t);
 }
 
@@ -311,9 +315,14 @@ double TimeFunction::future_bound(double t) {
     } else {
       // If border type is cyclic then we simply return the value it would have
       // in the first cycle
-      const double divider = last_value_before_border;
-      const int quotient = static_cast<int>(std::ceil(t / divider));
-      return future_bound(t - quotient * divider);
+      const double period = last_value_before_border;
+      const int k = static_cast<int>(std::floor(t / period));
+      double t_ = t - k * period;
+      if ((t_ > period) || (t_ < 0.)) {
+        throw std::runtime_error(
+            "TimeFunction - periodic function error: Could not fallback to base period");
+      }
+      return future_bound(t_);
     }
   } else if (t < t0) {
     return (*future_max)[0];
@@ -321,12 +330,12 @@ double TimeFunction::future_bound(double t) {
     return (*future_max)[0];
   }
 
-  const ulong i_left = get_index_(t);
-
-  const double t_left = get_t_from_index_(i_left);
-  const double y_left = (*future_max)[i_left];
-  const double t_right = get_t_from_index_(i_left + 1);
-  const double y_right = (*future_max)[i_left + 1];
+  const ulong i_left = _idx_left(t);
+  const ulong i_right = _idx_right(t);
+  const double t_left = _t_left(t);
+  const double t_right = _t_right(t);
+  const double y_left = (*sampled_y)[i_left];
+  const double y_right = (*sampled_y)[i_right];
 
   return interpolation(t_left, y_left, t_right, y_right, t);
 }
@@ -423,8 +432,14 @@ double TimeFunction::linear_interpolation(double t_left, double y_left, double t
 
 double TimeFunction::interpolation(double t_left, double y_left, double t_right, double y_right,
                                    double t) {
+  if ((t < t_left) || (t > t_right)) {
+    std::cout << "TimeFunction::interpolation Error: evaluation points error " << std::endl
+              << "t_left: " << t_left << std::endl
+              << "t: " << t << std::endl
+              << "t_right: " << t_right << std::endl;
+  }
   if (t < t_left)
-    throw std::runtime_error("TimeFunction::interpolation error: t_left cannot be larger than t");
+    throw std::runtime_error("TimeFunction::interpolation error: t_left  cannot be larger than t");
   if (t > t_right)
     throw std::runtime_error("TimeFunction::interpolation error: t_right cannot be smaller than t");
   // Second do the right interpolation
@@ -445,7 +460,9 @@ ulong TimeFunction::get_index_(double t) { return (ulong)std::ceil((t - t0) / dt
 double TimeFunction::get_t_from_index_(ulong i) { return t0 + dt * i; }
 
 ulong TimeFunction::_idx_left(double t) {
-  ulong k = std::floor((t - t0) / dt);
+  if (t < t0 + FLOOR_THRESHOLD) return 0;
+  ulong k_ = std::floor((t - t0 - FLOOR_THRESHOLD) / dt);
+  ulong k = (k_ < 0) ? 0 : k_;
   return k;
 }
 
@@ -455,7 +472,9 @@ ulong TimeFunction::_idx_right(double t) {
 }
 
 double TimeFunction::_t_left(double t) {
-  ulong k = std::floor((t - t0) / dt);
+  if (t < t0 + FLOOR_THRESHOLD) return t0;
+  ulong k_ = std::floor((t - t0 - FLOOR_THRESHOLD) / dt);
+  ulong k = (k_ < 0) ? 0 : k_;
   return t0 + k * dt;
 }
 
