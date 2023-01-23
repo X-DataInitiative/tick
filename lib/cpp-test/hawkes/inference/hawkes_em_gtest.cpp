@@ -200,7 +200,6 @@ TEST_F(HawkesEMTest, kernel_time_func_values_with_explicit_abscissa) {
   }
 }
 
-/*
 TEST_F(HawkesEMTest, kernel_time_func_primitive) {
   em.init_kernel_time_func(kernels);
   std::vector<TimeFunction>& timefunc = em.get_kernel_time_func();
@@ -212,16 +211,37 @@ TEST_F(HawkesEMTest, kernel_time_func_primitive) {
       double discrete_integral = .0;
       for (ulong k = 0; k < kernel_size; ++k) {
         ulong vk = v * kernel_size + k;
-        double t = kernel_discretization[k + 1];
-        discrete_integral += kernels(u, vk) * (t - kernel_discretization[k]);
+        double t = t0 + (k + 1) * dt;
+        discrete_integral += kernels(u, vk) * dt;
         EXPECT_DOUBLE_EQ(timefunc[uv].primitive(t), discrete_integral)
             << "Kernel[" << u << ", " << v << "]: "
-            << "Primitive at time t=" << t << " gives a mismatch.";
+            << "Primitive at time t=" << t << " (k = " << k << ") gives a mismatch.";
       }
     }
   }
 }
-*/
+
+TEST_F(HawkesEMTest, kernel_time_func_primitive_with_explicit_abscissa) {
+  em.set_kernel_discretization(kernel_discretization.as_sarray_ptr());
+  em.init_kernel_time_func(kernels);
+  std::vector<TimeFunction>& timefunc = em.get_kernel_time_func();
+  ASSERT_FALSE(timefunc.empty());
+  ArrayDouble kernel_discretization = *em.get_kernel_discretization();
+  for (ulong u = 0; u < n_nodes; ++u) {
+    for (ulong v = 0; v < n_nodes; ++v) {
+      ulong uv = u * n_nodes + v;
+      double discrete_integral = .0;
+      for (ulong k = 0; k < kernel_size; ++k) {
+        ulong vk = v * kernel_size + k;
+        double t = t0 + (k + 1) * dt;
+        discrete_integral += kernels(u, vk) * dt;
+        EXPECT_NEAR(timefunc[uv].primitive(t), discrete_integral, 1e-16)
+            << "Kernel[" << u << ", " << v << "]: "
+            << "Primitive at time t=" << t << " (k = " << k << ") gives a mismatch.";
+      }
+    }
+  }
+}
 
 #ifdef ADD_MAIN
 int main(int argc, char** argv) {

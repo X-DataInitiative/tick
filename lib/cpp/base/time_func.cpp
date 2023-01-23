@@ -261,14 +261,34 @@ double TimeFunction::primitive(double t) {
     return 0.0;
   }
 
-  const ulong i_left = get_index_(t);
-
-  const double t_left = get_t_from_index_(i_left);
-  const double y_left = (*sampled_y_primitive)[i_left];
-  const double t_right = get_t_from_index_(i_left + 1);
-  const double y_right = (*sampled_y_primitive)[i_left + 1];
-  const double slope = (y_right - y_left) / (t_right - t_left);
-  return y_left + (t - t_left) * slope;
+  const ulong i = _idx_left(t);
+  const ulong j = _idx_right(t);
+  const ulong s = (*sampled_y_primitive).size();
+  const ulong index_left = (i < s) ? i : s - 1;
+  const ulong index_right = (j < s) ? j : s - 1;
+  const double t_left = _t_left(t);
+  const double t_right = _t_right(t);
+  // const double y_left = (*sampled_y)[index_left];
+  // const double y_right = (*sampled_y)[index_right];
+  const double y_primitive_left = (*sampled_y_primitive)[index_left];
+  const double y_primitive_right = (*sampled_y_primitive)[index_right];
+  const double slope = (y_primitive_right - y_primitive_left) / (t_right - t_left);
+  double res = y_primitive_left + (t - t_left) * slope;
+  /*
+  std::cout << "\nTimeFunction::primitive  " << std::endl
+            << " index_left = " << index_left << ", " << std::endl
+            << " index_right = " << index_right << ", " << std::endl
+            << " t_left: " << t_left << std::endl
+            << " t: " << t << std::endl
+            << " t_right: " << t_right << std::endl
+            << " y_left: " << y_left << std::endl
+            << " y_right: " << y_right << std::endl
+            << " y_primitive_left: " << y_primitive_left << std::endl
+            << " y_primitive_right: " << y_primitive_right << std::endl
+            << " primitive(t) = " << res << std::endl
+            << std::endl;
+            */
+  return res;
 }
 
 SArrayDoublePtr TimeFunction::value(ArrayDouble &array) {
