@@ -399,7 +399,7 @@ class HawkesEM(LearnerHawkesNoParam):
         """
         # Interface logic is the same of `self.score`
         if events is None and not self._fitted:
-            raise ValueError('You must either call `fit` before `score` or '
+            raise ValueError('You must either call `fit` before `time_changed_interarrival_times` or '
                              'provide events')
 
         if events is None and end_times is None:

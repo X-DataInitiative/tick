@@ -598,9 +598,123 @@ class Test(unittest.TestCase):
         self.assertTrue(np.allclose(primitives, _compute_primitive_with_numpy(
             em.kernel, em.kernel_discretization)))
 
-    @unittest.skip('TODO')
-    def test_time_changed_interarrival_times_no_fitting(self):
-        pass
+    def test_time_changed_interarrival_times_exp_kern(self):
+        seed = 12345
+        n_nodes = 2
+        n_realizations = 1
+        decays = np.array([[1., 1.5], [0.1, 0.5]])
+        baseline = np.array([0.12, 0.07])
+        adjacency = np.array([[.1, .4], [.2, 0.03]])
+        end_time = 30000
+        simu_model = simulate_hawkes_exp_kern(
+            decays=decays,
+            baseline=baseline,
+            adjacency=adjacency,
+            end_time=end_time,
+            max_jumps=200000,
+            verbose=True,
+            force_simulation=False,
+            seed=seed,
+        )
+        simu_model.store_compensator_values()
+        simu_time_changed_interarrival_times = [
+            [np.diff(c) for c in simu_model.tracked_compensator]
+        ]
+
+        kernel_support = compute_approx_support_of_exp_kernel(
+            adjacency, decays, 1e-4)
+        # print(f'kernel_suppport = {kernel_support}')
+        kernel_size = 20
+
+        events = [simu_model.timestamps]
+
+        em = HawkesEM(kernel_support=kernel_support,
+                      kernel_size=kernel_size,
+                      tol=1e-9,
+                      print_every=50,
+                      record_every=10,
+                      max_iter=1200,
+                      verbose=True)
+
+        # Test Part 1 - Exact parameters
+        discretized_kernel = discretization_of_exp_kernel(
+            n_nodes,
+            adjacency,
+            decays,
+            kernel_support,
+            kernel_size,
+        )
+        tcit = em.time_changed_interarrival_times(
+            events=events,
+            end_times=end_time,
+            baseline=baseline,
+            kernel=discretized_kernel,
+        )
+        for r in range(n_realizations):
+            for e in range(n_nodes):
+                self.assertTrue(
+                    np.all(tcit[r][e] > .0),
+                    'Exact parameters: Assertion error: '
+                    'Inter-arrival times of '
+                    f'realization {r} and component {e}'
+                    ' are not all positive'
+                )
+        for r in range(n_realizations):
+            for e in range(n_nodes):
+                self.assertAlmostEqual(
+                    np.quantile(
+                        simu_time_changed_interarrival_times[r][e], .55),
+                    1.,
+                    None,
+                    msg=f'Realization {r}, component {e}:\n'
+                    'Time-changed inter-arrival times '
+                    'as computed from simulation '
+                    'are not distributed around 1.',
+                    delta=.35,  # Can we do better?
+                )
+                self.assertAlmostEqual(
+                    np.quantile(tcit[r][e], .5),
+                    1.,
+                    None,
+                    msg='Exact parameters: Assertion error: '
+                    f'Realization {r}, component {e}:\n'
+                    'Time-changed inter-arrival times '
+                    'as computed from estimation '
+                    'are not distributed around 1.',
+                    delta=.35,  # Can we do better?
+                )
+
+        # Test - Part 2 - Estimated parameters
+        baseline_start = np.array([.05 * np.mean(np.diff(ts))
+                                   for ts in simu_model.timestamps])
+        kernel_start = np.zeros((n_nodes, n_nodes, kernel_size))
+        kernel_start[:, :, :kernel_size-1] = .01 * np.cumsum(
+            np.random.uniform(size=(n_nodes, n_nodes, kernel_size-1)), axis=2)[:, :, ::-1]
+        em.fit(events, baseline_start=baseline_start,
+               kernel_start=kernel_start)
+        tcit = em.time_changed_interarrival_times()
+        for r in range(n_realizations):
+            for e in range(n_nodes):
+                self.assertTrue(
+                    np.all(tcit[r][e] > .0),
+                    'Estimated parameters: Assertion error: '
+                    'Inter-arrival times of '
+                    f'realization {r} and component {e}'
+                    ' are not all positive'
+                )
+        for r in range(n_realizations):
+            for e in range(n_nodes):
+                self.assertAlmostEqual(
+                    np.quantile(tcit[r][e], .5),
+                    1.,
+                    None,
+                    msg='Estimated parameters: Assertion error: '
+                    f'Realization {r}, component {e}:\n'
+                    'Time-changed inter-arrival times '
+                    'as computed from estimation '
+                    'are not distributed around 1.',
+                    delta=.35,  # Can we do better?
+                )
 
 
 if __name__ == "__main__":
