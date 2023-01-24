@@ -1,4 +1,6 @@
+from typing import Callable
 from itertools import product
+from functools import partial
 
 import numpy as np
 import scipy
@@ -829,9 +831,29 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             R = self._torch_model_coeffs
         assert isinstance(R, torch.autograd.Variable)
         _L, _C, _K_c = self.cumulants
-        return self._objective(R, _L, _C, _K_c, self.cs_ratio)
+        if self.penalty == 'l1':
+            loss = self._lasso_objective(
+                R, _L, _C, _K_c, self.cs_ratio,
+                penalization_coeff=self.strength_lasso,
+            )
+        elif self.penalty == 'l2':
+            loss = self._ridge_objective(
+                R, _L, _C, _K_c, self.cs_ratio,
+                penalization_coeff=self.strength_ridge,
+            )
+        elif self.penalty == 'elasticnet':
+            loss = self._elasticnet_objective(
+                R, _L, _C, _K_c, self.cs_ratio,
+                l1_penalization_coeff=self.strength_lasso,
+                l2_penalization_coeff=self.strength_ridge,
+            )
+        else:
+            loss = self._plain_objective(
+                R, _L, _C, _K_c, self.cs_ratio,
+            )
+        return loss
 
-    def _objective(self, R, _L, _C, _K_c, k):
+    def _plain_objective(self, R, _L, _C, _K_c, k):
         torch = self.torch
         loss = (
             (1 - k) * torch.sum(
@@ -846,6 +868,35 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
                 )
             )
         )
+        return loss
+
+    def _ridge_objective(self, R, _L, _C, _K_c, k, penalization_coeff):
+        torch = self.torch
+        loss = self._plain_objective(R, _L, _C, _K_c, k)
+        loss += penalization_coeff * self.torch.norm(
+            torch.eye(self.n_nodes) - torch.linalg.inv(R),
+            p=2)
+        return loss
+
+    def _lasso_objective(self, R, _L, _C, _K_c, k, penalization_coeff):
+        torch = self.torch
+        loss = self._plain_objective(R, _L, _C, _K_c, k)
+        loss += penalization_coeff * torch.norm(
+            torch.eye(self.n_nodes) - torch.linalg.inv(R),
+            p=1)
+        return loss
+
+    def _elasticnet_objective(self, R, _L, _C, _K_c, k,
+                              l1_penalization_coeff,
+                              l2_penalization_coeff):
+        torch = self.torch
+        loss = self._plain_objective(R, _L, _C, _K_c, k)
+        loss += l1_penalization_coeff * torch.norm(
+            torch.eye(self.n_nodes) - torch.linalg.inv(R),
+            p=1)
+        loss += l2_penalization_coeff * self.torch.norm(
+            torch.eye(self.n_nodes) - torch.linalg.inv(R),
+            p=2)
         return loss
 
     @property
@@ -923,13 +974,41 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         else:
             k = self.cs_ratio
 
+        loss_computer: Callable[
+            [torch.Tensor,
+             torch.Tensor,
+             torch.Tensor,
+             torch.Tensor,
+             float],
+            float
+        ]
+
+        if self.penalty == 'l1':
+            loss_computer = partial(
+                self._lasso_objective,
+                penalization_coeff=self.strength_lasso,
+            )
+        elif self.penalty == 'l2':
+            loss_computer = partial(
+                self._ridge_objective,
+                penalization_coeff=self.strength_ridge,
+            )
+        elif self.penalty == 'elasticnet':
+            loss_computer = partial(
+                self._elasticnet_objective,
+                l1_penalization_coeff=self.strength_lasso,
+                l2_penalization_coeff=self.strength_ridge,
+            )
+        else:
+            loss_computer = self._plain_objective
+
         def compute_loss():
-            return self._objective(
-                self._torch_model_coeffs,
-                _L,
-                _C,
-                _K_c,
-                k,
+            return loss_computer(
+                R=self._torch_model_coeffs,
+                _L=_L,
+                _C=_C,
+                _K_c=_K_c,
+                k=k,
             )
 
         for n_iter in range(self.max_iter):
