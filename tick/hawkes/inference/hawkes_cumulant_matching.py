@@ -955,14 +955,17 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         self._set_cumulants_from_estimates()
 
         if adjacency_start is None and R_start is not None:
-            self._torch_model_coeffs = torch.autograd.Variable(R_start)
+            self._torch_model_coeffs = torch.autograd.Variable(
+                torch.Tensor(R_start))
         elif adjacency_start is None or adjacency_start == 'random':
             random = adjacency_start == 'random'
             self._set_torch_model_coeffs(random=random)
         else:
             self._torch_model_coeffs = torch.autograd.Variable(
-                scipy.linalg.inv(
-                    np.eye(self.n_nodes) - adjacency_start
+                torch.Tensor(
+                    scipy.linalg.inv(
+                        np.eye(self.n_nodes) - adjacency_start
+                    )
                 ))
 
         optimizer = self.torch_solver(
