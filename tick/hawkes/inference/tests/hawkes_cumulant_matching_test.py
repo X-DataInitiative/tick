@@ -3,6 +3,7 @@
 import os
 import pickle
 import unittest
+from typing import Optional
 
 import numpy as np
 
@@ -230,6 +231,74 @@ class Test(InferenceTest):
 
         learner._set_data(timestamps)
         self.assertTrue(learner._cumulant_computer.cumulants_ready)
+
+    def test_starting_point(self):
+        """...Test the starting point of the training
+        """
+        multi = Test.get_simulated_model()
+        n_nodes = multi.hawkes_simu.n_nodes
+        timestamps = multi.timestamps
+        integration_support = .3
+
+        learner = HawkesCumulantMatching(
+            integration_support=integration_support,
+        )
+        learner._set_data(timestamps)
+        learner.compute_cumulants()
+        self.assertTrue(learner._cumulant_computer.cumulants_ready)
+        sp: np.ndarray = learner.starting_point(random=False)
+        sp_r: np.ndarray = learner.starting_point(random=True)
+        self.assertEqual(sp.shape, (n_nodes, n_nodes))
+        self.assertEqual(sp_r.shape, (n_nodes, n_nodes))
+        zeros = np.zeros((n_nodes, n_nodes), dtype=float)
+        np.testing.assert_array_almost_equal(
+            np.imag(sp), zeros,
+            err_msg='Non-random starting point returned an array '
+            f'with non-real entries:\n{sp}'
+        )
+        np.testing.assert_array_almost_equal(
+            np.imag(sp_r), zeros,
+            err_msg='Random starting point returned an array '
+            f'with non-real entries:\n{sp_r}'
+        )
+
+    def _test_objective(self, Learner: HawkesCumulantMatching, penalty: Optional[str] = None):
+        """...Test the starting point of the training
+        """
+        multi = Test.get_simulated_model()
+        n_nodes = multi.hawkes_simu.n_nodes
+        timestamps = multi.timestamps
+        integration_support = .3
+        learner = Learner(
+            integration_support=integration_support,
+            penalty=penalty,
+        )
+        learner._set_data(timestamps)
+        learner.compute_cumulants()
+        learner.cs_ratio = learner.approximate_optimal_cs_ratio()
+        self.assertTrue(learner._cumulant_computer.cumulants_ready)
+        sp: np.ndarray = learner.starting_point(random=False)
+        objective = learner.objective(R=sp)
+        try:
+            loss = float(objective)
+        except Exception as e:
+            self.fail(
+                f'{e}: Training objective evaluated at non-random starting point '
+                'cannot be converted into a float:\n'
+                f'learner.obiective(R=sp) : {objective}'
+            )
+
+    @unittest.skipIf(SKIP_TF, "Tensorflow not available")
+    def test_tf_objective(self):
+        self._test_objective(Learner=HawkesCumulantMatchingTf, penalty=None)
+        self._test_objective(Learner=HawkesCumulantMatchingTf, penalty='l1')
+        self._test_objective(Learner=HawkesCumulantMatchingTf, penalty='l2')
+
+    @unittest.skipIf(SKIP_TORCH, "PyTorch not available")
+    def test_pyt_objective(self):
+        self._test_objective(Learner=HawkesCumulantMatchingPyT, penalty=None)
+        self._test_objective(Learner=HawkesCumulantMatchingPyT, penalty='l1')
+        self._test_objective(Learner=HawkesCumulantMatchingPyT, penalty='l2')
 
     def test_hawkes_cumulants_unfit(self):
         """...Test that HawkesCumulantMatching raises an error if no data is

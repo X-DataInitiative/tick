@@ -721,7 +721,7 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
     Other Parameters
     ----------------
     cs_ratio : `float`, default=`None`
-        Covariance-skewness ratio. The higher it is, themore covariance
+        Covariance-skewness ratio. The higher it is, the more covariance
         has an impact the result which leads to more symmetric
         adjacency matrices. If None, a default value is computed based
         on the norm of the estimated covariance and skewness cumulants.
@@ -829,7 +829,12 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             )
         if R is None:
             R = self._torch_model_coeffs
-        assert isinstance(R, torch.autograd.Variable)
+        if isinstance(R, np.ndarray):
+            R = torch.autograd.Variable(torch.Tensor(R),
+                                        requires_grad=True)
+        assert isinstance(
+            R, torch.autograd.Variable), 'R must be of type torch.autograd.Variable, '
+        f'but type(R)={type(R)}\nR:\n{R}'
         _L, _C, _K_c = self.cumulants
         if self.penalty == 'l1':
             loss = self._lasso_objective(
@@ -911,6 +916,10 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         self._C = torch.Tensor(self.covariance)
         self._K_c = torch.Tensor(self.skewness)
 
+    def compute_cumulants(self):
+        HawkesCumulantMatching.compute_cumulants(self)
+        self._set_cumulants_from_estimates()
+
     @property
     def _torch_model_coeffs(self):
         return self._R
@@ -952,11 +961,12 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         """
         torch = self.torch
         self.compute_cumulants()
-        self._set_cumulants_from_estimates()
 
         if adjacency_start is None and R_start is not None:
             self._torch_model_coeffs = torch.autograd.Variable(
-                torch.Tensor(R_start))
+                torch.Tensor(R_start),
+                requires_grad=True,
+            )
         elif adjacency_start is None or adjacency_start == 'random':
             random = adjacency_start == 'random'
             self._set_torch_model_coeffs(random=random)
@@ -965,7 +975,8 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
                 torch.Tensor(
                     scipy.linalg.inv(
                         np.eye(self.n_nodes) - adjacency_start
-                    )
+                    ),
+                    requires_grad=True,
                 ))
 
         optimizer = self.torch_solver(
