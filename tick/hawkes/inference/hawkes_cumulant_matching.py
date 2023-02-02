@@ -723,18 +723,18 @@ class HawkesTheoreticalCumulant(Base):
 
     @adjacency.setter
     def adjacency(self, adjacency):
-        G = np.array(adjacency, dtype=float, copy=True)
-        R = np.ascontiguousarray(
+        g = np.array(adjacency, dtype=float, copy=True)
+        r = np.ascontiguousarray(
             scipy.linalg.inv(
-                np.eye(self.dimension, dtype=float) - G),
+                np.eye(self.dimension, dtype=float) - g),
             dtype=float,
         )
-        self._cumulant.set_R(R)
-        self._adjacency = G
+        self._cumulant.set_g_geom(r)
+        self._adjacency = g
 
     @property
     def _R(self):
-        return self._cumulant.get_R()
+        return self._cumulant.get_g_geom()
 
     @property
     def mean_intensity(self):
