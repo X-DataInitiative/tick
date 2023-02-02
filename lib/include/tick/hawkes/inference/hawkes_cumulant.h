@@ -45,9 +45,9 @@ class DLL_PUBLIC HawkesTheoreticalCumulant {
  public:
   HawkesTheoreticalCumulant(int);
   int get_dimension() { return d; }
-  void set_baseline(const SArrayDoublePtr mu) { this->mu = mu; }
+  void set_baseline(SArrayDoublePtr const mu) { this->mu = mu; }
   SArrayDoublePtr get_baseline() { return mu; }
-  void set_g_geom(const SArrayDouble2dPtr g_geom) { this->g_geom = g_geom; }
+  void set_g_geom(SArrayDouble2dPtr const g_geom) { this->g_geom = g_geom; }
   SArrayDouble2dPtr get_g_geom() { return g_geom; }
   void compute_mean_intensity();
   void compute_covariance();
