@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.7)
 project(tick)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ffast-math")
@@ -95,8 +95,8 @@ if (${GTEST_FOUND})
     message(STATUS "Testing in C++ enabled")
 
     find_package(Threads REQUIRED)
-    find_package(PythonInterp 3 REQUIRED)
-    find_package(PythonLibs 3 REQUIRED)
+    find_package(PythonInterp 3.7 REQUIRED)
+    find_package(PythonLibs 3.7 REQUIRED)
 
     include_directories(${GTEST_INCLUDE_DIRS})
 

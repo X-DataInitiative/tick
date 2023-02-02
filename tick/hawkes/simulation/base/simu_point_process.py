@@ -49,6 +49,9 @@ class SimuPointProcess(Simu):
     intensity_track_step : `float`
         Step with which the intensity has been recorded
 
+    tracked_compensator : `list[np.ndarray]`, size=n_nodes
+        A record of the compensator of the process evaluated at the jump times.
+
     simulation_time : `float`, default=None
         Time until which this point process has been simulated
     """
@@ -122,6 +125,10 @@ class SimuPointProcess(Simu):
         return self._pp.get_itr_step()
 
     @property
+    def tracked_compensator(self):
+        return self._pp.get_ctr()
+
+    @property
     def seed(self):
         if self._pp is None:
             # _pp_init_seed is only used to create point process object
@@ -151,7 +158,7 @@ class SimuPointProcess(Simu):
             introduces a small bias especially if the number of points is small
         """
         if self.end_time == self.simulation_time:
-            warnings.warn("This process has already be simulated until time %f"
+            warnings.warn("This process has already been simulated until time %f"
                           % self.end_time)
 
         if self.end_time is None and self.max_jumps is None:
@@ -166,7 +173,7 @@ class SimuPointProcess(Simu):
         elif self.end_time is not None and self.max_jumps is not None:
             self._pp.simulate(self.end_time, self.max_jumps)
 
-    def track_intensity(self, intensity_track_step=-1):
+    def track_intensity(self, intensity_track_step: float = -1.):
         """Activate the tracking of the intensity
 
         Parameters
@@ -185,6 +192,18 @@ class SimuPointProcess(Simu):
         """Is intensity tracked thanks to track_intensity or not
         """
         return self._pp.itr_on()
+
+    def store_compensator_values(self):
+        """Evaluate the compensator of the process at jump times
+
+        Parameters
+        ----------
+
+        Notes
+        -----
+        This method must be after simulation
+        """
+        self._pp.store_compensator_values()
 
     def reset(self):
         """Reset the process, so that is is ready for a brand new simulation

@@ -29,7 +29,7 @@ class DLL_PUBLIC HawkesKernelExp : public HawkesKernel {
   //! Intensity of the kernel, also noted \f$ \alpha \f$
   double intensity;
 
-  //! Decay of the kernel, also noted \f$ \alpha \f$
+  //! Decay of the kernel, also noted \f$ \beta \f$
   double decay;
 
   // Used for efficiency for the computation of the convolution
@@ -43,8 +43,26 @@ class DLL_PUBLIC HawkesKernelExp : public HawkesKernel {
   //! last size of process is the last convolution computation
   ulong convolution_restart_index;
 
+  // Used for efficiency for the computation of the convolution of
+  // the process with the primitive of the kernel
+  //! last time the convolution was computed
+  double last_primitive_convolution_time;
+
+  //! last value obtained for the convolution of the process
+  // with the primitive of the kernel
+  double last_primitive_convolution_value;
+
+  //! last size of process in the last computation of the convolution
+  // of the process with the primitive of the kernel
+  ulong primitive_convolution_restart_index;
+
   //! Getting the value of the kernel at the point x (where x is positive)
   double get_value_(double x) override;
+
+  /**
+   * Getting the value of the primitive of the kernel
+   **/
+  double get_primitive_value_(double t) override;
 
  public:
   /**
@@ -102,6 +120,18 @@ class DLL_PUBLIC HawkesKernelExp : public HawkesKernel {
   double get_convolution(const double time, const ArrayDouble &timestamps,
                          double *const bound) override;
 
+  /**
+   * Computes the convolution of the process with the primitive of the kernel
+   * \f[
+   *     \int_0^t \int_0^s \phi(s - u) dN(u) ds = \sum_{t_k} \int_{t_k}^{t}\phi(s - t_k) ds,
+   * \f]
+   * where \f$ \phi(t) = \alpha \beta \exp(-\beta t)\f$.
+   * @param time: The time \f$ t \f$ up to the convolution is computed
+   * @param timestamps: The process \f$ N \f$ with which the convolution is
+   * computed
+   **/
+  double get_primitive_convolution(const double time, const ArrayDouble &timestamps) override;
+
   //! simple setter
   static void set_fast_exp(bool flag) { use_fast_exp = flag; }
   //! simple getter
@@ -129,8 +159,7 @@ class DLL_PUBLIC HawkesKernelExp : public HawkesKernel {
 
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("HawkesKernel",
-                        cereal::base_class<HawkesKernel>(this)));
+    ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
 
     ar(CEREAL_NVP(use_fast_exp));
     ar(CEREAL_NVP(intensity));

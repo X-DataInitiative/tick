@@ -20,6 +20,10 @@ class DLL_PUBLIC HawkesKernelTimeFunc : public HawkesKernel {
   //! Getting the value of the kernel at the point x (where x is positive)
   double get_value_(double x) override;
 
+  //! Getting the value of the primitive of the kernel 
+  //at the point x (where x is positive)
+  double get_primitive_value_(double x) override;
+
  public:
   //! @brief Constructor
   explicit HawkesKernelTimeFunc(const TimeFunction &time_function);

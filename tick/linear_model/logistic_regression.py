@@ -215,7 +215,7 @@ class LogisticRegression(LearnerGLM):
             Returns predicted values.
         """
         scores = self.decision_function(X)
-        indices = (scores > 0).astype(np.int)
+        indices = (scores > 0).astype(np.int64)
         return self.classes[indices]
 
     def predict_proba(self, X):

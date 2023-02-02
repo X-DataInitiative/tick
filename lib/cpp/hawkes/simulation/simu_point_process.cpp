@@ -55,6 +55,7 @@ void PP::reset() {
 
   for (unsigned int i = 0; i < n_nodes; ++i) timestamps[i] = VArrayDouble::new_ptr();
   activate_itr(itr_time_step);
+  activate_ctr();
 }
 
 void PP::activate_itr(double dt) {
@@ -68,6 +69,11 @@ void PP::activate_itr(double dt) {
   itr.resize(n_nodes);
   for (unsigned int i = 0; i < n_nodes; i++) itr[i] = VArrayDouble::new_ptr();
   itr_times = VArrayDouble::new_ptr();
+}
+
+void PP::activate_ctr() {
+  ctr.resize(n_nodes);
+  for (unsigned int i = 0; i < n_nodes; i++) ctr[i] = VArrayDouble::new_ptr();
 }
 
 void PP::reseed_random_generator(int seed) { rand.reseed(seed); }
@@ -228,5 +234,19 @@ void PP::set_timestamps(VArrayDoublePtrList1D &timestamps, double end_time) {
 
     update_time_shift(next_jump_time - time, true, true);
     update_jump(next_jump_node);
+  }
+}
+
+void PP::store_compensator_values() {
+  activate_ctr();
+  for (unsigned int i = 0; i < n_nodes; ++i) {
+    auto &node_tracker = ctr[i];
+    const ArrayDouble &t_i = *timestamps[i];
+    ulong n_i = t_i.size();
+    for (ulong k = 0; k < n_i; ++k) {
+      double t_ik = t_i[k];
+      double val = evaluate_compensator(i, t_ik);
+      node_tracker->append1(val);
+    }
   }
 }
