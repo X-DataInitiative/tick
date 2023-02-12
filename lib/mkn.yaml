@@ -21,7 +21,7 @@ property:
     lib_path: ./../tick
     cargs: -DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION
            -D_FILE_OFFSET_BITS=64 -DPYTHON_LINK -DNDEBUG
-    win_cargs: -GL -MD -EHsc -DBUILDING_DLL -std:c++11
+    win_cargs: -GL -MD -EHsc -DBUILDING_DLL
     nixish_cargs: -fwrapv -O2 -Wall
                   -fstack-protector-strong
                   -Wformat -Werror -Wdate-time
@@ -53,7 +53,7 @@ profile:
     if_link:
       nix_lib: ${nix_largs}
       bsd_lib: ${bsd_largs}
-      win: -nodefaultlib:libucrt.lib ucrt.lib -MANIFEST:EMBED,ID=2 -MANIFESTUAC:NO -LTCG
+      win: -LTCG # -nodefaultlib:libucrt.lib ucrt.lib -MANIFEST:EMBED,ID=2 -MANIFESTUAC:NO
 
   - name: base
     parent: arg

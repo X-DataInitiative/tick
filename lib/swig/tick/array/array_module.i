@@ -10,12 +10,14 @@
 #include "numpy/arrayobject.h"
 #include "numpy/npy_math.h"
 
+#ifndef _WIN32
 // initialize python and numpy
 int tick_import_numpy(){
   Py_Initialize();
   return _import_array();
 }
 static const int tick_numpy_import = tick_import_numpy();
+#endif
 
 #include "tick/base/debug.h"
 #include "tick/array/carray_python.h"

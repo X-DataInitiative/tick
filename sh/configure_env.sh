@@ -17,7 +17,7 @@
 #
 ######################################################################
 
-set -ex
+set -e
 
 echo "Entering configure_env.sh"
 
@@ -329,7 +329,7 @@ MKN=${MKN:-mkn}
 export MKN_LIB_LINK_LIB=1
 export TICK_CONFIGURED=1
 
-echo "Finished configure_env.sh for python (${PYVER}.${PYVER_MIN}) with the following args"
+echo "Finished configure_env.sh for python (${PYVER}) with the following args"
 echo "LDARGS = ${LDARGS}"
 echo ""
 ##
