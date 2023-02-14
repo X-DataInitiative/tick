@@ -37,25 +37,25 @@ class DLL_PUBLIC HawkesTheoreticalCumulant {
  private:
   int d;
   SArrayDoublePtr mu;
-  SArrayDoublePtr Lambda;
-  SArrayDouble2dPtr C;
-  SArrayDouble2dPtr Kc;
-  SArrayDouble2dPtr R;
+  SArrayDoublePtr first_cumulant;     // The matrix \$Lambda\$ from the paper
+  SArrayDouble2dPtr second_cumulant;  // The matrix \$C\$ from the paper
+  SArrayDouble2dPtr third_cumulant;   // The matrix \$Kc\$ from the paper
+  SArrayDouble2dPtr g_geom;           // The matrix R = (I - G)^{-1} from the paper
 
  public:
   HawkesTheoreticalCumulant(int);
   int get_dimension() { return d; }
-  void set_baseline(const SArrayDoublePtr mu) { this->mu = mu; }
+  void set_baseline(SArrayDoublePtr const mu) { this->mu = mu; }
   SArrayDoublePtr get_baseline() { return mu; }
-  void set_R(const SArrayDouble2dPtr R) { this->R = R; }
-  SArrayDouble2dPtr get_R() { return R; }
+  void set_g_geom(SArrayDouble2dPtr const g_geom) { this->g_geom = g_geom; }
+  SArrayDouble2dPtr get_g_geom() { return g_geom; }
   void compute_mean_intensity();
   void compute_covariance();
   void compute_skewness();
   void compute_cumulants();
-  SArrayDoublePtr mean_intensity() { return Lambda; }
-  SArrayDouble2dPtr covariance() { return C; }
-  SArrayDouble2dPtr skewness() { return Kc; }
+  SArrayDoublePtr mean_intensity() { return first_cumulant; }
+  SArrayDouble2dPtr covariance() { return second_cumulant; }
+  SArrayDouble2dPtr skewness() { return third_cumulant; }
 };
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_INFERENCE_HAWKES_CUMULANT_H_

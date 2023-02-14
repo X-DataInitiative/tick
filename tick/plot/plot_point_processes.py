@@ -5,7 +5,7 @@ import numpy as np
 
 
 def plot_point_process(point_process, plot_intensity=None, n_points=10000,
-                       plot_nodes=None, node_names=None, t_min=None, t_max=None, 
+                       plot_nodes=None, node_names=None, t_min=None, t_max=None,
                        max_jumps=None, show=True, ax=None):
     """Plot point process realization
 
@@ -52,7 +52,7 @@ def plot_point_process(point_process, plot_intensity=None, n_points=10000,
     if node_names is None:
         node_names = list(map(lambda n: 'ticks #{}'.format(n), plot_nodes))
     elif len(node_names) != len(plot_nodes):
-        ValueError('node_names must be a list of length {} but has length {}'
+        raise ValueError('node_names must be a list of length {} but has length {}'
                    .format(len(plot_nodes), len(node_names)))
     labels = []
     for name, node in zip(node_names, plot_nodes):
@@ -184,7 +184,7 @@ def _extract_process_interval(plot_nodes, end_time, timestamps,
 
     if intensity_times is not None:
         intensity_extracted_points = (intensity_times >= t_min) \
-                                     & (intensity_times <= t_max)
+            & (intensity_times <= t_max)
         extracted_intensity_times = intensity_times[intensity_extracted_points]
 
         extracted_intensity = [
@@ -194,3 +194,54 @@ def _extract_process_interval(plot_nodes, end_time, timestamps,
         extracted_intensity_times, extracted_intensity = None, None
 
     return extracted_timestamps, extracted_intensity_times, extracted_intensity
+
+
+def qq_plots(
+        point_process,
+        plot_nodes=None,
+        node_names=None,
+        line='45',
+        show=True,
+        ax=None,
+):
+    import statsmodels.api as sm
+    from scipy.stats import expon
+
+    if plot_nodes is None:
+        plot_nodes = range(point_process.n_nodes)
+
+    if node_names is None:
+        node_names = list(map(lambda n: 'ticks #{}'.format(n), plot_nodes))
+    elif len(node_names) != len(plot_nodes):
+        raise ValueError('node_names must be a list of length {} but has length {}'
+                   .format(len(plot_nodes), len(node_names)))
+    labels = node_names
+
+    if ax is None:
+        fig, ax = plt.subplots(
+            len(plot_nodes), 1, sharex=True, sharey=True,
+            figsize=(12, 4 * len(plot_nodes)))
+    else:
+        show = False
+
+    if len(plot_nodes) == 1:
+        ax = [ax]
+
+    compensators = point_process.tracked_compensator
+    if compensators is None:
+        raise ValueError("No tracked compensator!")
+    residuals = [np.diff(comp) for comp in compensators]
+
+    for count, i in enumerate(plot_nodes):
+        sm.qqplot(data=residuals[i],
+                  dist=expon,
+                  distargs=(),
+                  loc=0,
+                  scale=1,
+                  line=line,
+                  ax=ax[count],
+                  )
+        ax[count].set_title(labels[count])
+    if show:
+        plt.show()
+    return ax[0].figure

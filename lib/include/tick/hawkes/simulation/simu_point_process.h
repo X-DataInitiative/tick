@@ -79,6 +79,14 @@ class DLL_PUBLIC PP {
   // The time corresponding to the track records of the intensity
   VArrayDoublePtr itr_times;
 
+  // The track records of the compensator. In the current implementation
+  // the compensator is only tracked at the jump times of the process, so there is no ctr
+  // equivalent to itr_time.
+  // The value of the compensator is not needed in Ogata's thinning algorithm, so
+  // there is no need to activate ctr before simulation. Instead, the activation
+  // of ctr is done automatically from within the method `store_compensator_values`.
+  VArrayDoublePtrList1D ctr;
+
   ////////////////////////////////////////////////////////////////////////////////
   //                            Constructors and destructors
   ////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +150,35 @@ class DLL_PUBLIC PP {
   void activate_itr(double dt);
 
   /**
+   * Activate track recording of compensator
+   **/
+  void activate_ctr();
+
+  /**
+   * Evaluate
+   *\f[
+   *      \Lambda_i(t) = \int_0^{t}\lambda_i(s) ds
+   *\f]
+   * where \lambda_i is the intensity of the i-th node.
+   * @param time : The time at which to evaluate the compensator.
+   * @param node : The component of the multidimensional point process.
+   **/
+  virtual double evaluate_compensator(int, double) { return 0; }
+
+  /**
+   * Evaluate
+   *\f[
+   *      \Lambda_i(T^{i}_{k}) = \int_0^{T^{i}_{k}}\lambda_i(t) dt
+   *\f]
+   * where \lambda_i is the intensity of the i-th node,
+   * and T^{i}_{k} is the time of the k-th jump of the i-th node.
+   * \f$ \Lambda_i(T^{i}_{k}) \f$ is stored in ``ctr[i][k]``.
+   * This function calls ``PP::activate_ctr`` in order to
+   * initialize the array where the values are stored.
+   **/
+  void store_compensator_values();
+
+  /**
    * @brief Reseeds the underlying random generator
    * @param seed New seed for the random generator
    */
@@ -172,8 +209,7 @@ class DLL_PUBLIC PP {
    * @brief Update a time shift of delay seconds and eventually recompute the
    * intensity bound if asked and update track record of intensity if asked
    */
-  void update_time_shift(double delay, bool flag_compute_intensity_bound,
-                         bool flag_itr);
+  void update_time_shift(double delay, bool flag_compute_intensity_bound, bool flag_itr);
 
   /**
    * @brief Process track record of intensity at current time
@@ -189,8 +225,7 @@ class DLL_PUBLIC PP {
    * \param total_intensity_bound : A pointer to the variable that will hold a
    * bound of future total intensity
    */
-  virtual void init_intensity_(ArrayDouble &intensity,
-                               double *total_intensity_bound);
+  virtual void init_intensity_(ArrayDouble &intensity, double *total_intensity_bound);
 
   ////////////////////////////////////////////////////////////////////////////////
   //                            Getters and setters
@@ -211,16 +246,14 @@ class DLL_PUBLIC PP {
 
   /// @brief Returns intensity track record array
   inline VArrayDoublePtrList1D get_itr() {
-    if (!itr_on())
-      TICK_ERROR("``activate_itr()`` must be call before simulation");
+    if (!itr_on()) TICK_ERROR("``activate_itr()`` must be call before simulation");
 
     return itr;
   }
 
   /// @brief Returns times at which intensity has been recorded
   inline VArrayDoublePtr get_itr_times() {
-    if (!itr_on())
-      TICK_ERROR("``activate_itr()`` must be call before simulation");
+    if (!itr_on()) TICK_ERROR("``activate_itr()`` must be call before simulation");
 
     return itr_times;
   }
@@ -231,6 +264,9 @@ class DLL_PUBLIC PP {
   /// @brief Returns the step with which we record intensity
   inline double get_itr_step() { return itr_time_step; }
 
+  /// @brief Returns intensity track record array
+  inline VArrayDoublePtrList1D get_ctr() { return ctr; }
+
   /// @brief Get the process (converted into fixed size array)
   SArrayDoublePtrList1D get_timestamps() {
     SArrayDoublePtrList1D shared_process =
@@ -240,16 +276,11 @@ class DLL_PUBLIC PP {
 
   /// @brief Gets Maximimum Total intensity bound that wwas encountered during
   /// realization
-  inline double get_max_total_intensity_bound() {
-    return max_total_intensity_bound;
-  }
+  inline double get_max_total_intensity_bound() { return max_total_intensity_bound; }
 
-  bool get_threshold_negative_intensity() const {
-    return threshold_negative_intensity;
-  }
+  bool get_threshold_negative_intensity() const { return threshold_negative_intensity; }
 
-  void set_threshold_negative_intensity(
-      const bool threshold_negative_intensity) {
+  void set_threshold_negative_intensity(const bool threshold_negative_intensity) {
     this->threshold_negative_intensity = threshold_negative_intensity;
   }
 
@@ -273,6 +304,7 @@ class DLL_PUBLIC PP {
     ar(CEREAL_NVP(itr_time_step));
     ar(CEREAL_NVP(itr));
     ar(CEREAL_NVP(itr_times));
+    ar(CEREAL_NVP(ctr));
 
     int rand_seed;
     ar(CEREAL_NVP(rand_seed));
@@ -296,6 +328,7 @@ class DLL_PUBLIC PP {
     ar(CEREAL_NVP(itr_time_step));
     ar(CEREAL_NVP(itr));
     ar(CEREAL_NVP(itr_times));
+    ar(CEREAL_NVP(ctr));
 
     // Note that only the seed is part of the serialization.
     //

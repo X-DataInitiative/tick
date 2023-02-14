@@ -57,3 +57,4 @@ tools/benchmark/data
 # Virtual Environments
 env*/
 venv*/
+tickf.yml

@@ -27,6 +27,9 @@ class PP {
   VArrayDoublePtrList1D get_itr();
   VArrayDoublePtr get_itr_times();
   double get_itr_step();
+  VArrayDoublePtrList1D get_ctr();
+  void store_compensator_values();
+  virtual double evaluate_compensator(int, double);
 
   void reseed_random_generator(int seed);
 

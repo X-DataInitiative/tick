@@ -34,7 +34,7 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
         If `None`, node index will be used.
 
     rotate_x_labels : `float`, default=`0.`
-        Number of degrees to rotate the x-labels clockwise, to prevent 
+        Number of degrees to rotate the x-labels clockwise, to prevent
         overlapping.
 
     Notes
@@ -47,7 +47,7 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
     if node_names is None:
         node_names = range(n_nodes)
     elif len(node_names) != n_nodes:
-        ValueError('node_names must be a list of length {} but has length {}'
+        raise ValueError('node_names must be a list of length {} but has length {}'
                    .format(n_nodes, len(node_names)))
 
     row_labels = ['${} \\rightarrow$'.format(i) for i in node_names]
@@ -85,7 +85,7 @@ def plot_hawkes_kernel_norms(kernel_object, show=True, pcolor_kwargs=None,
     ax.invert_yaxis()
     ax.xaxis.tick_top()
 
-    ax.set_xticklabels(row_labels, minor=False, fontsize=17, 
+    ax.set_xticklabels(row_labels, minor=False, fontsize=17,
                        rotation=rotate_x_labels, ha=x_label_alignment)
     ax.set_yticklabels(column_labels, minor=False, fontsize=17)
 
@@ -142,7 +142,7 @@ def plot_hawkes_kernels(kernel_object, support=None, hawkes=None, n_points=300,
 
     min_support : `float`, default=1e-4
         Start value of the plot. Only used if log_scale is `True`.
-        
+
     ax : `np.ndarray` of `matplotlib.axes`, default=None
         If not None, the figure will be plot on these axes and show will be
         set to False.
@@ -218,7 +218,7 @@ def plot_hawkes_baseline_and_kernels(
         * `kernel_object.get_baseline_values(self, i, abscissa_array)` :
           must return as a numpy 1d array the sampled `i` baseline values
           corresponding to the abscissa `abscissa_array`
-        * `kernel_object.period_length` : a field that stores the size of the 
+        * `kernel_object.period_length` : a field that stores the size of the
           baseline period
         * `kernel_object.get_kernel_supports()` : must return a 2d numpy
           array with the size of the support of each kernel
@@ -231,9 +231,9 @@ def plot_hawkes_baseline_and_kernels(
         If None or non positive then the maximum kernel supports is used
 
     hawkes : `SimuHawkes`, default=None
-        If a `SimuHawkes` object is given then the baseline and kernels plots 
-        are superposed with those of this object (considered as the `True` 
-        baseline and kernels). This is used to plot on the same plots the 
+        If a `SimuHawkes` object is given then the baseline and kernels plots
+        are superposed with those of this object (considered as the `True`
+        baseline and kernels). This is used to plot on the same plots the
         estimated value along with the true values.
 
     n_points : `int`, default=300
@@ -245,7 +245,7 @@ def plot_hawkes_baseline_and_kernels(
         function is necessary. Useful when superposing several plots.
 
     log_scale : `bool`, default=`False`
-        If `True`, then x-axis and y-axis of kernels are on a log-scale. 
+        If `True`, then x-axis and y-axis of kernels are on a log-scale.
         This is useful to plot power-law kernels.
 
     min_support : `float`, default=1e-4
@@ -353,7 +353,7 @@ def _find_best_match(diff_matrix):
 def plot_basis_kernels(learner, support=None, basis_kernels=None, n_points=300,
                        show=True):
     """Function used to plot basis of kernels
-    
+
     It is used jointly with `tick.hawkes.inference.HawkesBasisKernels` learner class.
 
     Parameters

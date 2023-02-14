@@ -50,6 +50,19 @@ bool Hawkes::update_time_shift_(double delay, ArrayDouble &intensity,
   return flag_negative_intensity1;
 }
 
+double Hawkes::evaluate_compensator(int node, double time) {
+  double t = time;
+  int i = node;
+  double value = 0;
+  HawkesBaselinePtr &baseline = baselines[i];
+  value += baseline->get_primitive_value(t);
+  for (unsigned int j = 0; j < n_nodes; ++j) {
+    HawkesKernelPtr &ker_ij = kernels[i * n_nodes + j];
+    value += ker_ij->get_primitive_convolution(t, *timestamps[j]);
+  }
+  return value;
+}
+
 void Hawkes::reset() {
   for (unsigned int i = 0; i < n_nodes; i++) {
     for (unsigned int j = 0; j < n_nodes; j++) {

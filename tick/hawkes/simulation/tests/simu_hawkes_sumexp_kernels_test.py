@@ -79,6 +79,20 @@ class Test(unittest.TestCase):
                 np.mean(self.hawkes.tracked_intensity[i]), mean_intensity[i],
                 delta=0.1)
 
+    def test_compensator(self):
+        """...Test that Hawkes compensator yields residuals that are 1.0 on average
+        """
+        self.hawkes.reset()
+        self.assertLess(self.hawkes.spectral_radius(), 1)
+        self.hawkes.end_time = 1000
+        self.hawkes.simulate()
+        self.hawkes.store_compensator_values()
+        compensators = self.hawkes.tracked_compensator
+        residuals = [np.diff(c) for c in compensators]
+        for res in residuals:
+            self.assertAlmostEqual(np.mean(res), 1.0,   delta=0.1)
+            self.assertAlmostEqual(np.quantile(res, 0.6), 1.0, delta=0.1)
+
     def test_hawkes_sumexp_constructor_errors(self):
         bad_adjacency = np.random.rand(self.n_nodes, self.n_nodes,
                                        self.n_decays + 1)

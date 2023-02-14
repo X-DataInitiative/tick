@@ -332,6 +332,7 @@ class Test(InferenceTest):
             baseline_significance_threshold=1e-3,
             adjacency_significance_threshold=1.85e-2,
             significance_band_width=5.,
+            verbose=True,
         )
 
     @unittest.skipIf(SKIP_TORCH, "PyTorch not available")
@@ -467,7 +468,9 @@ class Test(InferenceTest):
         )
 
         if verbose:
-            print('\n')
+            print('\n_test_hawkes_cumulants_solve')
+            print(f'Learner: {Learner}')
+            print(f'penalty: {penalty}')
             print(f'expected_R_pred:\n{expected_R_pred}')
             print(f'solution:\n{learner.solution}')
 

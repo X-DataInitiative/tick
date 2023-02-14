@@ -234,7 +234,7 @@ TEST_P(ParallelTest, MapArray) {
   }
 }
 
-INSTANTIATE_TEST_CASE_P(AllParallelTests, ParallelTest,
+INSTANTIATE_TEST_SUITE_P(AllParallelTests, ParallelTest,
                         ::testing::Values(1, 2, 4, 8, 16));
 
 TEST(ParallelTest, CPUCount) {

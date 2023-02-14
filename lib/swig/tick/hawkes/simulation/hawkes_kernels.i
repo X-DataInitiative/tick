@@ -11,6 +11,8 @@ class HawkesKernel {
 
   double get_value(double x);
   SArrayDoublePtr get_values(const ArrayDouble &t_values);
+  double get_primitive_value(double t);
+  double get_primitive_value(double s, double t);
   virtual double get_norm(int nsteps = 10000);
 };
 
@@ -41,6 +43,9 @@ public:
   SArrayDoublePtr get_intensities();
   SArrayDoublePtr get_decays();
   ulong get_n_decays() { return n_decays; }
+
+  double get_convolution(const double time, const ArrayDouble &timestamps,
+                         double *const bound) override;
 };
 
 TICK_MAKE_PICKLABLE(HawkesKernelSumExp);

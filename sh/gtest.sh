@@ -42,6 +42,11 @@ popd 2>&1 > /dev/null
 
 source $ROOT/sh/configure_env.sh
 
+CARGS=""
+if (( ! $IS_WINDOWS )); then
+  CARGS=" -fPIC -std=c++11 "
+fi
+
 pushd $ROOT/lib 2>&1 > /dev/null
   [ "$arraylength" == "0" ] && FILES=($(find cpp-test -name "*gtest.cpp"))
 

@@ -21,7 +21,7 @@ property:
     lib_path: ./../tick
     cargs: -DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION
            -D_FILE_OFFSET_BITS=64 -DPYTHON_LINK -DNDEBUG
-    win_cargs: -GL -MD -EHsc -DBUILDING_DLL
+    win_cargs: -GL -MD -EHsc -DBUILDING_DLL -std:c++11
     nixish_cargs: -fwrapv -O2 -Wall
                   -fstack-protector-strong
                   -Wformat -Werror -Wdate-time
@@ -40,7 +40,7 @@ property:
                -Wl,-z,relro -Wl,-z,relro
     bsd_largs: ${nixish_largs}
 
-    nixish_test_cargs: -Wno-error=unused-local-typedefs
+    nixish_test_cargs: -Wno-error=unused-local-typedefs -fPIC
                        -Wno-error=sign-compare -Wno-sign-compare
 
 profile:
@@ -193,7 +193,7 @@ profile:
   - name: exe
     arg: ${cargs}
     if_arg:
-      win: -Ox -GL -MD -EHsc
+      win: -Ox -GL -MD -EHsc -std:c++11
       nix: ${nix_cargs}
       bsd: ${bsd_cargs}
     if_link:
@@ -212,7 +212,7 @@ profile:
       win: -DGTEST_LINKED_AS_SHARED_LIBRARY
     if_link:
       g++: -Wl,-rpath=$PWD
-    dep: google.test
+    dep: google.test#c++11
 
   - name: gtest
     parent: gtest_nodep

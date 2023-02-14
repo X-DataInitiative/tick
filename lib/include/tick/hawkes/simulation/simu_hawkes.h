@@ -38,6 +38,7 @@
  *     \lambda = \mu + \phi * dN
  * \f]
  * where
+ *   - \f$ \mu \f$ are the baselines
  *   - \f$ \phi \f$ are the kernels
  *   - \f$ dN \f$ are the processes differentiates
  *   - \f$ * \f$ is a convolution product
@@ -61,7 +62,7 @@ class DLL_PUBLIC Hawkes : public PP {
   Hawkes(Hawkes &hawkes) = delete;
 
  public:
-  virtual void reset();
+  void reset() override;
 
   /**
    * @brief Set kernel for a specific row and column
@@ -128,8 +129,7 @@ class DLL_PUBLIC Hawkes : public PP {
    * \param total_intensity_bound : A pointer to the variable that will hold a
    * bound of future total intensity
    */
-  virtual void init_intensity_(ArrayDouble &intensity,
-                               double *total_intensity_bound);
+  void init_intensity_(ArrayDouble &intensity, double *total_intensity_bound) override;
 
   /**
    * @brief Updates the current time so that it goes forward of delay seconds
@@ -140,8 +140,8 @@ class DLL_PUBLIC Hawkes : public PP {
    * \param total_intensity_bound : If not NULL then used to set a bound of
    * total future intensity
    */
-  virtual bool update_time_shift_(double delay, ArrayDouble &intensity,
-                                  double *total_intensity_bound);
+  bool update_time_shift_(double delay, ArrayDouble &intensity,
+                                  double *total_intensity_bound) override;
 
   /**
    * @brief Get future baseline maximum reachable value for a specific dimension
@@ -157,6 +157,10 @@ class DLL_PUBLIC Hawkes : public PP {
   void set_baseline(unsigned int i, const HawkesBaselinePtr &baseline);
 
  public:
+  double evaluate_compensator(int node, double time) override;
+
+
+ public:
   template <class Archive>
   void serialize(Archive &ar) {
     ar(cereal::make_nvp("PP", cereal::base_class<PP>(this)));
@@ -166,7 +170,6 @@ class DLL_PUBLIC Hawkes : public PP {
   }
 };
 
-CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Hawkes,
-                                   cereal::specialization::member_serialize)
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(Hawkes, cereal::specialization::member_serialize)
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_SIMULATION_SIMU_HAWKES_H_

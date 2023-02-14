@@ -528,9 +528,9 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
         Parameters
         ----------
         adjacency_start : `str` or `np.ndarray, shape=(n_nodes + n_nodes * n_nodes,), default=`None`
-            Initial guess for the adjacency matrix. Will be used as 
+            Initial guess for the adjacency matrix. Will be used as
             starting point in optimization.
-            If `None`, a default starting point is estimated from the 
+            If `None`, a default starting point is estimated from the
             estimated cumulants
             If `"random"`, as with `None`, a starting point is estimated from
             estimated cumulants with a bit a randomness
@@ -1089,18 +1089,18 @@ class HawkesTheoreticalCumulant(Base):
 
     @adjacency.setter
     def adjacency(self, adjacency):
-        G = np.array(adjacency, dtype=float, copy=True)
-        R = np.ascontiguousarray(
+        g = np.array(adjacency, dtype=float, copy=True)
+        r = np.ascontiguousarray(
             scipy.linalg.inv(
-                np.eye(self.dimension, dtype=float) - G),
+                np.eye(self.dimension, dtype=float) - g),
             dtype=float,
         )
-        self._cumulant.set_R(R)
-        self._adjacency = G
+        self._cumulant.set_g_geom(r)
+        self._adjacency = g
 
     @property
     def _R(self):
-        return self._cumulant.get_R()
+        return self._cumulant.get_g_geom()
 
     @property
     def mean_intensity(self):

@@ -31,8 +31,8 @@ public:
   int get_dimension();
   void set_baseline(const SArrayDoublePtr mu);
   SArrayDoublePtr get_baseline();
-  void set_R(const SArrayDouble2dPtr R);
-  SArrayDouble2dPtr get_R();
+  void set_g_geom(const SArrayDouble2dPtr R);
+  SArrayDouble2dPtr get_g_geom();
   void compute_cumulants();
   SArrayDoublePtr mean_intensity();
   SArrayDouble2dPtr covariance();

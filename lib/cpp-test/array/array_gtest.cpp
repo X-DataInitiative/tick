@@ -37,7 +37,7 @@ class ArrayTest : public ::testing::Test {
 typedef ::testing::Types<ArrayFloat, ArrayDouble, ArrayShort, ArrayUShort,
                          ArrayInt, ArrayUInt, ArrayLong, ArrayULong>
     MyArrayTypes;
-TYPED_TEST_CASE(ArrayTest, MyArrayTypes);
+TYPED_TEST_SUITE(ArrayTest, MyArrayTypes);
 
 template <typename ArrType>
 class Array2dTest : public ::testing::Test {
@@ -49,7 +49,7 @@ typedef ::testing::Types<ArrayFloat2d, ArrayDouble2d, ArrayShort2d,
                          ArrayUShort2d, ArrayInt2d, ArrayUInt2d, ArrayLong2d,
                          ArrayULong2d>
     MyArray2dTypes;
-TYPED_TEST_CASE(Array2dTest, MyArray2dTypes);
+TYPED_TEST_SUITE(Array2dTest, MyArray2dTypes);
 
 TYPED_TEST(ArrayTest, InitToZero) {
   TypeParam arr{TICK_TEST_DATA_SIZE};
@@ -195,6 +195,10 @@ TYPED_TEST(ArrayTest, Contains) {
 
   typename TypeParam::value_type value_3 = arrA[3] + 0.;
   typename TypeParam::value_type new_value = 7032;
+
+  int retries = 0;
+  while(retries++ < 5 && arrA.contains(new_value)) arrA = ::GenerateRandomArray<TypeParam>();
+
   EXPECT_TRUE(arrA.contains(value_3));
   EXPECT_FALSE(arrA.contains(new_value));
   arrA[3] = new_value;
