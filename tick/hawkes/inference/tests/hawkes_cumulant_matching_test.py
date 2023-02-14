@@ -252,10 +252,11 @@ class Test(InferenceTest):
             C=1e-4,
             tol=1e-16,
             R_significance_threshold=2.05e-2,
-            # This will effectliovely suppress the check but it is ok becasue baselines are all equal
+            # This will effectively suppress the check but it is ok becasue baselines are all equal
             baseline_significance_threshold=1e-3,
             adjacency_significance_threshold=1.85e-2,
             significance_band_width=5.,
+            verbose=True,
         )
 
     @unittest.skip("pytorch not implemented yet")
@@ -388,7 +389,9 @@ class Test(InferenceTest):
         )
 
         if verbose:
-            print('\n')
+            print('\n_test_hawkes_cumulants_solve')
+            print(f'Learner: {Learner}')
+            print(f'penalty: {penalty}')
             print(f'expected_R_pred:\n{expected_R_pred}')
             print(f'solution:\n{learner.solution}')
 
