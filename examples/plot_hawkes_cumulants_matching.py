@@ -28,7 +28,7 @@ if not skip:
 
     import numpy as np
 
-    from tick.hawkes import (HawkesCumulantMatching, SimuHawkesExpKernels,
+    from tick.hawkes import (HawkesCumulantMatchingTf, SimuHawkesExpKernels,
                              SimuHawkesMulti)
     from tick.plot import plot_hawkes_kernel_norms
 
@@ -58,8 +58,8 @@ if not skip:
                             n_threads=-1)
     multi.simulate()
 
-    nphc = HawkesCumulantMatching(integration_support, cs_ratio=.15, tol=1e-10,
-                                  step=0.3)
+    nphc = HawkesCumulantMatchingTf(integration_support, cs_ratio=.15, tol=1e-10,
+                                    step=0.3)
 
     nphc.fit(multi.timestamps)
     plot_hawkes_kernel_norms(nphc)

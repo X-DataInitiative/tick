@@ -44,8 +44,7 @@ SArrayDoublePtr HawkesCumulant::compute_A_and_I_ij(ulong r, ulong i, ulong j,
       if (abs_t_j_l_minus_t_i_k < width) {
         sub_res += width - abs_t_j_l_minus_t_i_k;
 
-        if (abs_t_j_l_minus_t_i_k < integration_support)
-          timestamps_in_interval++;
+        if (abs_t_j_l_minus_t_i_k < integration_support) timestamps_in_interval++;
       } else {
         break;
       }
@@ -64,8 +63,7 @@ SArrayDoublePtr HawkesCumulant::compute_A_and_I_ij(ulong r, ulong i, ulong j,
   return return_array.as_sarray_ptr();
 }
 
-double HawkesCumulant::compute_E_ijk(ulong r, ulong i, ulong j, ulong k,
-                                     double mean_intensity_i,
+double HawkesCumulant::compute_E_ijk(ulong r, ulong i, ulong j, ulong k, double mean_intensity_i,
                                      double mean_intensity_j, double J_ij) {
   auto timestamps_i = timestamps_list[r][i];
   auto timestamps_j = timestamps_list[r][j];
@@ -125,4 +123,69 @@ double HawkesCumulant::compute_E_ijk(ulong r, ulong i, ulong j, ulong k,
   }
   res /= (*end_times)[r];
   return res;
+}
+
+HawkesTheoreticalCumulant::HawkesTheoreticalCumulant(int dim) : d(dim) {
+  first_cumulant = SArrayDouble::new_ptr(dim);          // The matrix \$Lambda\$ from the paper
+  second_cumulant = SArrayDouble2d::new_ptr(dim, dim);  // The matrix \$C\$ from the paper
+  third_cumulant = SArrayDouble2d::new_ptr(dim, dim);   // The matrix \$Kc\$ from the paper
+
+  g_geom = SArrayDouble2d::new_ptr(dim, dim);  // The matrix R = (I - G)^{-1} from the paper
+}
+
+// Formulae from eq. 7 in the paper
+void HawkesTheoreticalCumulant::compute_mean_intensity() {
+  for (int i = 0; i < d; ++i) {
+    double lambda_i = 0;
+    for (int m = 0; m < d; ++m) {
+      int _im = i * d + m;
+      double mu_m = (*mu)[m];
+      double r_im = (*g_geom)[_im];
+      lambda_i += r_im * mu_m;
+    }
+    (*first_cumulant)[i] = lambda_i;
+  }
+};
+
+// Formulae from eq. 8 in the paper
+void HawkesTheoreticalCumulant::compute_covariance() {
+  for (int i = 0; i < d; ++i) {
+    for (int j = 0; j < d; ++j) {
+      int _ij = i * d + j;
+      double c_ij = 0;
+      for (int m = 0; m < d; ++m) {
+        int _im = i * d + m;
+        int _jm = j * d + m;
+        c_ij += (*first_cumulant)[m] * (*g_geom)[_im] * (*g_geom)[_jm];
+      }
+      (*second_cumulant)[_ij] = c_ij;
+    }
+  }
+};
+
+// Formulae from eq. 9 in the paper
+void HawkesTheoreticalCumulant::compute_skewness() {
+  for (int i = 0; i < d; ++i) {
+    for (int k = 0; k < d; ++k) {
+      int _ik = i * d + k;
+      double third_cumulant_ik = 0;
+      for (int m = 0; m < d; ++m) {
+        int _im = i * d + m;
+        int _km = k * d + m;
+        double r_im = (*g_geom)[_im];
+        double r_km = (*g_geom)[_km];
+        double c_km = (*second_cumulant)[_km];
+        double c_im = (*second_cumulant)[_im];
+        double first_cumulant_m = (*first_cumulant)[m];
+        third_cumulant_ik += (r_im * r_im * c_km + 2 * r_im * r_km * c_im -
+                              2 * first_cumulant_m * r_im * r_im * r_km);
+      }
+      (*third_cumulant)[_ik] = third_cumulant_ik;
+    }
+  }
+};
+void HawkesTheoreticalCumulant::compute_cumulants() {
+  compute_mean_intensity();
+  compute_covariance();
+  compute_skewness();
 }

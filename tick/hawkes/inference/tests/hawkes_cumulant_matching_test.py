@@ -8,212 +8,458 @@ import numpy as np
 
 from tick.base.inference import InferenceTest
 
-skip = True
+
+from tick.hawkes import (
+    HawkesCumulantMatching,
+    HawkesCumulantMatchingTf,
+    HawkesCumulantMatchingPyT
+)
+from tick.hawkes.inference.hawkes_cumulant_matching import HawkesTheoreticalCumulant
+
+SKIP_TF = False
 try:
     import tensorflow as tf
-    if int(tf.__version__[0]) == 1: # test is disabled until v2 is working
-        skip = False
 except ImportError:
-    print("tensorflow not found, skipping HawkesCumulantMatching test")
+    SKIP_TF = True
 
-if not skip:
-    from tick.hawkes import HawkesCumulantMatching
 
-    class Test(InferenceTest):
-        def setUp(self):
-            self.dim = 2
-            np.random.seed(320982)
+class Test(InferenceTest):
+    def setUp(self):
+        self.dim = 2
+        np.random.seed(320982)
 
-        @staticmethod
-        def get_train_data(decay):
-            saved_train_data_path = os.path.join(
-                os.path.dirname(__file__),
-                'hawkes_cumulant_matching_test-train_data.pkl')
+    @staticmethod
+    def get_simulated_model():
+        from tick.hawkes import SimuHawkesExpKernels
+        from tick.hawkes import SimuHawkesMulti
 
-            with open(saved_train_data_path, 'rb') as f:
-                train_data = pickle.load(f)
+        adjacency = [
+            [0.15, 0.03, 0.09],
+            [0.0, 0.2, 0.05],
+            [.05, .08, 0.1],
+        ]
+        decays = [
+            [1., 1., 1.],
+            [1., 1., 1.],
+            [1., 1., 1.],
+        ]
+        baseline = [.001, .001, .001]
+        end_time = 5.0e+7
+        model = SimuHawkesExpKernels(
+            adjacency=adjacency,
+            decays=decays,
+            baseline=baseline,
+            end_time=end_time,
+            max_jumps=100000,
+            verbose=False,
+            seed=1039,
+            force_simulation=False,
+        )
+        assert (model.spectral_radius() < 1.)
+        n_simulations = 5
+        multi = SimuHawkesMulti(
+            model,
+            n_simulations=n_simulations,
+        )
+        multi.end_time = [end_time] * n_simulations
+        multi.simulate()
+        return multi
 
-            baseline = train_data[decay]['baseline']
-            adjacency = train_data[decay]['adjacency']
-            timestamps = train_data[decay]['timestamps']
+    def _test_relative_magnitudes(self,
+                                  expected: np.ndarray,
+                                  estimated: np.ndarray,
+                                  significance_threshold: float,
+                                  quantity_name: str,
+                                  significance_band_width: float = 10,
+                                  ):
+        self.assertFalse(
+            np.any(
+                np.logical_and(
+                    np.sort(np.abs(expected.flatten())
+                            ) < significance_threshold,
+                    np.sort(np.abs(estimated.flatten())) > significance_band_width *
+                    significance_threshold
+                )
+            ) or
+            np.any(
+                np.logical_and(
+                    np.sort(np.abs(expected.flatten())) > significance_band_width *
+                    significance_threshold,
+                    np.sort(np.abs(estimated.flatten())
+                            ) < significance_threshold
+                )
+            ),
+            f'Sorted estimated {quantity_name} and sorted expected {quantity_name} '
+            'have corresponding entries on the opposite side of the band '
+            f'({significance_threshold}, {significance_band_width*significance_threshold}):\n'
+            f'Sorted absolute estimated {quantity_name}:\n'
+            f'{np.sort(np.abs(estimated.flatten()))}\n'
+            f'Sorted absolute expected {quantity_name}:\n'
+            f'{np.sort(np.abs(expected.flatten()))}\n'
+        )
+        significance_idx = np.logical_and(
+            np.abs(expected) > significance_threshold,
+            np.abs(estimated) > significance_threshold
+        )
+        significant_estimated = estimated[
+            significance_idx].flatten()
+        significant_estimated_argsort = np.argsort(
+            significant_estimated)
+        sorted_significant_estimated = np.sort(
+            significant_estimated)
+        significant_expected = expected[
+            significance_idx].flatten()
+        significant_expected_argsort = np.argsort(
+            significant_expected)
+        sorted_significant_expected = np.sort(
+            significant_expected)
+        np.testing.assert_array_equal(
+            significant_expected_argsort,
+            significant_estimated_argsort,
+            err_msg='Relative magnitudes of '
+            f'estimated {quantity_name} differ from '
+            f'relative magnitudes of expected {quantity_name}.\n'
+            f'significant {quantity_name} expected :\n{significant_expected}\n'
+            f'significant {quantity_name} estimated :\n{significant_estimated}\n'
+            f'significant expected {quantity_name} argsort:\n{significant_expected_argsort}\n'
+            f'significant estimated {quantity_name} argsort:\n{significant_estimated_argsort}\n'
+        )
 
-            return timestamps, baseline, adjacency
+    def test_hawkes_cumulants(self):
+        """...Test that estimated cumulants are correct
+        """
 
-        def test_hawkes_cumulants(self):
-            """...Test that estimated cumulants are coorect
-            """
-            timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
+        multi = Test.get_simulated_model()
+        timestamps = multi.timestamps
+        baseline = multi.hawkes_simu.baseline
+        adjacency = multi.hawkes_simu.adjacency
+        decays = multi.hawkes_simu.decays
+        integration_support = .3
+        n_nodes = multi.hawkes_simu.n_nodes
 
-            expected_L = [2.149652, 2.799746, 4.463995]
+        theoretical_cumulant = HawkesTheoreticalCumulant(n_nodes)
+        self.assertEqual(theoretical_cumulant.dimension, n_nodes)
+        theoretical_cumulant.baseline = baseline
+        theoretical_cumulant.adjacency = adjacency
 
-            expected_C = [[15.685827, 16.980316,
-                           30.232248], [16.980316, 23.765304, 36.597161],
-                          [30.232248, 36.597161, 66.271089]]
+        np.testing.assert_array_almost_equal(
+            theoretical_cumulant.baseline,
+            baseline)
+        np.testing.assert_array_almost_equal(
+            theoretical_cumulant.adjacency,
+            adjacency)
+        np.testing.assert_array_almost_equal(
+            np.eye(theoretical_cumulant.dimension) -
+            np.linalg.inv(theoretical_cumulant._R),
+            adjacency
+        )
 
-            expected_K = [[49.179092, -959.246309, -563.529052],
-                          [-353.706952, -1888.600201, -1839.608349],
-                          [-208.913969, -2103.952235, -150.937999]]
+        theoretical_cumulant.compute_cumulants()
+        expected_L = theoretical_cumulant.mean_intensity
+        expected_C = theoretical_cumulant.covariance
+        expected_K = theoretical_cumulant.skewness
 
-            learner = HawkesCumulantMatching(100.)
-            learner._set_data(timestamps)
-            self.assertFalse(learner._cumulant_computer.cumulants_ready)
+        learner = HawkesCumulantMatching(
+            integration_support=integration_support)
+        learner._set_data(timestamps)
+        self.assertFalse(learner._cumulant_computer.cumulants_ready)
+        learner.compute_cumulants()
+        self.assertTrue(learner._cumulant_computer.cumulants_ready)
+
+        # Test 1 - mean intensity
+        # Test 1.1 - relative magnitudes of mean intensity are the same as
+        # realtive magnitudes of expected mean intensity
+        self._test_relative_magnitudes(
+            estimated=learner.mean_intensity,
+            expected=expected_L,
+            quantity_name='mean intensity',
+            significance_threshold=1e-7,
+        )
+        # Test 1.2 - estimated mean intensity is close to expected mean intensity
+        np.testing.assert_allclose(
+            learner.mean_intensity,
+            expected_L,
+            atol=0.005,
+            rtol=0.015,
+        )
+
+        # Test 2 - covariance
+        # Test 2.1 - relative magnitudes of estimated covariances are the same
+        # as relative magnitudes of expected covariances
+        self._test_relative_magnitudes(
+            estimated=learner.covariance,
+            expected=expected_C,
+            quantity_name='variance',
+            significance_threshold=5.75e-5,
+        )
+        # Test 2.2 - estimated covariance is close to expected covariance
+        np.testing.assert_allclose(
+            learner.covariance,
+            expected_C,
+            atol=0.03,  # Can we design a test that succeed when tolerance is lower?
+            rtol=0.05,
+        )
+
+        # Test 3 - skewness
+        # Test 3.1 - relative magnitudes of estimated skewnesss are the same
+        # as relative magnitudes of expected skewnesss
+        self._test_relative_magnitudes(
+            estimated=learner.skewness,
+            expected=expected_K,
+            quantity_name='skewness',
+            significance_threshold=6.75e-5,
+        )
+        # Test 3.2 - estimated skewness is close to expected covariance
+        np.testing.assert_allclose(
+            learner.skewness,
+            expected_K,
+            atol=0.15,  # Can we design a test that succeed when tolerance is lower?
+            rtol=0.2,
+        )
+
+        self.assertGreater(
+            learner.approximate_optimal_cs_ratio(),
+            0.0)
+
+        learner._set_data(timestamps)
+        self.assertTrue(learner._cumulant_computer.cumulants_ready)
+
+    def test_hawkes_cumulants_unfit(self):
+        """...Test that HawkesCumulantMatching raises an error if no data is
+        given
+        """
+        learner = HawkesCumulantMatching(
+            100.,
+            cs_ratio=0.9,
+            max_iter=299,
+            print_every=30,
+            step=1e-2,
+            solver='adam',
+        )
+
+        msg = '^Cannot compute cumulants if no realization has been provided$'
+        with self.assertRaisesRegex(RuntimeError, msg):
             learner.compute_cumulants()
-            self.assertTrue(learner._cumulant_computer.cumulants_ready)
 
-            np.testing.assert_array_almost_equal(learner.mean_intensity,
-                                                 expected_L)
-            np.testing.assert_array_almost_equal(learner.covariance,
-                                                 expected_C)
-            np.testing.assert_array_almost_equal(learner.skewness, expected_K)
+    @unittest.skipIf(SKIP_TF, "Tensorflow not available")
+    def test_hawkes_cumulants_tf_solve(self):
+        self._test_hawkes_cumulants_solve(
+            Learner=HawkesCumulantMatchingTf,
+            max_iter=8000,
+            step=1e-5,
+            solver='adam',
+            penalty=None,
+            C=1e-4,
+            tol=1e-16,
+            R_significance_threshold=2.05e-2,
+            # This will effectively suppress the check but it is ok becasue baselines are all equal
+            baseline_significance_threshold=1e-3,
+            adjacency_significance_threshold=1.85e-2,
+            significance_band_width=5.,
+            verbose=True,
+        )
 
-            self.assertAlmostEqual(learner.approximate_optimal_cs_ratio(),
-                                   0.999197628503)
+    @unittest.skip("pytorch not implemented yet")
+    def test_hawkes_cumulants_pyt_solve(self):
+        self._test_hawkes_cumulants_solve(
+            Learner=HawkesCumulantMatchingPyT,
+            max_iter=4000,
+            print_every=30,
+            step=1e-4,
+            solver='adam',
+            penalty=None,
+            C=1e-3,
+            tol=1e-16,
+            R_significance_threshold=5e-4,
+            baseline_significance_threshold=5e-4,
+            adjacency_significance_threshold=5e-4,
+            significance_band_width=10.,
+        )
 
-            learner._set_data(timestamps)
-            self.assertTrue(learner._cumulant_computer.cumulants_ready)
+    @unittest.skipIf(SKIP_TF, "Tensorflow not available")
+    def test_hawkes_cumulants_tf_solve_l1(self):
+        self._test_hawkes_cumulants_solve(
+            Learner=HawkesCumulantMatchingTf,
+            max_iter=8000,
+            step=1e-5,
+            solver='adam',
+            penalty='l1',
+            C=1e-6,
+            tol=1e-16,
+            R_significance_threshold=1.5e-0,  # relative magnitudes of R effectively not tested
+            # relative magnitudes of baseline effectively not tested
+            baseline_significance_threshold=1e-3,
+            adjacency_significance_threshold=1.25e-6,
+            significance_band_width=9e+4,
+        )
 
-        def test_hawkes_cumulants_solve(self):
-            """...Test that hawkes cumulant reached expected value
-            """
-            timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
-            learner = HawkesCumulantMatching(100., cs_ratio=0.9, max_iter=300,
-                                             print_every=30, step=1e-2,
-                                             solver='adam', C=1e-3, tol=1e-5)
-            learner.fit(timestamps)
+    @unittest.skip("pytorch not implemented yet")
+    def test_hawkes_cumulants_pyt_solve_l1(self):
+        self._test_hawkes_cumulants_solve(
+            Learner=HawkesCumulantMatchingPyT,
+            max_iter=4000,
+            print_every=30,
+            step=1e-4,
+            solver='adam',
+            penalty='l1',
+            C=1e-3,
+            tol=1e-16,
+            R_significance_threshold=1e-2,
+            baseline_significance_threshold=1e-2,
+            adjacency_significance_threshold=1e-2,
+            significance_band_width=100.,
+        )
 
-            expected_R_pred = [[0.423305, -0.559607,
-                                -0.307212], [-0.30411, 0.27066, -0.347162],
-                               [0.484648, 0.331057, 1.591584]]
+    @unittest.skipIf(SKIP_TF, "Tensorflow not available")
+    def test_hawkes_cumulants_tf_solve_l2(self):
+        self._test_hawkes_cumulants_solve(
+            Learner=HawkesCumulantMatchingTf,
+            max_iter=8000,
+            step=1e-5,
+            solver='adam',
+            penalty='l2',
+            C=1e-5,
+            tol=1e-16,
+            R_significance_threshold=1.5e-6,
+            # relative magnitudes of baseline effectively not tested
+            baseline_significance_threshold=1e-3,
+            adjacency_significance_threshold=5e-13,
+            significance_band_width=5e+12,
+        )
 
-            np.testing.assert_array_almost_equal(learner.solution,
-                                                 expected_R_pred)
+    @unittest.skip("PyTorch yet to be implemented")
+    def test_hawkes_cumulants_pyt_solve_l2(self):
+        self._test_hawkes_cumulants_solve(
+            Learner=HawkesCumulantMatchingPyT,
+            max_iter=4000,
+            print_every=30,
+            step=1e-4,
+            solver='adam',
+            penalty='l2',
+            C=1e-3,
+            tol=1e-16,
+            R_significance_threshold=1e-2,
+            baseline_significance_threshold=1e-2,
+            adjacency_significance_threshold=1e-2,
+            significance_band_width=100.,
+        )
 
-            expected_baseline = [36.808583, 32.304106, -15.123118]
+    def _test_hawkes_cumulants_solve(
+            self,
+            Learner=HawkesCumulantMatchingTf,
+            max_iter=4000,
+            print_every=30,
+            step=1e-4,
+            solver='adam',
+            penalty=None,
+            C=1e-3,
+            tol=1e-16,
+            verbose=False,
+            R_significance_threshold=1e-4,
+            adjacency_significance_threshold=1e-4,
+            baseline_significance_threshold=1e-4,
+            significance_band_width=10.,
 
-            np.testing.assert_array_almost_equal(learner.baseline,
-                                                 expected_baseline)
+    ):
+        """...Test that hawkes cumulant reached expected value
+        """
+        multi = Test.get_simulated_model()
+        n_nodes = multi.hawkes_simu.n_nodes
+        timestamps = multi.timestamps
+        baseline = multi.hawkes_simu.baseline
+        decays = multi.hawkes_simu.decays
+        integration_support = .3
 
-            expected_adjacency = [[-3.34742247, -6.28527387, -2.21012092],
-                                  [-2.51556256, -5.55341413, -1.91501755],
-                                  [1.84706793, 3.2770494, 1.44302449]]
+        learner = Learner(
+            integration_support=integration_support,
+            max_iter=max_iter,
+            print_every=print_every,
+            step=step,
+            solver=solver,
+            penalty=penalty,
+            C=C,
+            tol=tol,
+        )
+        learner.fit(timestamps)
+        if verbose:
+            learner.print_history()
 
-            np.testing.assert_array_almost_equal(learner.adjacency,
-                                                 expected_adjacency)
+        expected_R_pred = np.linalg.inv(
+            np.eye(n_nodes) - multi.hawkes_simu.adjacency
+        )
 
-            np.testing.assert_array_almost_equal(
-                learner.objective(learner.adjacency), 149029.4540306161)
+        if verbose:
+            print('\n_test_hawkes_cumulants_solve')
+            print(f'Learner: {Learner}')
+            print(f'penalty: {penalty}')
+            print(f'expected_R_pred:\n{expected_R_pred}')
+            print(f'solution:\n{learner.solution}')
 
-            np.testing.assert_array_almost_equal(
-                learner.objective(R=learner.solution), 149029.4540306161)
+        self._test_relative_magnitudes(
+            quantity_name='R',
+            expected=expected_R_pred,
+            estimated=learner.solution,
+            significance_threshold=R_significance_threshold,
+            significance_band_width=significance_band_width,
+        )
 
-            # Ensure learner can be fit again
-            timestamps_2, baseline, adjacency = Test.get_train_data(decay=2.)
-            learner.step = 1e-1
-            learner.penalty = 'l2'
-            learner.fit(timestamps_2)
+        self.assertTrue(
+            np.allclose(
+                learner.solution,
+                expected_R_pred,
+                atol=0.1,  # TODO: explain why estimation is not so accurate
+                rtol=0.25,
+            ))
 
-            expected_adjacency_2 = [[-0.021966, -0.178811, -0.107636],
-                                    [0.775206, 0.384494,
-                                     0.613925], [0.800584, 0.581281, 0.60177]]
+        expected_baseline = baseline
 
-            np.testing.assert_array_almost_equal(learner.adjacency,
-                                                 expected_adjacency_2)
+        if verbose:
+            print('\n')
+            print(f'expected_baseline:\n{expected_baseline}')
+            print(f'estimated_baseline:\n{learner.baseline}')
 
-            learner_2 = HawkesCumulantMatching(
-                100., cs_ratio=0.9, max_iter=299, print_every=30, step=1e-1,
-                solver='adam', penalty='l2', C=1e-3, tol=1e-5)
-            learner_2.fit(timestamps_2)
+        self._test_relative_magnitudes(
+            quantity_name='baseline',
+            expected=expected_baseline,
+            estimated=learner.baseline,
+            significance_threshold=baseline_significance_threshold,
+            significance_band_width=significance_band_width,
+        )
 
-            np.testing.assert_array_almost_equal(learner.adjacency,
-                                                 expected_adjacency_2)
+        self.assertTrue(
+            np.allclose(
+                learner.baseline,
+                expected_baseline,
+                atol=0.01,
+                rtol=0.1,
+            ))
 
-            # Check cumulants are not computed again
-            learner_2.step = 1e-2
-            learner_2.fit(timestamps_2)
+        expected_adjacency = multi.hawkes_simu.adjacency
+        if verbose:
+            print('\n')
+            print(f'expected_adjacency:\n{expected_adjacency}')
+            print(f'estimated_adjacency:\n{learner.adjacency}')
 
-        def test_hawkes_cumulants_unfit(self):
-            """...Test that HawkesCumulantMatching raises an error if no data is
-            given
-            """
-            learner = HawkesCumulantMatching(100., cs_ratio=0.9, max_iter=299,
-                                             print_every=30, step=1e-2,
-                                             solver='adam')
+        self._test_relative_magnitudes(
+            quantity_name='adjacency',
+            expected=expected_adjacency,
+            estimated=learner.adjacency,
+            significance_threshold=adjacency_significance_threshold,
+            significance_band_width=significance_band_width,
+        )
 
-            msg = '^Cannot compute cumulants if no realization has been provided$'
-            with self.assertRaisesRegex(RuntimeError, msg):
-                learner.compute_cumulants()
-
-        def test_hawkes_cumulants_solve_l1(self):
-            """...Test that hawkes cumulant reached expected value with l1
-            penalization
-            """
-            timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
-            learner = HawkesCumulantMatching(
-                100., cs_ratio=0.9, max_iter=300, print_every=30, step=1e-2,
-                solver='adam', penalty='l1', C=1, tol=1e-5)
-            learner.fit(timestamps)
-
-            expected_R_pred = [[0.434197, -0.552021,
-                                -0.308883], [-0.299366, 0.272764, -0.347764],
-                               [0.48448, 0.331059, 1.591587]]
-
-            np.testing.assert_array_almost_equal(learner.solution,
-                                                 expected_R_pred)
-
-            expected_baseline = [32.788801, 29.324684, -13.275885]
-
-            np.testing.assert_array_almost_equal(learner.baseline,
-                                                 expected_baseline)
-
-            expected_adjacency = [[-2.925945, -5.54899, -1.97438],
-                                  [-2.201373, -5.009153,
-                                   -1.740234], [1.652958, 2.939054, 1.334677]]
-
-            np.testing.assert_array_almost_equal(learner.adjacency,
-                                                 expected_adjacency)
-
-            np.testing.assert_array_almost_equal(
-                learner.objective(learner.adjacency), 149061.5590630687)
-
-            np.testing.assert_array_almost_equal(
-                learner.objective(R=learner.solution), 149061.5590630687)
-
-        def test_hawkes_cumulants_solve_l2(self):
-            """...Test that hawkes cumulant reached expected value with l2
-            penalization
-            """
-            timestamps, baseline, adjacency = Test.get_train_data(decay=3.)
-            learner = HawkesCumulantMatching(
-                100., cs_ratio=0.9, max_iter=300, print_every=30, step=1e-2,
-                solver='adam', penalty='l2', C=0.1, tol=1e-5)
-            learner.fit(timestamps)
-
-            expected_R_pred = [[0.516135, -0.484529,
-                                -0.323191], [-0.265853, 0.291741, -0.35285],
-                               [0.482819, 0.331344, 1.591535]]
-
-            np.testing.assert_array_almost_equal(learner.solution,
-                                                 expected_R_pred)
-
-            expected_baseline = [17.066997, 17.79795, -6.07811]
-
-            np.testing.assert_array_almost_equal(learner.baseline,
-                                                 expected_baseline)
-
-            expected_adjacency = [[-1.310854, -2.640152, -1.054596],
-                                  [-1.004887, -2.886297,
-                                   -1.065671], [0.910245, 1.610029, 0.913469]]
-
-            np.testing.assert_array_almost_equal(learner.adjacency,
-                                                 expected_adjacency)
-
-            np.testing.assert_array_almost_equal(
-                learner.objective(learner.adjacency), 149232.94041039888)
-
-            np.testing.assert_array_almost_equal(
-                learner.objective(R=learner.solution), 149232.94041039888)
+        if penalty in ('l1', 'l2'):
+            atol = 0.2
+        else:
+            atol = 0.1
+        self.assertTrue(
+            np.allclose(
+                learner.adjacency,
+                expected_adjacency,
+                atol=atol,  # TODO: explain why estimation is not so accurate
+                rtol=0.25,
+            ))
 
 
 if __name__ == "__main__":
-    if not skip:
-        unittest.main()
+    unittest.main()
