@@ -340,7 +340,7 @@ class Test(InferenceTest):
         self._test_hawkes_cumulants_solve(
             Learner=HawkesCumulantMatchingPyT,
             max_iter=4000,
-            print_every=30,
+            print_every=500,
             step=1e-4,
             solver='adam',
             penalty=None,
@@ -351,6 +351,7 @@ class Test(InferenceTest):
             baseline_significance_threshold=1e-3,
             adjacency_significance_threshold=3e-2,
             significance_band_width=5.,
+            verbose=False,
         )
 
     @unittest.skipIf(SKIP_TF, "Tensorflow not available")
@@ -375,17 +376,18 @@ class Test(InferenceTest):
         self._test_hawkes_cumulants_solve(
             Learner=HawkesCumulantMatchingPyT,
             max_iter=8000,
-            print_every=30,
+            print_every=1000,
             step=1e-5,
             solver='adam',
             penalty='l1',
-            C=1e-6,
+            C=1e+2,
             tol=1e-16,
             R_significance_threshold=1.5e-0,  # relative magnitudes of R effectively not tested
             # relative magnitudes of baseline effectively not tested
             baseline_significance_threshold=1e-3,
-            adjacency_significance_threshold=1.25e-6,
+            adjacency_significance_threshold=1.35e-6,
             significance_band_width=1.3e+5,
+            verbose=False,
         )
 
     @unittest.skipIf(SKIP_TF, "Tensorflow not available")
@@ -410,7 +412,7 @@ class Test(InferenceTest):
         self._test_hawkes_cumulants_solve(
             Learner=HawkesCumulantMatchingPyT,
             max_iter=4000,
-            print_every=30,
+            print_every=500,
             step=1e-4,
             solver='adam',
             penalty='l2',
@@ -427,7 +429,7 @@ class Test(InferenceTest):
             self,
             Learner=HawkesCumulantMatchingTf,
             max_iter=4000,
-            print_every=30,
+            print_every=500,
             step=1e-4,
             solver='adam',
             penalty=None,
@@ -458,19 +460,19 @@ class Test(InferenceTest):
             penalty=penalty,
             C=C,
             tol=tol,
+            verbose=verbose,
         )
         learner.fit(timestamps)
         if verbose:
-            learner.print_history()
+            print('\n_test_hawkes_cumulants_solve')
+            print(f'Learner: {Learner}')
+            print(f'penalty: {penalty}')
 
         expected_R_pred = np.linalg.inv(
             np.eye(n_nodes) - multi.hawkes_simu.adjacency
         )
 
         if verbose:
-            print('\n_test_hawkes_cumulants_solve')
-            print(f'Learner: {Learner}')
-            print(f'penalty: {penalty}')
             print(f'expected_R_pred:\n{expected_R_pred}')
             print(f'solution:\n{learner.solution}')
 

@@ -1031,11 +1031,12 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
             loss.backward()
             optimizer.step()
             _new = float(loss)
-            if _new == 0.:
+            if abs(_new) == 0.:
                 converged = True
             else:
-                _rel_chg = abs(_new-_prev) / _new
+                _rel_chg = abs(_new-_prev) / abs(_new)
                 converged = _rel_chg < self.tol
+            self._handle_history(n_iter + 1, objective=loss, rel_obj=_rel_chg)
             if converged:
                 break
             else:
