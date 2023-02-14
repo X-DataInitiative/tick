@@ -49,9 +49,9 @@ TEST_F(TimeFunctionTest, border0_interconstright_implicit_node_values) {
   for (int k = 0; k < T.size(); k++) {
     double t_k = T[k];
     double y_k = Y[k];
-    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k);
+    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k) << "error at k=" << k << ", t_k=" << t_k << "\n";
     if (k > 0) s += Y[k - 1] * dt;
-    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s);
+    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s) << "error at k=" << k << ", t_k=" << t_k << "\n";
   }
 
   EXPECT_DOUBLE_EQ(tf.get_norm(), tf.primitive(time_horizon));
@@ -64,9 +64,9 @@ TEST_F(TimeFunctionTest, border0_interconstright_explicit_node_values) {
   for (int k = 0; k < T.size(); k++) {
     double t_k = T[k];
     double y_k = Y[k];
-    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k);
+    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k) << "error at k=" << k << ", t_k=" << t_k << "\n";
     if (k > 0) s += Y[k - 1] * dt;
-    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s);
+    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s) << "error at k=" << k << ", t_k=" << t_k << "\n";
   }
 
   EXPECT_DOUBLE_EQ(tf.get_norm(), tf.primitive(time_horizon));
@@ -79,9 +79,9 @@ TEST_F(TimeFunctionTest, border0_interconstleft_implicit_node_values) {
   for (int k = 0; k < T.size(); k++) {
     double t_k = T[k];
     double y_k = Y[k];
-    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k);
+    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k) << "error at k=" << k << ", t_k=" << t_k << "\n";
     if (k > 0) s += y_k * dt;
-    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s);
+    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s) << "error at k=" << k << ", t_k=" << t_k << "\n";
   }
   EXPECT_DOUBLE_EQ(tf.get_norm(), tf.primitive(time_horizon));
 }
@@ -92,9 +92,9 @@ TEST_F(TimeFunctionTest, border0_interconstleft_explicit_node_values) {
   for (int k = 0; k < T.size(); k++) {
     double t_k = T[k];
     double y_k = Y[k];
-    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k);
+    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k) << "error at k=" << k << ", t_k=" << t_k << "\n";
     if (k > 0) s += y_k * dt;
-    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s);
+    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s) << "error at k=" << k << ", t_k=" << t_k << "\n";
   }
   EXPECT_DOUBLE_EQ(tf.get_norm(), tf.primitive(time_horizon));
 }
@@ -106,9 +106,9 @@ TEST_F(TimeFunctionTest, border0_interlinear_implicit_node_values) {
   for (int k = 0; k < T.size(); k++) {
     double t_k = T[k];
     double y_k = Y[k];
-    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k);
+    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k) << "error at k=" << k << ", t_k=" << t_k << "\n";
     if (k > 0) s += .5 * (y_k + Y[k - 1]) * dt;
-    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s);
+    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s) << "error at k=" << k << ", t_k=" << t_k << "\n";
   }
   EXPECT_DOUBLE_EQ(tf.get_norm(), tf.primitive(time_horizon));
 }
@@ -119,9 +119,9 @@ TEST_F(TimeFunctionTest, border0_interlinear_explicit_node_values) {
   for (int k = 0; k < T.size(); k++) {
     double t_k = T[k];
     double y_k = Y[k];
-    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k);
+    EXPECT_DOUBLE_EQ(tf.value(t_k), y_k) << "error at k=" << k << ", t_k=" << t_k << "\n";
     if (k > 0) s += .5 * (y_k + Y[k - 1]) * dt;
-    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s);
+    EXPECT_DOUBLE_EQ(tf.primitive(t_k), s) << "error at k=" << k << ", t_k=" << t_k << "\n";
   }
   EXPECT_DOUBLE_EQ(tf.get_norm(), tf.primitive(time_horizon));
 }

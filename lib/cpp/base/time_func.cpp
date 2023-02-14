@@ -461,7 +461,7 @@ double TimeFunction::get_t_from_index_(ulong i) { return t0 + dt * i; }
 
 ulong TimeFunction::_idx_left(double t) {
   if (t < t0 + FLOOR_THRESHOLD) return 0;
-  ulong k_ = std::floor((t - t0 - FLOOR_THRESHOLD) / dt);
+  ulong k_ = std::floor((t - t0) / dt);
   ulong k = (k_ < 0) ? 0 : k_;
   return k;
 }
@@ -473,7 +473,7 @@ ulong TimeFunction::_idx_right(double t) {
 
 double TimeFunction::_t_left(double t) {
   if (t < t0 + FLOOR_THRESHOLD) return t0;
-  ulong k_ = std::floor((t - t0 - FLOOR_THRESHOLD) / dt);
+  ulong k_ = std::floor((t - t0) / dt);
   ulong k = (k_ < 0) ? 0 : k_;
   return t0 + k * dt;
 }
