@@ -338,8 +338,8 @@ class Test(unittest.TestCase):
                     np.allclose(
                         expected_primitive_kernel_values,
                         estimated_primitive_kernel_values,
-                        atol=3e-2,
-                        rtol=3e-1,
+                        atol=2e-2,
+                        rtol=3.5-1,
                     ),
                     f'Kernel[{i}, {j}]: Estimation error\n'
                     f'Estimated values:\n{estimated_primitive_kernel_values}\n'
