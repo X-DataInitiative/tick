@@ -200,8 +200,7 @@ void TimeFunction::compute_future_max() {
 
   if (border_type != BorderType::Cyclic) {
     double previous_max = border_value;
-    // condition is : i + 1 > 0 as an ulong cannot be negative
-    for (ulong i = sample_size - 1; i + 1 > 0; --i) {
+    for (long i = sample_size - 1; i >= 0; --i) {
       (*future_max)[i] = std::max((*sampled_y)[i], previous_max);
       previous_max = (*future_max)[i];
     }
@@ -334,8 +333,8 @@ double TimeFunction::future_bound(double t) {
   const ulong i_right = _idx_right(t);
   const double t_left = _t_left(t);
   const double t_right = _t_right(t);
-  const double y_left = (*sampled_y)[i_left];
-  const double y_right = (*sampled_y)[i_right];
+  const double y_left = (*future_max)[i_left];
+  const double y_right = (*future_max)[i_right];
 
   return interpolation(t_left, y_left, t_right, y_right, t);
 }
