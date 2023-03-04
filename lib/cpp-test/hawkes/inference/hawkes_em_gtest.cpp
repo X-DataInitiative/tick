@@ -166,8 +166,7 @@ TEST_F(HawkesEMTest, kernel_time_func_values) {
       ulong uv = u * n_nodes + v;
       for (ulong k = 0; k < kernel_size; ++k) {
         ulong vk = v * kernel_size + k;
-        double t = t0 + k * dt + .5 * dt;  // kernel_discretization[k] + .5 * dt;
-        // EXPECT_DOUBLE_EQ(t, kernel_discretization[k] + .5 * dt);
+        double t = t0 + k * dt + .5 * dt;
         EXPECT_DOUBLE_EQ(timefunc[uv].value(t), kernels(u, vk))
             << "Kernel[" << u << ", " << v << "]: "
             << "Value at time t = " << t << " gives a mismatch.\n"
