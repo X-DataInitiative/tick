@@ -1,6 +1,7 @@
 # License: BSD 3 clause
 
 # -*- coding: utf8 -*-
+import sys
 import unittest
 
 from tick.base import Base
@@ -471,7 +472,10 @@ class Test(unittest.TestCase):
         def frop(x):
             self.a0.readonly_prop = x
 
-        self.assertRaisesRegex(AttributeError, "can't set attribute", frop, 45)
+        msg = "can't set attribute"
+        if sys.version_info[1] == 11:
+            msg = "property 'readonly_prop' of 'A0' object has no setter"
+        self.assertRaisesRegex(AttributeError, msg, frop, 45)
 
     def test_attributes_are_not_shared(self):
         """...Test that two instances of the same class do not share any
