@@ -1,4 +1,6 @@
+from typing import Callable
 from itertools import product
+from functools import partial
 
 import numpy as np
 import scipy
@@ -302,7 +304,7 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
     elastic_net_ratio : `float`, default=0.95
         Ratio of elastic net mixing parameter with 0 <= ratio <= 1.
 
-        * For ratio = 0 this is ridge (L2 squared) regularization.
+        * For ratio = 0 this is ridge (L2 square) regularization.
         * For ratio = 1 this is lasso (L1) regularization.
         * For 0 < ratio < 1, the regularization is a linear combination
           of L1 and L2.
@@ -624,9 +626,126 @@ class HawkesCumulantMatchingTf(HawkesCumulantMatching):
 
 
 class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
-    # TODO
+    """This class is used for performing non parametric estimation of
+    multi-dimensional Hawkes processes based cumulant matching.
+
+    It does not make any assumptions on the kernel shape and recovers
+    the kernel norms only.
+
+    This class relies on `PyTorch`_ to perform the matching of the
+    cumulants. If `PyTorch`_ is not installed, it will not work.
+
+    Parameters
+    ----------
+    integration_support : `float`
+        Controls the maximal lag (positive or negative) upon which we
+        integrate the cumulant densities (covariance and skewness),
+        this amounts to neglect border effects. In practice, this is a
+        good approximation if the support of the kernels is smaller than
+        integration support and if the spectral norm of the kernel norms
+        is sufficiently distant from the critical value, namely 1.
+        It denoted by :math:`H` in the paper.
+
+    C : `float`, default=1e3
+        Level of penalization
+
+    penalty : {'l1', 'l2', 'elasticnet', 'none'}, default='none'
+        The penalization to use. By default no penalization is used.
+        Penalty is only applied to adjacency matrix.
+
+    solver : {'momentum', 'adam', 'adagrad', 'rmsprop', 'adadelta', 'gd'}, default='adam'
+        Name of pytorch solver that will be used.
+
+    step : `float`, default=1e-2
+        Initial step size used for learning. Also known as learning rate.
+
+    tol : `float`, default=1e-8
+        The tolerance of the solver (iterations stop when the stopping
+        criterion is below it). If not reached the solver does ``max_iter``
+        iterations
+
+    max_iter : `int`, default=1000
+        Maximum number of iterations of the solver
+
+    verbose : `bool`, default=False
+        If `True`, we verbose things, otherwise the solver does not
+        print anything (but records information in history anyway)
+
+    print_every : `int`, default=100
+        Print history information when ``n_iter`` (iteration number) is
+        a multiple of ``print_every``
+
+    record_every : `int`, default=10
+        Record history information when ``n_iter`` (iteration number) is
+        a multiple of ``record_every``
+
+    elastic_net_ratio : `float`, default=0.95
+        Ratio of elastic net mixing parameter with 0 <= ratio <= 1.
+
+        * For ratio = 0 this is ridge (L2 squared) regularization.
+        * For ratio = 1 this is lasso (L1) regularization.
+        * For 0 < ratio < 1, the regularization is a linear combination
+          of L1 and L2.
+
+        Used in 'elasticnet' penalty
+
+    solver_kwargs : `dict`, default=`None`
+        Extra arguments that will be passed to tensorflow solver
+
+    Attributes
+    ----------
+    n_nodes : `int`
+        Number of nodes / components in the Hawkes model
+
+    baseline : `np.array`, shape=(n_nodes,)
+        Inferred baseline of each component's intensity
+
+    adjacency : `np.ndarray`, shape=(n_nodes, n_nodes)
+        Inferred adjacency matrix
+
+    mean_intensity : list of `np.array` shape=(n_nodes,)
+        Estimated mean intensities, named :math:`\\widehat{L}` in the paper
+
+    covariance : list of `np.array` shape=(n_nodes,n_nodes)
+         Estimated integrated covariance, named :math:`\\widehat{C}`
+         in the paper
+
+    skewness : list of `np.array` shape=(n_nodes,n_nodes)
+        Estimated integrated skewness (sliced), named :math:`\\widehat{K^c}`
+        in the paper
+
+    R : `np.array` shape=(n_nodes,n_nodes)
+        Estimated weight, linked to the integrals of Hawkes kernels.
+        Use to derive adjacency and baseline
+
+    Other Parameters
+    ----------------
+    cs_ratio : `float`, default=`None`
+        Covariance-skewness ratio. The higher it is, the more covariance
+        has an impact the result which leads to more symmetric
+        adjacency matrices. If None, a default value is computed based
+        on the norm of the estimated covariance and skewness cumulants.
+
+    elastic_net_ratio : `float`, default=0.95
+        Ratio of elastic net mixing parameter with 0 <= ratio <= 1.
+        For ratio = 0 this is ridge (L2 squared) regularization
+        For ratio = 1 this is lasso (L1) regularization
+        For 0 < ratio < 1, the regularization is a linear combination
+        of L1 and L2.
+        Used in 'elasticnet' penalty
+
+    References
+    ----------
+    Achab, M., Bacry, E., Gaïffas, S., Mastromatteo, I., & Muzy, J. F.
+    (2017, July). Uncovering causality from multivariate Hawkes integrated
+    cumulants.
+    `In International Conference on Machine Learning (pp. 1-10)`_.
+
+    .. _In International Conference on Machine Learning (pp. 1-10): http://proceedings.mlr.press/v70/achab17a.html
+    .. _PyTorch: https://www.pytorch.org
+    """
     _attrinfos = {
-        'pytorch': {
+        'torch': {
             'writable': False
         },
         '_cumulant_computer': {
@@ -642,7 +761,19 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         },
         '_events_of_cumulants': {
             'writable': False
-        }
+        },
+        '_L': {
+            'writable': True
+        },
+        '_C': {
+            'writable': True
+        },
+        '_K_c': {
+            'writable': True
+        },
+        '_R': {
+            'writable': True
+        },
     }
 
     def __init__(self, integration_support, C=1e3, penalty='none',
@@ -671,10 +802,246 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
         )
 
     def objective(self, adjacency=None, R=None):
-        raise NotImplementedError()
+        """Compute objective value for a given adjacency or variable R
 
-    def _solve(self, adiacency_start=None, R_start=None):
-        raise NotImplementedError()
+        Parameters
+        ----------
+        adjacency : `np.ndarray`, shape=(n_nodes, n_nodes), default=None
+            Adjacency matrix at which we compute objective.
+            If `None`, objective will be computed at `R`
+
+        R : `np.ndarray`, shape=(n_nodes, n_nodes), default=None
+            R variable at which objective is computed. Superseded by
+            adjacency if adjacency is not `None`
+
+        Returns
+        -------
+        Value of objective function
+        """
+        torch = self.torch
+        if adjacency is not None:
+            assert R is None, "You can pass either `adjacency` or `R`, not both"
+            if isinstance(adjacency, np.ndarray):
+                adjacency = torch.Tensor(adjacency)
+            n, m = adjacency.size(dim=0), adjacency.size(dim=1)
+            R = torch.autograd.Variable(
+                torch.linalg.inv(torch.eye(n, m) - adjacency)
+            )
+        if R is None:
+            R = self._torch_model_coeffs
+        if isinstance(R, np.ndarray):
+            R = torch.autograd.Variable(torch.Tensor(R),
+                                        requires_grad=True)
+        assert isinstance(
+            R, torch.autograd.Variable), 'R must be of type torch.autograd.Variable, '
+        f'but type(R)={type(R)}\nR:\n{R}'
+        _L, _C, _K_c = self.cumulants
+        if self.penalty == 'l1':
+            loss = self._lasso_objective(
+                R, _L, _C, _K_c, self.cs_ratio,
+                penalization_coeff=self.strength_lasso,
+            )
+        elif self.penalty == 'l2':
+            loss = self._ridge_objective(
+                R, _L, _C, _K_c, self.cs_ratio,
+                penalization_coeff=self.strength_ridge,
+            )
+        elif self.penalty == 'elasticnet':
+            loss = self._elasticnet_objective(
+                R, _L, _C, _K_c, self.cs_ratio,
+                l1_penalization_coeff=self.strength_lasso,
+                l2_penalization_coeff=self.strength_ridge,
+            )
+        else:
+            loss = self._plain_objective(
+                R, _L, _C, _K_c, self.cs_ratio,
+            )
+        return loss
+
+    def _plain_objective(self, R, _L, _C, _K_c, k):
+        torch = self.torch
+        loss = (
+            (1 - k) * torch.sum(
+                torch.square(
+                    torch.square(R) @ torch.transpose(_C, 0, 1) +
+                    2 * (R * (_C - R @ _L)) @ torch.transpose(R, 0, 1) -
+                    _K_c
+                )) +
+            k * torch.sum(
+                torch.square(
+                    R @ _L @ torch.transpose(R, 0, 1) - _C
+                )
+            )
+        )
+        return loss
+
+    def _ridge_objective(self, R, _L, _C, _K_c, k, penalization_coeff):
+        torch = self.torch
+        loss = self._plain_objective(R, _L, _C, _K_c, k)
+        loss += penalization_coeff * self.torch.norm(
+            torch.eye(self.n_nodes) - torch.linalg.inv(R),
+            p=2)
+        return loss
+
+    def _lasso_objective(self, R, _L, _C, _K_c, k, penalization_coeff):
+        torch = self.torch
+        loss = self._plain_objective(R, _L, _C, _K_c, k)
+        loss += penalization_coeff * torch.norm(
+            torch.eye(self.n_nodes) - torch.linalg.inv(R),
+            p=1)
+        return loss
+
+    def _elasticnet_objective(self, R, _L, _C, _K_c, k,
+                              l1_penalization_coeff,
+                              l2_penalization_coeff):
+        torch = self.torch
+        loss = self._plain_objective(R, _L, _C, _K_c, k)
+        loss += l1_penalization_coeff * torch.norm(
+            torch.eye(self.n_nodes) - torch.linalg.inv(R),
+            p=1)
+        loss += l2_penalization_coeff * self.torch.norm(
+            torch.eye(self.n_nodes) - torch.linalg.inv(R),
+            p=2)
+        return loss
+
+    @property
+    def cumulants(self):
+        """Pytorch tensors of the estimated cumulant
+        """
+        return self._L, self._C, self._K_c
+
+    def _set_cumulants_from_estimates(self):
+        torch = self.torch
+        self._L = torch.Tensor(np.diag(self.mean_intensity))
+        self._C = torch.Tensor(self.covariance)
+        self._K_c = torch.Tensor(self.skewness)
+
+    def compute_cumulants(self):
+        HawkesCumulantMatching.compute_cumulants(self)
+        self._set_cumulants_from_estimates()
+
+    @property
+    def _torch_model_coeffs(self):
+        return self._R
+
+    @_torch_model_coeffs.setter
+    def _torch_model_coeffs(self, R):
+        assert isinstance(R, self.torch.autograd.Variable)
+        self._R = R
+
+    def _set_torch_model_coeffs(self, random=False):
+        self._R = self.torch.autograd.Variable(
+            self.torch.Tensor(
+                self.starting_point(random=random)),
+            requires_grad=True,
+        )
+
+    def _solve(self, adjacency_start=None, R_start=None):
+        """Launch optimization algorithm
+
+        Parameters
+        ----------
+        adjacency_start : `str` or `np.ndarray, shape=(n_nodes + n_nodes * n_nodes,), default=`None`
+            Initial guess for the adjacency matrix. Will be used as 
+            starting point in optimization.
+            If `None`, a default starting point is estimated from the 
+            estimated cumulants
+            If `"random"`, as with `None`, a starting point is estimated from
+            estimated cumulants with a bit a randomness
+
+        max_iter : `int`
+            The number of training epochs.
+
+        step : `float`
+            The learning rate used by the optimizer.
+
+        solver : {'adam',  'adagrad', 'rmsprop', 'adadelta'}, default='adam'
+            Solver used to minimize the loss. As the loss is not convex, it
+            cannot be optimized with `tick.optim.solver` solvers
+        """
+        torch = self.torch
+        self.compute_cumulants()
+
+        if adjacency_start is None and R_start is not None:
+            self._torch_model_coeffs = torch.autograd.Variable(
+                torch.Tensor(R_start),
+                requires_grad=True,
+            )
+        elif adjacency_start is None or adjacency_start == 'random':
+            random = adjacency_start == 'random'
+            self._set_torch_model_coeffs(random=random)
+        else:
+            self._torch_model_coeffs = torch.autograd.Variable(
+                torch.Tensor(
+                    scipy.linalg.inv(
+                        np.eye(self.n_nodes) - adjacency_start
+                    ),
+                    requires_grad=True,
+                ))
+
+        optimizer = self.torch_solver(
+            [self._torch_model_coeffs], lr=self.step, **self.solver_kwargs)
+        _prev = 0.
+        _L, _C, _K_c = self.cumulants
+        if self.cs_ratio is None:
+            k = self.approximate_optimal_cs_ratio()
+        else:
+            k = self.cs_ratio
+
+        loss_computer: Callable[
+            [torch.Tensor,
+             torch.Tensor,
+             torch.Tensor,
+             torch.Tensor,
+             float],
+            float
+        ]
+
+        if self.penalty == 'l1':
+            loss_computer = partial(
+                self._lasso_objective,
+                penalization_coeff=self.strength_lasso,
+            )
+        elif self.penalty == 'l2':
+            loss_computer = partial(
+                self._ridge_objective,
+                penalization_coeff=self.strength_ridge,
+            )
+        elif self.penalty == 'elasticnet':
+            loss_computer = partial(
+                self._elasticnet_objective,
+                l1_penalization_coeff=self.strength_lasso,
+                l2_penalization_coeff=self.strength_ridge,
+            )
+        else:
+            loss_computer = self._plain_objective
+
+        def compute_loss():
+            return loss_computer(
+                R=self._torch_model_coeffs,
+                _L=_L,
+                _C=_C,
+                _K_c=_K_c,
+                k=k,
+            )
+
+        for n_iter in range(self.max_iter):
+            loss = compute_loss()
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            _new = float(loss)
+            if abs(_new) == 0.:
+                converged = True
+            else:
+                _rel_chg = abs(_new-_prev) / abs(_new)
+                converged = _rel_chg < self.tol
+            self._handle_history(n_iter + 1, objective=loss, rel_obj=_rel_chg)
+            if converged:
+                break
+            else:
+                _prev = _new
+        self._set('solution', self._torch_model_coeffs.data.numpy())
 
     @property
     def torch_solver(self):

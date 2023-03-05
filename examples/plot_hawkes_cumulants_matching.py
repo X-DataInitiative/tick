@@ -17,18 +17,25 @@ cumulants.
 .. _In International Conference on Machine Learning (pp. 1-10): http://proceedings.mlr.press/v70/achab17a.html
 """
 
-skip = True
+skip = False
 try:
     import tensorflow
-    skip = False
+    from tick.hawkes import HawkesCumulantMatchingTf as HawCuMa
+    print("Using tensorflow.")
 except ImportError:
-    print("tensorflow not found, skipping HawkesCumulantMatching")
+    print("tensorflow not found, looking for pytorch instead")
+    import torch
+    from tick.hawkes import HawkesCumulantMatchingPyT as HawCuMa
+    print("Using pytorch.")
+except ImportError:
+    print("Neither tensorflow nor torch found, skipping HawkesCumulantMatching")
+    skip = True
 
 if not skip:
 
     import numpy as np
 
-    from tick.hawkes import (HawkesCumulantMatchingTf, SimuHawkesExpKernels,
+    from tick.hawkes import (SimuHawkesExpKernels,
                              SimuHawkesMulti)
     from tick.plot import plot_hawkes_kernel_norms
 
@@ -58,7 +65,7 @@ if not skip:
                             n_threads=-1)
     multi.simulate()
 
-    nphc = HawkesCumulantMatchingTf(integration_support, cs_ratio=.15, tol=1e-10,
+    nphc = HawCuMa(integration_support, cs_ratio=.15, tol=1e-10,
                                     step=0.3)
 
     nphc.fit(multi.timestamps)
