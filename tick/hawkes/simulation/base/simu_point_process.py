@@ -201,7 +201,7 @@ class SimuPointProcess(Simu):
 
         Notes
         -----
-        This method must be after simulation
+        This method must be called after simulation
         """
         self._pp.store_compensator_values()
 

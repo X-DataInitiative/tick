@@ -2,6 +2,8 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from typing import Optional, List
+from tick.hawkes.simulation.base import SimuPointProcess
 
 
 def plot_point_process(point_process, plot_intensity=None, n_points=10000,
@@ -53,7 +55,7 @@ def plot_point_process(point_process, plot_intensity=None, n_points=10000,
         node_names = list(map(lambda n: 'ticks #{}'.format(n), plot_nodes))
     elif len(node_names) != len(plot_nodes):
         raise ValueError('node_names must be a list of length {} but has length {}'
-                   .format(len(plot_nodes), len(node_names)))
+                         .format(len(plot_nodes), len(node_names)))
     labels = []
     for name, node in zip(node_names, plot_nodes):
         label = name
@@ -197,7 +199,8 @@ def _extract_process_interval(plot_nodes, end_time, timestamps,
 
 
 def qq_plots(
-        point_process,
+        point_process: Optional[SimuPointProcess] = None,
+        residuals: Optional[List[np.ndarray]] = None,
         plot_nodes=None,
         node_names=None,
         line='45',
@@ -207,14 +210,24 @@ def qq_plots(
     import statsmodels.api as sm
     from scipy.stats import expon
 
+    if residuals is None:
+        assert point_process is not None, 'You must pass an object of class `SimuPointProcess` or a list of np.ndarray of residuals'
+    else:
+        assert point_process is None, 'You must pass either an object of class `SimuPointProcess` or residuals, not both'
+
     if plot_nodes is None:
-        plot_nodes = range(point_process.n_nodes)
+        if point_process is not None:
+            plot_nodes = range(point_process.n_nodes)
+        elif residuals is not None:
+            plot_nodes = range(len(residuals))
+        else:
+            raise ValueError('Could not infer which nodes to plot')
 
     if node_names is None:
         node_names = list(map(lambda n: 'ticks #{}'.format(n), plot_nodes))
     elif len(node_names) != len(plot_nodes):
         raise ValueError('node_names must be a list of length {} but has length {}'
-                   .format(len(plot_nodes), len(node_names)))
+                         .format(len(plot_nodes), len(node_names)))
     labels = node_names
 
     if ax is None:
@@ -227,10 +240,11 @@ def qq_plots(
     if len(plot_nodes) == 1:
         ax = [ax]
 
-    compensators = point_process.tracked_compensator
-    if compensators is None:
-        raise ValueError("No tracked compensator!")
-    residuals = [np.diff(comp) for comp in compensators]
+    if residuals is None:
+        compensators = point_process.tracked_compensator
+        if compensators is None:
+            raise ValueError("No tracked compensator!")
+        residuals = [np.diff(comp) for comp in compensators]
 
     for count, i in enumerate(plot_nodes):
         sm.qqplot(data=residuals[i],

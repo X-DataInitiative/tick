@@ -25,7 +25,7 @@ pushd $CWD/.. 2>&1 > /dev/null
 ROOT=$PWD
 popd 2>&1 > /dev/null
 
-source $ROOT/sh/configure_env.sh
+source $CWD/configure_env.sh
 
 COMPILE=1
 LINK=1

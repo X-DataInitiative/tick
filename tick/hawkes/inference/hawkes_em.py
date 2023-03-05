@@ -1,5 +1,6 @@
 # License: BSD 3 clause
 
+from typing import List
 import numpy as np
 
 from tick.hawkes.inference.base import LearnerHawkesNoParam
@@ -239,6 +240,36 @@ class HawkesEM(LearnerHawkesNoParam):
         kernel_values[indices_in_support] = self.kernel[i, j, index]
         return kernel_values
 
+    def _compute_primitive_kernel_values(self, i, j, abscissa_array):
+        """Computes value of the integral in time of the specified kernel 
+        on given time values. 
+
+        Parameters
+        ----------
+        i : `int`
+            First index of the kernel
+
+        j : `int`
+            Second index of the kernel
+
+        abscissa_array : `np.ndarray`, shape=(n_points, )
+            1d array containing all the times at which this kernel will
+            computes it value
+
+        Returns
+        -------
+        output : `np.ndarray`, shape=(n_points, )
+            1d array containing the values of the integral in time of the specified 
+            kernels at the given times.
+        """
+        n = self.n_nodes
+        index = np.maximum(0, np.searchsorted(
+            self.kernel_discretization, abscissa_array) - 1)
+        primitives = self._get_kernel_primitives()
+        assert primitives.shape == (n, n, self.kernel_size)
+        vals = primitives[i, j, index]
+        return vals
+
     def get_kernel_norms(self):
         """Computes kernel norms. This makes our learner compliant with
         `tick.plot.plot_hawkes_kernel_norms` API
@@ -250,6 +281,25 @@ class HawkesEM(LearnerHawkesNoParam):
             kernel i, j
         """
         return self._learner.get_kernel_norms(self._flat_kernels)
+
+    def _get_kernel_primitives(self):
+        """Computes integral in time of the kernel.
+
+        Returns
+        -------
+        primitives : `np.ndarray`, shape=(n_nodes, n_nodes, kernel_size)
+            3d array in which each entry i, j, t  corresponds to the values of the 
+            integral in time of the kernel i, j evaluated at 
+            the discretization point indexed by t.
+        """
+        n = self.n_nodes
+        _flat_primitives = self._learner.get_kernel_primitives(
+            self._flat_kernels)
+        assert _flat_primitives.shape == (n, n * self.kernel_size)
+        primitives = _flat_primitives.reshape((n, n, self.kernel_size))
+        assert np.allclose(primitives.reshape((
+            n, n * self.kernel_size)), _flat_primitives)
+        return primitives
 
     def objective(self, coeffs, loss: float = None):
         raise NotImplementedError()
@@ -310,6 +360,80 @@ class HawkesEM(LearnerHawkesNoParam):
         flat_kernels = kernel.reshape((n_nodes, n_nodes * kernel_size))
 
         return learner._learner.loglikelihood(baseline, flat_kernels)
+
+    def time_changed_interarrival_times(self, events=None, end_times=None, baseline=None, kernel=None):
+        """Compute time change interarrival times
+
+        Parameters
+        ----------
+        events : `list` of `list` of `np.ndarray`, default = None
+            List of Hawkes processes realizations used to measure score.
+            Each realization of the Hawkes process is a list of n_node for
+            each component of the Hawkes. Namely `events[i][j]` contains a
+            one-dimensional `numpy.array` of the events' timestamps of
+            component j of realization i.
+            If only one realization is given, it will be wrapped into a list
+            If None, events given while fitting model will be used
+
+        end_times : `np.ndarray` or `float`, default = None
+            List of end time of all hawkes processes used to measure score.
+            If None, it will be set to each realization's latest time.
+            If only one realization is provided, then a float can be given.
+
+        baseline : `np.ndarray`, shape=(n_nodes, ), default = None
+            Baseline vector for which the score is measured
+            If `None` baseline obtained during fitting is used
+
+        kernel : `None` or `np.ndarray`, shape=(n_nodes, n_nodes, kernel_size), default=None
+            Used to force start values for kernel parameter
+            If `None` kernel obtained during fitting is used
+
+        Returns
+        -------
+        res : `list` of `list` of `np.ndarray`
+            Computed inter-arrival times for every component and every realization, namely
+            `res[i][j]` is a one-dimensional `numpy.array` of interarrival times for node `j`  of realization `i`. 
+            In other words, `res[i][j][k]` is the difference `T^j_{k+1} - T^j_{k}`,
+            where `T^{j}_{k}` is the `k`-th jump time of 
+            the `j`-th component in the realization `i`.
+        """
+        # Interface logic is the same of `self.score`
+        if events is None and not self._fitted:
+            raise ValueError('You must either call `fit` before `time_changed_interarrival_times` or '
+                             'provide events')
+
+        if events is None and end_times is None:
+            learner = self
+        else:
+            learner = HawkesEM(**self.get_params())
+            learner._set('_end_times', end_times)
+            learner._set_data(events)
+
+        n_nodes = learner.n_nodes
+        kernel_size = learner.kernel_size
+
+        if baseline is None:
+            baseline = self.baseline
+
+        if kernel is None:
+            kernel = self.kernel
+
+        flat_kernels = kernel.reshape((n_nodes, n_nodes * kernel_size))
+        learner._learner.set_buffer_variables_for_integral_of_intensity(
+            baseline,  flat_kernels)
+
+        res: List[List[np.ndarray]] = []
+
+        # TODO: Test this
+        for r in range(learner.n_realizations):
+            res_r: List[np.ndarray] = []
+            for u in range(n_nodes):
+                r_u = r * n_nodes + u
+                x = learner._learner.primitive_of_intensity_at_jump_times(r_u)
+                res_r.append(
+                    np.diff(x, axis=0))
+            res.append(res_r)
+        return res
 
     def get_params(self):
         return {

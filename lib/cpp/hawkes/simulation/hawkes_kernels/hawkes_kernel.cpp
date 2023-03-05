@@ -35,6 +35,15 @@ SArrayDoublePtr HawkesKernel::get_values(const ArrayDouble &t_values) {
   return y_values;
 }
 
+// Get a shared array representing the values of the time-integral of the kernel on the t_values
+SArrayDoublePtr HawkesKernel::get_primitive_values(const ArrayDouble &t_values) {
+  SArrayDoublePtr y_values = SArrayDouble::new_ptr(t_values.size());
+  for (ulong i = 0; i < y_values->size(); ++i) {
+    (*y_values)[i] = get_primitive_value(t_values[i]);
+  }
+  return y_values;
+}
+
 // Get L1 norm
 // By default, it discretizes the integral with nsteps (Riemann sum with
 // step-wise function) Should be overloaded if L1 norm closed formula exists

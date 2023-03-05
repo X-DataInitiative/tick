@@ -906,7 +906,7 @@ class HawkesCumulantMatchingPyT(HawkesCumulantMatching):
 
     @property
     def cumulants(self):
-        """Pytorch tensors of the etimated cumulant
+        """Pytorch tensors of the estimated cumulant
         """
         return self._L, self._C, self._K_c
 
