@@ -12,22 +12,17 @@ HawkesKernelTimeFunc::HawkesKernelTimeFunc(const TimeFunction &time_function)
   support = time_function.get_support_right();
 }
 
-HawkesKernelTimeFunc::HawkesKernelTimeFunc(const ArrayDouble &t_axis,
-                                           const ArrayDouble &y_axis)
+HawkesKernelTimeFunc::HawkesKernelTimeFunc(const ArrayDouble &t_axis, const ArrayDouble &y_axis)
     : HawkesKernelTimeFunc(TimeFunction(t_axis, y_axis)) {}
 
-HawkesKernelTimeFunc::HawkesKernelTimeFunc()
-    : HawkesKernelTimeFunc(TimeFunction(0.0)) {}
+HawkesKernelTimeFunc::HawkesKernelTimeFunc() : HawkesKernelTimeFunc(TimeFunction(0.0)) {}
 
-double HawkesKernelTimeFunc::get_value_(double x) {
-  return time_function.value(x);
-}
+double HawkesKernelTimeFunc::get_value_(double x) { return time_function.value(x); }
+
+double HawkesKernelTimeFunc::get_norm(int _) { return time_function.get_norm(); }
 
 double HawkesKernelTimeFunc::get_future_max(double t, double value_at_t) {
   return time_function.future_bound(t);
 }
 
-double HawkesKernelTimeFunc::get_primitive_value_(double x) {
-  return time_function.primitive(x);
-}
-
+double HawkesKernelTimeFunc::get_primitive_value_(double x) { return time_function.primitive(x); }

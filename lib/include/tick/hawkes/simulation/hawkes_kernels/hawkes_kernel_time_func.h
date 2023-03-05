@@ -20,8 +20,8 @@ class DLL_PUBLIC HawkesKernelTimeFunc : public HawkesKernel {
   //! Getting the value of the kernel at the point x (where x is positive)
   double get_value_(double x) override;
 
-  //! Getting the value of the primitive of the kernel 
-  //at the point x (where x is positive)
+  //! Getting the value of the primitive of the kernel
+  // at the point x (where x is positive)
   double get_primitive_value_(double x) override;
 
  public:
@@ -43,13 +43,14 @@ class DLL_PUBLIC HawkesKernelTimeFunc : public HawkesKernel {
    */
   double get_future_max(double t, double value_at_t) override;
 
+  double get_norm(int _ = 1) override;
+
   //! @brief simple getter
   const TimeFunction &get_time_function() const { return time_function; }
 
   template <class Archive>
   void serialize(Archive &ar) {
-    ar(cereal::make_nvp("HawkesKernel",
-                        cereal::base_class<HawkesKernel>(this)));
+    ar(cereal::make_nvp("HawkesKernel", cereal::base_class<HawkesKernel>(this)));
 
     ar(CEREAL_NVP(time_function));
   }

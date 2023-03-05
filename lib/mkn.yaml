@@ -216,4 +216,4 @@ profile:
 
   - name: gtest
     parent: gtest_nodep
-    self: solver hawkes/model hawkes/simulation robust survival
+    self: solver hawkes/model hawkes/simulation hawkes/inference robust survival

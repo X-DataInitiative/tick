@@ -12,6 +12,7 @@ class HawkesKernel {
   double get_value(double x);
   SArrayDoublePtr get_values(const ArrayDouble &t_values);
   double get_primitive_value(double t);
+  SArrayDoublePtr get_primitive_values(const ArrayDouble &t_values);
   double get_primitive_value(double s, double t);
   virtual double get_norm(int nsteps = 10000);
 };

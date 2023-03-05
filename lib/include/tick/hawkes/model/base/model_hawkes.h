@@ -35,11 +35,13 @@ class DLL_PUBLIC ModelHawkes : public Model {
   //! \param max_n_threads : maximum number of threads to be used for
   //! multithreading \param optimization_level : 0 corresponds to no
   //! optimization and 1 to use of faster (approximated) exponential function
-  ModelHawkes(const int max_n_threads = 1,
-              const unsigned int optimization_level = 0);
+  ModelHawkes(const int max_n_threads = 1, const unsigned int optimization_level = 0);
 
   //! @brief Returns the number of components of the process
   ulong get_n_nodes() const { return n_nodes; }
+
+  //! @brief set n_nodes
+  void set_n_nodes(const ulong n_nodes);
 
   ulong get_n_total_jumps() const { return n_jumps_per_node->sum(); }
 
@@ -48,9 +50,6 @@ class DLL_PUBLIC ModelHawkes : public Model {
   SArrayULongPtr get_n_jumps_per_node() const { return n_jumps_per_node; }
 
  protected:
-  //! @brief set n_nodes
-  void set_n_nodes(const ulong n_nodes);
-
   //! @brief Custom exponential function taking into account optimization
   //! level
   //! \param x : The value exponential is computed at
@@ -72,8 +71,7 @@ class DLL_PUBLIC ModelHawkes : public Model {
     ss << get_class_name() << std::endl;
     auto are_equal = TICK_CMP_REPORT(ss, max_n_threads) &&
                      TICK_CMP_REPORT(ss, optimization_level) &&
-                     TICK_CMP_REPORT(ss, weights_computed) &&
-                     TICK_CMP_REPORT(ss, n_nodes) &&
+                     TICK_CMP_REPORT(ss, weights_computed) && TICK_CMP_REPORT(ss, n_nodes) &&
                      TICK_CMP_REPORT_PTR(ss, n_jumps_per_node);
     return BoolStrReport(are_equal, ss.str());
   }
@@ -81,9 +79,7 @@ class DLL_PUBLIC ModelHawkes : public Model {
     std::stringstream ss;
     return compare(that, ss);
   }
-  BoolStrReport operator==(const ModelHawkes &that) {
-    return ModelHawkes::compare(that);
-  }
+  BoolStrReport operator==(const ModelHawkes &that) { return ModelHawkes::compare(that); }
 };
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_BASE_MODEL_HAWKES_H_
