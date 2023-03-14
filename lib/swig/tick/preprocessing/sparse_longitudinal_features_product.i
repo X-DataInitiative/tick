@@ -7,7 +7,10 @@
 class SparseLongitudinalFeaturesProduct {
 
   public:
-    SparseLongitudinalFeaturesProduct(const SBaseArrayDouble2dPtrList1D &features);
+    // This exists soley for cereal/swig
+    SparseLongitudinalFeaturesProduct();
+
+    SparseLongitudinalFeaturesProduct(const ulong n_features);
 
     void sparse_features_product(ArrayULong &row,
                                  ArrayULong &col,

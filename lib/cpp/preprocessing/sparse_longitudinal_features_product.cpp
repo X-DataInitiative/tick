@@ -7,10 +7,6 @@
 #include "tick/preprocessing/sparse_longitudinal_features_product.h"
 #include <map>
 
-SparseLongitudinalFeaturesProduct::SparseLongitudinalFeaturesProduct(
-    const SBaseArrayDouble2dPtrList1D &features)
-    : n_features(features[0]->n_cols()) {}
-
 ulong SparseLongitudinalFeaturesProduct::get_feature_product_col(
     ulong col1, ulong col2, ulong n_cols) const {
   if (col1 > col2) {  // ensure we have the right order as the following formula
