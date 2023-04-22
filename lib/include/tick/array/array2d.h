@@ -13,6 +13,9 @@ class SArray2d;
 template <typename T, typename MAJ = RowMajor>
 class SparseArray2d;
 
+template <typename T, typename MAJ>
+class SSparseArray2d;
+
 /*! \class Array2d
  * \brief Template class for basic non sparse 2d arrays of type `T`.
  *
@@ -50,6 +53,81 @@ class Array2d : public BaseArray2d<T, MAJ> {
   using AbstractArray1d2d<T, MAJ>::is_dense;
   using AbstractArray1d2d<T, MAJ>::is_sparse;
   using AbstractArray1d2d<T, MAJ>::init_to_zero;
+
+  // implement this properly
+  explicit Array2d(std::vector<std::vector<T>> data) {
+    allocVector2D_Data(data);
+  }
+
+  Array2d<T>& operator=(std::vector<std::vector<T>> data) {
+    allocVector2D_Data(data);
+    return *this;
+  }
+
+  void allocVector2D_Data(std::vector<std::vector<T>> data) {
+    if (data.size() == 0) {
+      TICK_ERROR("data empty");
+      return;
+    }
+
+    if (is_data_allocation_owned)
+      TICK_PYTHON_FREE(_data);
+
+    _n_cols = data[0].size();
+    _n_rows = data.size();
+    _size = _n_cols * _n_rows;
+
+    is_data_allocation_owned = true;
+    TICK_PYTHON_MALLOC(_data, T, _size);
+
+    ulong index = 0;
+    for (std::vector<T> vec : data) {
+      if (vec.size() != _n_cols)
+        TICK_ERROR("non consistent column length");
+      memcpy(_data + index, vec.data(), _n_cols * sizeof(T));
+      index+=_n_cols * sizeof(T) / sizeof(void*);
+    }
+  }
+
+  std::shared_ptr<SSparseArray2d<T, MAJ>> toSSparseArray2dPtr() {
+    std::vector<T> data;
+    std::vector<uint> row_idx(_n_rows + 1);
+    std::vector<uint> col;
+
+    ulong nnz = 0;
+
+    row_idx[0] = 0;
+    for (uint r = 0; r < _n_rows; r++) {
+      int nnz_row = 0;
+      for (uint c = 0; c < _n_cols; c++) {
+        if (operator()(r, c) != (T)0) {
+          T val = operator()(r, c);
+          nnz++;
+          nnz_row++;
+          data.push_back(val);
+          col.push_back(c);
+        }
+      }
+      row_idx[r + 1] = row_idx[r] + nnz_row;
+    }
+
+    uint* row_ptr = new uint[row_idx.size()];
+    uint* col_ptr = new uint[col.size()];
+    T* data_ptr = new T[data.size()];
+
+    memcpy(row_ptr, row_idx.data(), row_idx.size() * sizeof(uint));
+    memcpy(col_ptr, col.data(), col.size() * sizeof(uint));
+    memcpy(data_ptr, data.data(), data.size() * sizeof(T));
+
+    std::shared_ptr<SSparseArray2d<T, MAJ>> arrayptr =
+    SSparseArray2d<T, MAJ>::new_ptr(0, 0, 0);
+
+    arrayptr->set_data_indices_rowindices(data_ptr, col_ptr, row_ptr, _n_rows, _n_cols);
+    return arrayptr;
+  }
+
+
+  //
 
   //! @brief Constructor for an empty array.
   Array2d() : BaseArray2d<T, MAJ>(true) {}
@@ -191,6 +269,8 @@ class Array2d : public BaseArray2d<T, MAJ> {
   //! \warning : This method cannot be called on a view
   // The definition is in the file sarray.h
   std::shared_ptr<SArray2d<T, MAJ>> as_sarray2d_ptr();
+
+  std::shared_ptr<SparseArray2d<T, MAJ>> as_sparsearray2d() const;
 
  public:
   bool compare(const Array2d<T, MAJ>& that) const {
@@ -482,6 +562,38 @@ tick::TemporaryLog<E>& operator<<(tick::TemporaryLog<E>& log,
 template <typename T>
 inline std::ostream &operator<<(std::ostream &s, const std::vector<T> &p) {
   return s << typeid(p).name() << "<" << typeid(T).name() << ">";
+}
+
+template <typename T, typename MAJ>
+std::shared_ptr<SparseArray2d<T, MAJ>>  Array2d<T, MAJ>::as_sparsearray2d() const {
+  T zero {0};
+  auto this_data = this->data();
+  size_t _n_rows = this->n_rows(), _n_cols = this->n_cols(), nnz = 0, size = 0;
+  for (size_t r = 0; r < _n_rows; r++) {
+    for (size_t c = 0; c < _n_cols; c++) {
+      T val {0};
+      if ((val = this_data[(r * _n_cols) + c]) != zero) size++;
+    }
+  }
+  auto sparse = SSparseArray2d<T, MAJ>::new_ptr(_n_rows, _n_cols, size);
+  auto *data = sparse->data();
+  auto *indices = sparse->indices();
+  auto *row_indices = sparse->row_indices();
+  row_indices[0] = 0;
+  for (size_t r = 0; r < _n_rows; r++) {
+    size_t nnz_row = 0;
+    for (size_t c = 0; c < _n_cols; c++) {
+      T val {0};
+      if ((val = this_data[(r * _n_cols) + c]) != zero) {
+        data[nnz] = val;
+        indices[nnz] = c;
+        nnz++;
+        nnz_row++;
+      }
+    }
+    row_indices[r + 1] = row_indices[r] + nnz_row;
+  }
+  return sparse;
 }
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_ARRAY2D_H_
