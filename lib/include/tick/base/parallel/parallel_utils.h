@@ -17,12 +17,7 @@ namespace tick {
  * type 'S' with parameter types 'Args...'
  */
 template <typename T, typename S, typename... Args>
-using FuncResultType = typename std::result_of<T(S, ulong, Args...)>::type;
-/*
-// this in future will be for C++17
-using FuncResultType = typename std::result_of<T(S, ulong, Args...)>::type;
-*/
-
+using FuncResultType = std::invoke_result_t<T, S, ulong, Args...>;
 
 /**
  * Determine if return type of function call is a Python primitive or not
@@ -38,9 +33,9 @@ constexpr bool result_is_python_primitive() {
 }
 
 template <typename T, typename S, typename... Args>
-using enable_if_python_primitive = typename std::enable_if<
-    result_is_python_primitive<T, S, Args...>(),
-    std::shared_ptr<SArray<FuncResultType<T, S, Args...>>>>;
+using enable_if_python_primitive =
+    typename std::enable_if<result_is_python_primitive<T, S, Args...>(),
+                            std::shared_ptr<SArray<FuncResultType<T, S, Args...>>>>;
 
 template <typename T, typename S, typename... Args>
 using enable_if_not_python_primitive =
@@ -81,8 +76,7 @@ struct map_return_t {};
  * Type returned is a shared SArray.
  */
 template <typename T, typename S, typename... Args>
-struct map_return_t<
-    T, S, typename enable_if_python_primitive<T, S, Args...>::type, Args...> {
+struct map_return_t<T, S, typename enable_if_python_primitive<T, S, Args...>::type, Args...> {
   using RT = tick::FuncResultType<T, S, Args...>;
   using type = typename enable_if_python_primitive<T, S, Args...>::type;
 
@@ -96,9 +90,7 @@ struct map_return_t<
  * Type returned is a std::vector.
  */
 template <typename T, typename S, typename... Args>
-struct map_return_t<
-    T, S, typename enable_if_not_python_primitive<T, S, Args...>::type,
-    Args...> {
+struct map_return_t<T, S, typename enable_if_not_python_primitive<T, S, Args...>::type, Args...> {
   using RT = tick::FuncResultType<T, S, Args...>;
   using type = std::vector<RT>;
 

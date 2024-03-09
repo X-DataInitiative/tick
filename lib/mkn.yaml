@@ -2,36 +2,16 @@
 
 name: tick
 
-self:
-  serialization
-  preprocessing
-  array_test
-  hawkes/simulation
-  hawkes/inference
-  solver
-  robust
-  survival
+self: tick.py
 
 property:
-    postfix: x86_64-linux-gnu
-    py_maj: 3
-    py_min: 6m
-    py_ver: cpython-
-    lib_name: .${py_ver}${py_maj}${py_min}-${postfix}
     lib_path: ./../tick
-    cargs: -DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION
-           -D_FILE_OFFSET_BITS=64 -DPYTHON_LINK -DNDEBUG
-    win_cargs: -GL -MD -EHsc -DBUILDING_DLL
-    nixish_cargs: -fwrapv -O2 -Wall
-                  -fstack-protector-strong
-                  -Wformat -Werror -Wdate-time
-                  -D_FORTIFY_SOURCE=2 -fPIC -std=c++11
-                  -ffast-math -Wno-uninitialized
-
-    nix_cargs: ${nixish_cargs}
-
-    bsd_cargs: ${nixish_cargs}
-
+    cargs: -DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION -D_FILE_OFFSET_BITS=64 -DPYTHON_LINK
+    win_cargs: -GL -MD -EHsc -std:c++17
+    nixish_cargs: -fwrapv -fstack-protector-strong
+                  -Wformat -Wdate-time
+                  -D_FORTIFY_SOURCE=2 -fPIC -std=c++17
+                  -Wno-uninitialized
     nixish_largs: -fstack-protector-strong -Wformat
                   -Werror=format-security -Wdate-time
                   -D_FORTIFY_SOURCE=2
@@ -40,180 +20,46 @@ property:
                -Wl,-z,relro -Wl,-z,relro
     bsd_largs: ${nixish_largs}
 
-    nixish_test_cargs: -Wno-error=unused-local-typedefs -fPIC
-                       -Wno-error=sign-compare -Wno-sign-compare
 
 profile:
   - name: arg
     arg: ${cargs}
-    if_arg:
-      win: ${win_cargs}
-      nix: ${nix_cargs}
-      bsd: ${bsd_cargs}
-    if_link:
-      nix_lib: ${nix_largs}
-      bsd_lib: ${bsd_largs}
-      win: -LTCG # -nodefaultlib:libucrt.lib ucrt.lib -MANIFEST:EMBED,ID=2 -MANIFESTUAC:NO
-
-  - name: base
-    parent: arg
-    self: array
-    src:
-      ./cpp/base
-      ./swig/tick/base
-    install: ${lib_path}/base/build
-    out: _base${lib_name}
-
-  - name: array
-    parent: arg
     inc:
       ./include
       ./third_party/cereal/include
-    src:
-      ./cpp/array
-      ./swig/tick/array
-    install: ${lib_path}/array/build
-    out: _array${lib_name}
-
-  - name: array_test
-    parent: arg
-    self: base
-    src:
-      ./cpp/array_test
-      ./swig/tick/array_test
-    install: ${lib_path}/array_test/build
-    out: _array_test${lib_name}
-
-  - name: base_model
-    parent: arg
-    self: base
-    src:
-      ./cpp/base_model
-      ./swig/tick/base_model
-    install: ${lib_path}/base_model/build
-    out: _base_model${lib_name}
-
-  - name: hawkes/model
-    parent: arg
-    self: base_model
-    src:
-      ./cpp/hawkes/model
-      ./swig/tick/hawkes/model
-    install: ${lib_path}/hawkes/model/build
-    out: _hawkes_model${lib_name}
-
-  - name: hawkes/simulation
-    parent: arg
-    self: random
-    src:
-      ./cpp/hawkes/simulation
-      ./swig/tick/hawkes/simulation
-    install: ${lib_path}/hawkes/simulation/build
-    out: _hawkes_simulation${lib_name}
-
-  - name: hawkes/inference
-    parent: arg
-    self: hawkes/model
-    src:
-      ./cpp/hawkes/inference
-      ./swig/tick/hawkes/inference
-    install: ${lib_path}/hawkes/inference/build
-    out: _hawkes_inference${lib_name}
-
-  - name: linear_model
-    parent: arg
-    self: base_model
-    src:
-      ./cpp/linear_model
-      ./swig/tick/linear_model
-    install: ${lib_path}/linear_model/build
-    out: _linear_model${lib_name}
-
-  - name: prox
-    parent: arg
-    self: base
-    src:
-      ./cpp/prox
-      ./swig/tick/prox
-    install: ${lib_path}/prox/build
-    out: _prox${lib_name}
-
-  - name: preprocessing
-    parent: arg
-    self: base
-    src:
-      ./cpp/preprocessing
-      ./swig/tick/preprocessing
-    install: ${lib_path}/preprocessing/build
-    out: _preprocessing${lib_name}
-
-  - name: random
-    parent: arg
-    self: base
-    src:
-      ./cpp/random
-      ./swig/tick/random
-    install: ${lib_path}/random/build
-    out: _crandom${lib_name}
-
-  - name: robust
-    parent: arg
-    self: linear_model
-    src:
-      ./cpp/robust
-      ./swig/tick/robust
-    install: ${lib_path}/robust/build
-    out: _robust${lib_name}
-
-  - name: solver
-    parent: arg
-    self: random linear_model prox robust
-    src:
-      ./cpp/solver
-      ./swig/tick/solver
-    install: ${lib_path}/solver/build
-    out: _solver${lib_name}
-
-  - name: survival
-    parent: arg
-    self: base_model
-    src:
-      ./cpp/survival
-      ./swig/tick/survival
-    install: ${lib_path}/survival/build
-    out: _survival${lib_name}
-
-  - name: serialization
-    parent: arg
-    self: linear_model solver prox robust survival
-    install: ${lib_path}/serialization/build
-    out: _serialization${lib_name}
-
-### See file ./sh/gtest/sh
-  - name: exe
-    arg: ${cargs}
     if_arg:
-      win: -Ox -GL -MD -EHsc -std:c++11
-      nix: ${nix_cargs}
-      bsd: ${bsd_cargs}
+      win: ${win_cargs}
+      nix: ${nixish_cargs}
+      bsd: ${nixish_cargs}
     if_link:
       nix_lib: ${nix_largs}
       bsd_lib: ${bsd_largs}
-      win: -nodefaultlib:libucrt.lib ucrt.lib -MANIFEST:EMBED,ID=2 -MANIFESTUAC:NO -LTCG
+      win: -LTCG
+    mod: |
+      lang.python3{compile{with: numpy}, link{delete: CoreFoundation }}
 
-  - name: gtest_nodep
-    parent: exe
-    main: cpp-test/hawkes/model/hawkes_models_gtest.cpp
-    arg: -DADD_MAIN
-    mode: none
-    if_arg:
-      g++: ${nixish_test_cargs}
-      clang++: ${nixish_test_cargs}
-      win: -DGTEST_LINKED_AS_SHARED_LIBRARY
-    if_link:
-      g++: -Wl,-rpath=$PWD
-    dep: google.test#c++11
+  - name: tick.py
+    parent: arg
+    src: cpp swig/tick
+    install: ${lib_path}/tick_cpp
+    out: _tick_cpp
+    arg: -DBUILDING_DLL
+    mod:
+    - name: lang.swig
+      compile:
+        inc: include swig
+        src: swig/tick/module.i
+        outdir: ../tick/tick_cpp
+        objfile: tick_module_wrap.cpp
+
+  - name: gtest_lib
+    parent: arg
+    arg: -DBUILDING_DLL
+    src: cpp
 
   - name: gtest
-    parent: gtest_nodep
-    self: solver hawkes/model hawkes/simulation hawkes/inference robust survival
+    parent: arg
+    self: gtest_lib
+    dep: google.test
+    arg: -DGTEST_LINKED_AS_SHARED_LIBRARY -DADD_MAIN
+    # run: find lib/cpp-test -name "*gtest.cpp"

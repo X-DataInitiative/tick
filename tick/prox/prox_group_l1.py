@@ -1,8 +1,8 @@
 # License: BSD 3 clause
 
 from .base import ProxWithGroups
-from .build.prox import ProxGroupL1Double as _ProxGroupL1Double
-from .build.prox import ProxGroupL1Float as _ProxGroupL1Float
+from tick.tick_cpp import ProxGroupL1Double as _ProxGroupL1Double
+from tick.tick_cpp import ProxGroupL1Float as _ProxGroupL1Float
 
 import numpy as np
 

@@ -8,9 +8,9 @@ import numpy as np
 import scipy
 from scipy.sparse import csr_matrix
 
-from tick.array.build.array import tick_double_sparse2d_from_file
-from tick.array.build.array import tick_double_sparse2d_to_file
-from tick.array_test.build import array_test as test
+from tick.tick_cpp import tick_double_sparse2d_from_file
+from tick.tick_cpp import tick_double_sparse2d_to_file
+from tick import tick_cpp as test
 
 
 class Test(unittest.TestCase):

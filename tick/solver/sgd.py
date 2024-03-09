@@ -3,8 +3,8 @@
 import numpy as np
 
 from .base import SolverFirstOrderSto
-from .build.solver import SGDDouble as _SGDDouble
-from .build.solver import SGDFloat as _SGDFloat
+from tick.tick_cpp import SGDDouble as _SGDDouble
+from tick.tick_cpp import SGDFloat as _SGDFloat
 
 __author__ = "Stephane Gaiffas"
 

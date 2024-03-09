@@ -1,0 +1,257 @@
+name: Master merge
+
+# on:
+#   push:
+#     branches: [ master ]
+#   workflow_dispatch:
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  MKN_COMPILE_THREADS: 2
+  MKN_GCC_PREFERRED: 1
+  MKN_LIB_LINK_LIB: 1
+  KLOG: 3
+
+jobs:
+
+  build_linux:
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        python-version: ['cp39-cp39', 'cp310-cp310', 'cp311-cp311', 'cp312-cp312']
+
+    steps:
+      - name: add Python dir to path
+        run: |
+            echo "/opt/python/${{ matrix.python-version }}/bin" >> $GITHUB_PATH
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Build for Python ${{ matrix.python-version }}
+        run: |
+          git config --global --add safe.directory '*'
+          python3 -V
+          python3 -m pip install -U pip
+          python3 -m pip install -U build twine wheel
+          python3 -m pip install -U -r requirements.txt
+
+          curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn_manylinux
+          chmod +x mkn
+          PATH=$PWD:$PATH mkn -C lib build -g 0 -dtO 2 -a "-fPIC -std=c++17"
+          python3 -m build --wheel  --no-isolation .
+          python3 -m twine check dist/*
+
+      - name: Make wheels universal
+        run: for wheel in $(ls dist/*.whl); do auditwheel repair $wheel; done
+      - name: Save packages as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: wheelhouse/*.whl
+
+
+  build_windows:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        os: [windows-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: setup Python ${{ matrix.os }} ${{ matrix.python-version }}
+        run: |
+          git config --global --add safe.directory '*'
+          python3 -V
+          python3 -m pip install -U pip
+          python3 -m pip install -U build twine wheel
+          python3 -m pip install -U -r requirements.txt
+
+      - name: build windows
+        env:
+          MKN_CL_PREFERRED: 1
+        shell: bash
+        run: |
+          curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn.exe
+          ./mkn -C lib build -g 0 -dtO 2 -a "-std:c++17 -EHsc"
+
+      - name: build wheel
+        run: |
+          python3 -m build --wheel  --no-isolation .
+          python3 -m twine check dist/*
+
+      - name: Save packages as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist/*.whl
+
+  build_mac:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        os: [macos-latest]
+        python-version: ['3.11', '3.12']
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      - name: setup Python ${{ matrix.os }} ${{ matrix.python-version }}
+        run: |
+          git config --global --add safe.directory '*'
+          python3 -V
+          python3 -m pip install -U pip
+          python3 -m pip install -U build twine wheel
+          python3 -m pip install -U -r requirements.txt
+
+      - name: build macos
+        env:
+          MKN_PYTHON_LIB_EMBED: 1
+        run: |
+          curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn_osx
+          chmod +x mkn
+          PATH=$PWD:$PATH mkn -C lib build -g 0 -dtO 2 -a "-fPIC -std=c++17"
+
+      - name: build wheel
+        run: |
+          python3 -m build --wheel  --no-isolation .
+          python3 -m twine check dist/*
+
+      - name: Save packages as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: wheels
+          path: dist/*.whl
+
+  # build_macos_arm:
+  #   strategy:
+  #     matrix:
+  #       python-version: ['3.11']
+  #   runs-on: self-hosted
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: add pyenv to path
+  #       run: |
+  #         echo "$HOME/.pyenv/shims" >> $GITHUB_PATH
+  #     - name: install dependencies
+  #       run: |
+  #         brew install pyenv
+  #         pyenv install ${{ matrix.python-version }}
+  #         pyenv local ${{ matrix.python-version }}
+  #         python3 -V
+  #         python3 -m pip install -U pip
+  #         python3 -m pip install -U build twine wheel
+  #         python3 -m pip install -U -r requirements.txt
+  #     - name: build package
+  #       run: |
+  #         pyenv local ${{ matrix.python-version }}
+  #         CC=gcc-13 CXX=g++-13 python3 -m build --wheel  --no-isolation .
+  #     - name: Save packages as artifacts
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: wheels
+  #         path: dist/*.whl
+
+  test_wheels:
+    needs: [build_linux, build_windows]
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - uses: actions/download-artifact@v3
+        with:
+          name: wheels
+          path: dist
+      - name: install wheel (Unix)
+        if: runner.os != 'Windows'
+        run: pip install --find-links $GITHUB_WORKSPACE/dist tick
+      - name: install wheel (Windows)
+        if: runner.os == 'Windows'
+        run: pip install --find-links $env:GITHUB_WORKSPACE\dist tick
+      - uses: actions/checkout@v3
+      - name: run tests
+        shell: bash
+        run: | # hide tick dir to avoid conflicts but still run tests
+            rm -rf tick/tick_cpp && mv tick _tick
+            chmod +x sh/pytest.sh && ./sh/pytest.sh
+
+  test_mac_wheels:
+    needs: [build_mac]
+    strategy:
+      matrix:
+        os: [macos-latest]
+        python-version: ['3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      - uses: actions/download-artifact@v3
+        with:
+          name: wheels
+          path: dist
+      - name: install wheel (Unix)
+        run: pip install --find-links $GITHUB_WORKSPACE/dist tick
+      - uses: actions/checkout@v3
+      - name: run tests
+        shell: bash
+        run: | # hide tick dir to avoid conflicts but still run tests
+            rm -rf tick/tick_cpp && mv tick _tick
+            chmod +x sh/pytest.sh && ./sh/pytest.sh
+
+  upload_test_pypi:
+    needs: [test_wheels]
+    runs-on: ubuntu-latest
+    # upload to test PyPI on github pushes
+    # if: github.event_name == 'push' && github.repository_owner == 'Tick'
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: wheels
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_PASSWORD }}
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: false

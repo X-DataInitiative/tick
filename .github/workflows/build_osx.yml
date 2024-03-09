@@ -1,6 +1,10 @@
 
 name: Build Tick on OSX
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [ master ]
@@ -8,9 +12,10 @@ on:
     branches: [ master ]
 
 env:
-  TICK_DEBUG: 0
-  TICK_WERROR: 0
-
+  MKN_COMPILE_THREADS: 2
+  MKN_LIB_LINK_LIB: 1
+  MKN_PYTHON_LIB_EMBED: 1
+  KLOG: 3
 
 jobs:
   build:
@@ -21,10 +26,10 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: ['3.7', '3.9', '3.10'] # '3.8' has "'tp_print' is deprecated [-Werror,-Wdeprecated-declarations]"
+        python-version: ['3.11', '3.12']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: true
 
@@ -32,10 +37,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
-
-
-
-
 
     - name: info
       run: |
@@ -52,12 +53,13 @@ jobs:
       run: |
         curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn_osx
         chmod +x mkn
-        PATH=$PWD:$PATH KLOG=3 ./sh/mkn.sh
+        ./mkn -C lib build -g 0 -dtOa "-fPIC -std=c++17"
 
     - name: cpptest
       run: |
-        PATH=$PWD:$PATH KLOG=3 ./sh/gtest.sh
+        chmod +x sh/gtest_all.sh
+        PATH=$PWD:$PATH ./sh/gtest_all.sh "-fPIC -std=c++17"
 
     - name: pytest
       run: |
-        python -m unittest discover -v . "*_test.py"
+        chmod +x sh/pytest.sh && ./sh/pytest.sh

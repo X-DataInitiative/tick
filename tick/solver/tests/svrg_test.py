@@ -16,12 +16,12 @@ from tick.prox import ProxL1, ProxL1w, ProxTV, ProxEquality, \
 from tick.solver import SVRG
 from tick.solver.tests import TestSolver
 
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
+from tick.tick_cpp import SVRG_VarianceReductionMethod_Last
+from tick.tick_cpp import SVRG_VarianceReductionMethod_Average
+from tick.tick_cpp import SVRG_VarianceReductionMethod_Random
 
-from tick.solver.build.solver import SVRG_StepType_Fixed
-from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
+from tick.tick_cpp import SVRG_StepType_Fixed
+from tick.tick_cpp import SVRG_StepType_BarzilaiBorwein
 
 from tick.simulation import weights_sparse_gauss
 
@@ -247,7 +247,7 @@ class SVRGTest(object):
                 solver_sparse.solve()
                 solver_dense.solve()
                 places = 7
-                if self.dtype is "float32":
+                if self.dtype == "float32":
                     places = 3
                 np.testing.assert_array_almost_equal(solver_sparse.solution,
                                                      solver_dense.solution,

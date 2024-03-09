@@ -4,7 +4,7 @@ from typing import List
 import numpy as np
 
 from tick.hawkes.inference.base import LearnerHawkesNoParam
-from tick.hawkes.inference.build.hawkes_inference import (HawkesEM as
+from tick.tick_cpp import (HawkesEM as
                                                           _HawkesEM)
 from tick.solver.base.utils import relative_distance
 

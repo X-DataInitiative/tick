@@ -1,0 +1,33 @@
+[project]
+name = "tick"
+version = "0.7.0.2"
+
+dependencies = [
+  'numpy',
+  'numpydoc',
+  'scipy',
+  'matplotlib',
+  'scikit-learn',
+  'dill',
+  'pandas',
+  'packaging',
+]
+
+description = "Module for statistical learning, with a particular emphasis on time-dependent modelling"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://x-datainitiative.github.io/tick/"
+"Bug Tracker" = "https://github.com/X-DataInitiative/tick/issues"
+
+[build-system]
+requires = [
+    "setuptools>=42", "wheel", "packaging",
+]
+

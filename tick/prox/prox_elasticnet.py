@@ -4,8 +4,8 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxElasticNetDouble as _ProxElasticNetDouble
-from .build.prox import ProxElasticNetFloat as _ProxElasticNetFloat
+from tick.tick_cpp import ProxElasticNetDouble as _ProxElasticNetDouble
+from tick.tick_cpp import ProxElasticNetFloat as _ProxElasticNetFloat
 
 __author__ = 'Maryan Morel'
 

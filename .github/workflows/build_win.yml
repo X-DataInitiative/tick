@@ -1,6 +1,10 @@
 
 name: Build Tick on Windows
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [ master ]
@@ -8,10 +12,10 @@ on:
     branches: [ master ]
 
 env:
-  TICK_DEBUG: 0
-  TICK_WERROR: 0
   MKN_CL_PREFERRED: 1
   MKN_COMPILE_THREADS: 2
+  KLOG: 3
+
 
 jobs:
   build:
@@ -22,7 +26,7 @@ jobs:
       fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11', '3.12']
 
     steps:
     - uses: actions/checkout@v3
@@ -50,15 +54,15 @@ jobs:
         python3 -m pip install -r requirements.txt
 
     - name: build
-      run: | # MINGW link interferres with MSVC link.exe
-        bash -c "rm /bin/link"
-        bash -c "curl -Lo mkn.exe https://github.com/mkn/mkn/releases/download/latest/mkn.exe"
-        bash -c 'PATH=$PWD:$PATH KLOG=3 ./sh/mkn.sh'
+      shell: bash
+      run: |
+        curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn.exe
+        ./mkn -C lib build -g 0 -dtOa "-std:c++17 -EHsc"
 
     - name: cpptest
-      run: |
-        bash -c 'PATH=$PWD:$PATH KLOG=3 ./sh/gtest.sh'
+      shell: bash
+      run: PATH=$PWD:$PATH ./sh/gtest_all.sh "-std:c++17 -EHsc"
 
     - name: pytest
-      run: |
-        python -m unittest discover -v . "*_test.py"
+      shell: bash
+      run: ./sh/pytest.sh

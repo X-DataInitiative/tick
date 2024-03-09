@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from tick.hawkes.simulation.build.hawkes_simulation import (
+from tick.tick_cpp import (
     HawkesKernelSumExp as _HawkesKernelSumExp)
 from . import HawkesKernelExp
 from .hawkes_kernel import HawkesKernel

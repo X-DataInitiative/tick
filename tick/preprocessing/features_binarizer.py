@@ -134,7 +134,7 @@ class FeaturesBinarizer(Base, BaseEstimator, TransformerMixin):
         self.reset()
 
     def reset(self):
-        self._set("one_hot_encoder", OneHotEncoder(sparse=True))
+        self._set("one_hot_encoder", OneHotEncoder(sparse_output=True))
         self._set("mapper", {})
         self._set("feature_type", {})
         self._set("_fitted", False)

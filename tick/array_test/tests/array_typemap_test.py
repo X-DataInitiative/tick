@@ -5,7 +5,7 @@
 import unittest
 import numpy as np
 from scipy.sparse import csr_matrix
-from tick.array_test.build import array_test as test
+from tick import tick_cpp as test
 
 
 class Test(unittest.TestCase):

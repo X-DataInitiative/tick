@@ -5,7 +5,7 @@ import os
 import platform
 import unittest
 
-from tick.base.build.base import throw_out_of_range, \
+from tick.tick_cpp import throw_out_of_range, \
     throw_system_error, throw_invalid_argument, throw_domain_error, \
     throw_runtime_error, throw_string
 

@@ -20,11 +20,10 @@ def _set_mpl_backend():
 
 _set_mpl_backend()
 
-from tick.array import *
-from .timefunc import TimeFunction
 from .base import Base
-from ..random import *
+from .timefunc import TimeFunction
 from .decorators import actual_kwargs
 from .threadpool import ThreadPool
+from ..random import *
 
 __all__ = ["Base", "TimeFunction", "actual_kwargs"]
