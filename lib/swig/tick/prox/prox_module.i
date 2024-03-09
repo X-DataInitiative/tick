@@ -36,6 +36,10 @@
 %shared_ptr(ProxL1Double);
 %shared_ptr(ProxL1Float);
 
+%shared_ptr(TProxSortedL1<double, double>);
+%shared_ptr(TProxSortedL1<float, float>);
+%shared_ptr(ProxSortedL1);
+
 %shared_ptr(ProxL1wDouble);
 %shared_ptr(ProxL1wFloat);
 
@@ -103,6 +107,8 @@
 %include prox_elasticnet.i
 
 %include prox_slope.i
+
+%include prox_sorted_l1.i
 
 %include prox_multi.i
 

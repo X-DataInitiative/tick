@@ -5,7 +5,7 @@ import os
 import numpy as np
 import scipy
 
-from tick.array.build.array import (
+from tick.tick_cpp import (
     tick_float_array_to_file,
     tick_float_array2d_to_file,
     tick_float_sparse2d_to_file,
@@ -64,7 +64,7 @@ def serialize_array(array, filepath):
                 raise ValueError('Only 1d and 2d arrays can be serrialized')
         else:
             if len(array.shape) == 2:
-                if isinstance(array, scipy.sparse.csc.csc_matrix):
+                if isinstance(array, scipy.sparse.csc_matrix):
                     serializer = tick_float_colmaj_sparse2d_to_file
                 else:
                     serializer = tick_float_sparse2d_to_file
@@ -83,7 +83,7 @@ def serialize_array(array, filepath):
                 raise ValueError('Only 1d and 2d arrays can be serrialized')
         else:
             if len(array.shape) == 2:
-                if isinstance(array, scipy.sparse.csc.csc_matrix):
+                if isinstance(array, scipy.sparse.csc_matrix):
                     serializer = tick_double_colmaj_sparse2d_to_file
                 else:
                     serializer = tick_double_sparse2d_to_file

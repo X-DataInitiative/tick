@@ -5,9 +5,9 @@
 from tick.prox.base import Prox
 import numpy as np
 
-from .build.prox import ProxSortedL1Double as _ProxSortedL1Double
-from .build.prox import ProxSortedL1Float as _ProxSortedL1Float
-from .build.prox import WeightsType_bh, WeightsType_oscar
+from tick.tick_cpp import ProxSortedL1Double as _ProxSortedL1Double
+from tick.tick_cpp import ProxSortedL1Float as _ProxSortedL1Float
+from tick.tick_cpp import WeightsType_bh, WeightsType_oscar
 
 # TODO: put also the OSCAR weights
 # TODO: we should be able to put any weights we want...

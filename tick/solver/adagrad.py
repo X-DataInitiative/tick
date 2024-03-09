@@ -3,8 +3,8 @@
 import numpy as np
 
 from .base import SolverFirstOrderSto
-from .build.solver import AdaGradDouble as _AdaGradDouble
-from .build.solver import AdaGradFloat as _AdaGradFloat
+from tick.tick_cpp import AdaGradDouble as _AdaGradDouble
+from tick.tick_cpp import AdaGradFloat as _AdaGradFloat
 
 __author__ = "Søren Vinther Poulsen"
 

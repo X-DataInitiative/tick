@@ -223,6 +223,7 @@ TYPED_TEST(AtomicArrayTest, Bounds) {
   using AtomicType = Array<std::atomic<VT>>;
   AtomicType arr = ::GenerateRandomArray<AtomicType, VT>(100);
 
+  EXPECT_EQ(arr.size(), 100u);
   EXPECT_THROW(arr[-1], std::out_of_range);
   EXPECT_THROW(arr[100], std::out_of_range);
   EXPECT_THROW(arr[10000], std::out_of_range);

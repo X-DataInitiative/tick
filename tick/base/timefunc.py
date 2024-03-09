@@ -1,6 +1,6 @@
 # License: BSD 3 clause
 
-from tick.base.build.base import TimeFunction as _TimeFunction
+from tick.tick_cpp import TimeFunction as _TimeFunction
 import numpy as np
 from tick.base.base import Base
 

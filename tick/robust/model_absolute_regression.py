@@ -2,7 +2,7 @@
 
 import numpy as np
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder
-from .build.robust import ModelAbsoluteRegressionDouble as _ModelAbsoluteRegression
+from tick.tick_cpp import ModelAbsoluteRegressionDouble as _ModelAbsoluteRegression
 
 __author__ = 'Stephane Gaiffas'
 

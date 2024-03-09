@@ -6,8 +6,8 @@ from tick.base import Base
 from tick.base_model import Model
 from tick.prox.base import Prox
 
-from ..build.solver import RandType_perm as perm
-from ..build.solver import RandType_unif as unif
+from tick.tick_cpp import RandType_perm as perm
+from tick.tick_cpp import RandType_unif as unif
 
 
 class SolverSto(Base):

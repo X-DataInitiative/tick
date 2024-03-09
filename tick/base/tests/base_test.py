@@ -5,7 +5,7 @@ import sys
 import unittest
 
 from tick.base import Base
-from tick.base.build.base import A0 as _A0
+from tick.tick_cpp import A0 as _A0
 
 # Architecture of the classes
 #         Base
@@ -473,7 +473,7 @@ class Test(unittest.TestCase):
             self.a0.readonly_prop = x
 
         msg = "can't set attribute"
-        if sys.version_info[1] == 11:
+        if sys.version_info[1] >= 11:
             msg = "property 'readonly_prop' of 'A0' object has no setter"
         self.assertRaisesRegex(AttributeError, msg, frop, 45)
 

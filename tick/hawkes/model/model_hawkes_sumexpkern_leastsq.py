@@ -6,7 +6,7 @@ from warnings import warn
 import numpy as np
 
 from tick.base_model import LOSS_AND_GRAD
-from tick.hawkes.model.build.hawkes_model import (
+from tick.tick_cpp import (
     ModelHawkesSumExpKernLeastSq as _ModelHawkesSumExpKernLeastSq)
 from .base import ModelHawkes
 

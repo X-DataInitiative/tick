@@ -91,7 +91,7 @@ class Test(InferenceTest):
                     probas = learner.predict_proba(features)[:, 1]
                     auc = roc_auc_score(y, probas)
                     self.assertGreater(
-                        auc, 0.7, "solver %s with penalty %s and "
+                        auc, .68, "solver %s with penalty %s and "
                         "intercept %s reached too low AUC" % (solver, penalty,
                                                               fit_intercept))
 

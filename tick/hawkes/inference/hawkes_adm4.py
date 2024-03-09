@@ -4,7 +4,7 @@ import numpy as np
 
 from tick.hawkes import ModelHawkesExpKernLogLik, SimuHawkesExpKernels
 from tick.hawkes.inference.base import LearnerHawkesNoParam
-from tick.hawkes.inference.build.hawkes_inference import (HawkesADM4 as
+from tick.tick_cpp import (HawkesADM4 as
                                                           _HawkesADM4)
 from tick.prox import ProxNuclear
 from tick.prox.prox_l1 import ProxL1

@@ -2,7 +2,7 @@
 
 import numpy as np
 from tick.base_model import ModelFirstOrder, ModelLipschitz
-from .build.survival import ModelSCCS as _ModelSCCS
+from tick.tick_cpp import ModelSCCS as _ModelSCCS
 from tick.preprocessing.utils import check_longitudinal_features_consistency, \
     check_censoring_consistency
 

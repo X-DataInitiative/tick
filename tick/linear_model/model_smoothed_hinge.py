@@ -4,8 +4,8 @@ import numpy as np
 from numpy.linalg import svd
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelSmoothedHingeDouble as _ModelSmoothedHingeDouble
-from .build.linear_model import ModelSmoothedHingeFloat as _ModelSmoothedHingeFloat
+from tick.tick_cpp import ModelSmoothedHingeDouble as _ModelSmoothedHingeDouble
+from tick.tick_cpp import ModelSmoothedHingeFloat as _ModelSmoothedHingeFloat
 
 __author__ = 'Stephane Gaiffas'
 

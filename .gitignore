@@ -58,3 +58,5 @@ tools/benchmark/data
 env*/
 venv*/
 tickf.yml
+dist
+tick.egg-info/

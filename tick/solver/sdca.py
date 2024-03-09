@@ -2,8 +2,8 @@
 
 from .base import SolverFirstOrderSto
 
-from .build.solver import SDCADouble as _SDCADouble
-from .build.solver import SDCAFloat as _SDCAFloat
+from tick.tick_cpp import SDCADouble as _SDCADouble
+from tick.tick_cpp import SDCAFloat as _SDCAFloat
 
 import numpy as np
 
