@@ -84,6 +84,9 @@ void Hawkes::set_kernel(unsigned int i, unsigned int j, HawkesKernelPtr &kernel)
     kernel = kernel->duplicate_if_necessary(kernel);
   kernels[i * n_nodes + j] = kernel;
 }
+void Hawkes::set_kernel(unsigned int i, unsigned int j, HawkesKernelPtr &&kernel) {
+  set_kernel(i, j, kernel);
+}
 
 HawkesKernelPtr Hawkes::get_kernel(unsigned int i, unsigned int j) {
   if (i >= n_nodes) TICK_BAD_INDEX(0, n_nodes, i);

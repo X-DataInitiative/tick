@@ -11,7 +11,8 @@ class Hawkes : public PP {
 
   Hawkes(int dimension, int seed = -1);
 
-  void set_kernel(unsigned int i, unsigned int j, std::shared_ptr<HawkesKernel> kernel);
+  void set_kernel(unsigned int i, unsigned int j, std::shared_ptr<HawkesKernel> &kernel);
+  void set_kernel(unsigned int i, unsigned int j, std::shared_ptr<HawkesKernel> &&kernel);
 
   void set_baseline(unsigned int i, double baseline);
   void set_baseline(unsigned int i, ArrayDouble &times, ArrayDouble &values);

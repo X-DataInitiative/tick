@@ -74,6 +74,7 @@ class DLL_PUBLIC Hawkes : public PP {
    * share a pointer to this kernel.
    */
   void set_kernel(unsigned int i, unsigned int j, HawkesKernelPtr &kernel);
+  void set_kernel(unsigned int i, unsigned int j, HawkesKernelPtr &&kernel);
 
   /**
    * @brief Get kernel for a specific row and column
