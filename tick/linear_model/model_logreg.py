@@ -5,8 +5,8 @@ from numpy.linalg import svd
 
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelLipschitz
-from .build.linear_model import ModelLogRegDouble as _ModelLogRegDouble
-from .build.linear_model import ModelLogRegFloat as _ModelLogRegFloat
+from tick.tick_cpp import ModelLogRegDouble as _ModelLogRegDouble
+from tick.tick_cpp import ModelLogRegFloat as _ModelLogRegFloat
 
 __author__ = 'Stephane Gaiffas'
 

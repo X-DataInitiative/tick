@@ -2,8 +2,8 @@
 
 import numpy as np
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder
-from .build.linear_model import ModelHingeDouble as _ModelHingeDouble
-from .build.linear_model import ModelHingeFloat as _ModelHingeFloat
+from tick.tick_cpp import ModelHingeDouble as _ModelHingeDouble
+from tick.tick_cpp import ModelHingeFloat as _ModelHingeFloat
 
 __author__ = 'Stephane Gaiffas'
 

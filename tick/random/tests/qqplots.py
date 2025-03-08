@@ -1,9 +1,15 @@
 import numpy as np
 from scipy import stats
-import statsmodels.api as sm
 from matplotlib import pyplot as plt
 from tick.random import test_uniform, test_gaussian, test_poisson, \
     test_exponential, test_uniform_int, test_discrete, test_uniform_threaded
+
+
+import sys
+try:
+    import statsmodels.api as sm
+except ImportError:
+    print("statsmodels module not found, skipping")
 
 
 class QQplot:
@@ -60,6 +66,10 @@ class QQplot:
 
 
 def main():
+    try:
+        import statsmodels.api as sm
+    except ImportError:
+        return
     qqplot = QQplot()
     qqplot.poisson()
     qqplot.uniform()

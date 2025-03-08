@@ -7,15 +7,15 @@ import numpy as np
 from tick.base_model import ModelGeneralizedLinear
 from tick.solver.base import SolverFirstOrderSto, SolverSto
 
-from tick.solver.build.solver import SAGADouble as _SAGADouble
-from tick.solver.build.solver import SAGAFloat as _SAGAFloat
+from tick.tick_cpp import SAGADouble as _SAGADouble
+from tick.tick_cpp import SAGAFloat as _SAGAFloat
 dtype_class_mapper = {
     np.dtype('float32'): _SAGAFloat,
     np.dtype('float64'): _SAGADouble
 }
 
-from tick.solver.build.solver import AtomicSAGADouble as _ASAGADouble
-from tick.solver.build.solver import AtomicSAGAFloat as _ASAGAFloat
+from tick.tick_cpp import AtomicSAGADouble as _ASAGADouble
+from tick.tick_cpp import AtomicSAGAFloat as _ASAGAFloat
 dtype_atomic_mapper = {
     np.dtype('float32'): _ASAGAFloat,
     np.dtype('float64'): _ASAGADouble

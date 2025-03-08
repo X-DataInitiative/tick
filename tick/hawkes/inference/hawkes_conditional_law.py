@@ -9,7 +9,7 @@ from numpy.polynomial.legendre import leggauss
 from scipy.linalg import solve
 
 from tick.base import Base, ThreadPool
-from tick.hawkes.inference.build.hawkes_inference import (PointProcessCondLaw)
+from tick.tick_cpp import (PointProcessCondLaw)
 
 
 # noinspection PyPep8Naming

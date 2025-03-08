@@ -4,8 +4,8 @@
 
 import numpy as np
 from .base import Prox
-from .build.prox import ProxL1wDouble as _ProxL1wDouble
-from .build.prox import ProxL1wFloat as _ProxL1wFloat
+from tick.tick_cpp import ProxL1wDouble as _ProxL1wDouble
+from tick.tick_cpp import ProxL1wFloat as _ProxL1wFloat
 
 __author__ = 'Stephane Gaiffas'
 

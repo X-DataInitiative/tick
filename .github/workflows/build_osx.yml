@@ -1,0 +1,72 @@
+
+name: Build Tick on OSX
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  MKN_COMPILE_THREADS: 2
+  KLOG: 3
+
+jobs:
+  build:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        os: [ macos-12, macos-13, macos-latest]
+        python-version: ['3.11', '3.12']
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: info
+      run: |
+        python3 -V
+        clang -v
+        swig -version || ( brew update && brew install swig && swig -version )
+
+    - name: pip
+      run: |
+        python3 -m pip install wheel pip --upgrade
+        python3 -m pip install -r requirements.txt
+
+    - name: build_arm
+      if: matrix.os == 'macos-latest'
+      run: |
+        curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn_arm_osx
+        chmod +x mkn
+        ./mkn -C lib build -g 0 -dtOa "-fPIC -std=c++17"
+
+
+    - name: build_x86
+      if: matrix.os != 'macos-latest'
+      run: |
+        curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn_x86_osx
+        chmod +x mkn
+        ./mkn -C lib build -g 0 -dtOa "-fPIC -std=c++17"
+
+    - name: cpptest
+      run: |
+        chmod +x sh/gtest_all.sh
+        PATH=$PWD:$PATH ./sh/gtest_all.sh "-fPIC -std=c++17"
+
+    - name: pytest
+      run: |
+        chmod +x sh/pytest.sh && ./sh/pytest.sh

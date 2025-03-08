@@ -271,7 +271,7 @@ class SolverFirstOrder(Solver):
         output : `np.array`, shape=(n_coeffs,)
             Obtained minimizer for the problem, same as ``solution`` attribute
         """
-        if x0 is not None and self.dtype is not "float64":
+        if x0 is not None and self.dtype != "float64":
             x0 = x0.astype(self.dtype)
 
         if self.model is None:

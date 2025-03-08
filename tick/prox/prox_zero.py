@@ -5,8 +5,8 @@
 import numpy as np
 from .base import Prox
 
-from .build.prox import ProxZeroDouble as _ProxZeroDouble
-from .build.prox import ProxZeroFloat as _ProxZeroFloat
+from tick.tick_cpp import ProxZeroDouble as _ProxZeroDouble
+from tick.tick_cpp import ProxZeroFloat as _ProxZeroFloat
 
 __author__ = 'Stephane Gaiffas'
 

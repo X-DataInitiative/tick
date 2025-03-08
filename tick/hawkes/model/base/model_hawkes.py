@@ -5,7 +5,7 @@ from scipy.sparse import sputils, csr_matrix
 
 from tick.base_model import N_CALLS_LOSS, PASS_OVER_DATA
 from tick.base_model.model_first_order import ModelFirstOrder
-from tick.hawkes.model.build.hawkes_model import (
+from tick.tick_cpp import (
     ModelHawkesSumExpKernLeastSq,
     ModelHawkesExpKernLeastSq,
     ModelHawkesSumExpKernLogLik,

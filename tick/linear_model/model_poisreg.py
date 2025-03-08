@@ -5,10 +5,10 @@ from scipy.special import gammaln
 
 from tick.base_model import ModelGeneralizedLinear, ModelFirstOrder, \
     ModelSecondOrder, ModelSelfConcordant
-from .build.linear_model import ModelPoisRegDouble as _ModelPoisRegDouble
-from .build.linear_model import ModelPoisRegFloat as _ModelPoisRegFloat
-from .build.linear_model import LinkType_identity as identity
-from .build.linear_model import LinkType_exponential as exponential
+from tick.tick_cpp import ModelPoisRegDouble as _ModelPoisRegDouble
+from tick.tick_cpp import ModelPoisRegFloat as _ModelPoisRegFloat
+from tick.tick_cpp import LinkType_identity as identity
+from tick.tick_cpp import LinkType_exponential as exponential
 
 __author__ = 'Stephane Gaiffas'
 

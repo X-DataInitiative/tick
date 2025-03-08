@@ -6,8 +6,8 @@ import numpy as np
 import sys
 
 from .base import Prox
-from .build.prox import ProxEqualityDouble as _ProxEqualityDouble
-from .build.prox import ProxEqualityFloat as _ProxEqualityFloat
+from tick.tick_cpp import ProxEqualityDouble as _ProxEqualityDouble
+from tick.tick_cpp import ProxEqualityFloat as _ProxEqualityFloat
 
 __author__ = 'Stephane Gaiffas'
 

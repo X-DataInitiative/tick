@@ -3,7 +3,7 @@
 # -*- coding: utf8 -*-
 import unittest
 
-from tick.base.build.base import standard_normal_cdf, \
+from tick.tick_cpp import standard_normal_cdf, \
     standard_normal_inv_cdf
 
 from scipy.stats import norm

@@ -6,16 +6,16 @@ from warnings import warn
 from tick.base_model import Model
 from .base import SolverFirstOrderSto
 
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Last
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Average
-from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
+from tick.tick_cpp import SVRG_VarianceReductionMethod_Last
+from tick.tick_cpp import SVRG_VarianceReductionMethod_Average
+from tick.tick_cpp import SVRG_VarianceReductionMethod_Random
 
-from tick.solver.build.solver import SVRG_StepType_Fixed
-from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
+from tick.tick_cpp import SVRG_StepType_Fixed
+from tick.tick_cpp import SVRG_StepType_BarzilaiBorwein
 
-from .build.solver import SVRGDouble as _SVRGDouble
-from .build.solver import SVRGFloat as _SVRGFloat
-from .build.solver import MultiSVRGDouble as MultiSVRG, SVRGDoublePtrVector
+from tick.tick_cpp import SVRGDouble as _SVRGDouble
+from tick.tick_cpp import SVRGFloat as _SVRGFloat
+from tick.tick_cpp import MultiSVRGDouble as MultiSVRG, SVRGDoublePtrVector
 
 __author__ = "Stephane Gaiffas"
 

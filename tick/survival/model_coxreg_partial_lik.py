@@ -4,10 +4,8 @@ import numpy as np
 
 from tick.base_model import Model, ModelFirstOrder
 from tick.preprocessing.utils import safe_array
-from .build.survival import ModelCoxRegPartialLikDouble \
-    as _ModelCoxRegPartialLik_d
-from .build.survival import ModelCoxRegPartialLikFloat \
-    as _ModelCoxRegPartialLik_f
+from tick.tick_cpp import ModelCoxRegPartialLikDouble as _ModelCoxRegPartialLik_d
+from tick.tick_cpp import ModelCoxRegPartialLikFloat as _ModelCoxRegPartialLik_f
 
 dtype_class_mapper = {
     np.dtype('float32'): _ModelCoxRegPartialLik_f,

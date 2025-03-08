@@ -5,7 +5,7 @@ from numpy.linalg import svd
 
 from tick.base_model import ModelFirstOrder, ModelLipschitz
 from .base import ModelGeneralizedLinearWithIntercepts
-from .build.robust import \
+from tick.tick_cpp import \
     ModelLinRegWithInterceptsDouble as _ModelLinRegWithIntercepts
 
 __author__ = 'Stephane Gaiffas'

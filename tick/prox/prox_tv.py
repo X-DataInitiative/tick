@@ -5,8 +5,8 @@
 import numpy as np
 from .base import Prox
 
-from .build.prox import ProxTVDouble as _ProxTVDouble
-from .build.prox import ProxTVFloat as _ProxTVFloat
+from tick.tick_cpp import ProxTVDouble as _ProxTVDouble
+from tick.tick_cpp import ProxTVFloat as _ProxTVFloat
 
 __author__ = 'Stephane Gaiffas'
 

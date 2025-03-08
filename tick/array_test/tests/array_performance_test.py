@@ -5,7 +5,7 @@
 import unittest
 import numpy as np
 
-from tick.array_test.build.array_test import test_sum_double_pointer, \
+from tick.tick_cpp import test_sum_double_pointer, \
     test_sum_ArrayDouble, test_sum_SArray_shared_ptr, test_sum_VArray_shared_ptr
 """
 ref_size = 10000

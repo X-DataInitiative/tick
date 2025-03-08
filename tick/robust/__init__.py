@@ -1,8 +1,6 @@
 # License: BSD 3 clause
 
 import tick.base
-import tick.base_model.build.base_model
-import tick.linear_model.build.linear_model
 
 from .robust_linear_regression import RobustLinearRegression
 

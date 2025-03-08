@@ -247,7 +247,37 @@ TEST(ParallelTest, TooManyThreads) {
   parallel_run(8, 4, &CalcFibo::DoIt, &c);
 }
 
+TEST(TimeFuncTest, Serialization) {
+  TimeFunction tf;
+  ArrayDouble T({0.0, 1.0, 2.0});
+  ArrayDouble Y({1.0, 0.0, -1.0});
+
+  tf = TimeFunction(T, Y, 0.2);
+
+  std::stringstream ss;
+  {
+    cereal::PortableBinaryOutputArchive outputArchive(ss);
+
+    outputArchive(tf);
+  }
+
+  {
+    cereal::PortableBinaryInputArchive inputArchive(ss);
+
+    TimeFunction tf_restored(0.0);
+    inputArchive(tf_restored);
+
+    ASSERT_DOUBLE_EQ(tf.value(0.0), tf_restored.value(0.0));
+    ASSERT_DOUBLE_EQ(tf.value(1.0), tf_restored.value(1.0));
+    ASSERT_DOUBLE_EQ(tf.value(0.5), tf_restored.value(0.5));
+    ASSERT_DOUBLE_EQ(tf.value(1.5), tf_restored.value(1.5));
+  }
+}
+
 TEST(DebugTest, WarningDebug) {
+#if defined(_WIN32) // not working for some reason
+  return;
+#endif
   testing::internal::CaptureStdout();
 
   TICK_DEBUG() << "Sample debug message";
@@ -287,34 +317,10 @@ TEST(DebugTest, PrintArray) {
   testing::internal::GetCapturedStdout();
 }
 
-TEST(TimeFuncTest, Serialization) {
-  TimeFunction tf;
-  ArrayDouble T({0.0, 1.0, 2.0});
-  ArrayDouble Y({1.0, 0.0, -1.0});
-
-  tf = TimeFunction(T, Y, 0.2);
-
-  std::stringstream ss;
-  {
-    cereal::PortableBinaryOutputArchive outputArchive(ss);
-
-    outputArchive(tf);
-  }
-
-  {
-    cereal::PortableBinaryInputArchive inputArchive(ss);
-
-    TimeFunction tf_restored(0.0);
-    inputArchive(tf_restored);
-
-    ASSERT_DOUBLE_EQ(tf.value(0.0), tf_restored.value(0.0));
-    ASSERT_DOUBLE_EQ(tf.value(1.0), tf_restored.value(1.0));
-    ASSERT_DOUBLE_EQ(tf.value(0.5), tf_restored.value(0.5));
-    ASSERT_DOUBLE_EQ(tf.value(1.5), tf_restored.value(1.5));
-  }
-}
-
 TEST(DebugTest, PrintArray2D) {
+#if defined(_WIN32) // not working for some reason
+  return;
+#endif
   testing::internal::CaptureStdout();
 
   ArrayDouble2d arr(10, 10);
@@ -325,6 +331,9 @@ TEST(DebugTest, PrintArray2D) {
 }
 
 TEST(DebugTest, PrintSparseArray) {
+#if defined(_WIN32) // not working for some reason
+  return;
+#endif
   testing::internal::CaptureStdout();
 
   INDICE_TYPE indices[] = {1, 4, 5, 7, 8, 16};
@@ -339,13 +348,7 @@ TEST(DebugTest, PrintSparseArray) {
 
 #ifdef ADD_MAIN
 int main(int argc, char **argv) {
-#ifdef _WIN32
-  std::cout << "Skipping tests in " __FILE__ << " on windows due to strangeness"
-            << std::endl;
-#else
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
-#endif
-  return 0;
 }
 #endif  // ADD_MAIN

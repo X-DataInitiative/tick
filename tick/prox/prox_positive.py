@@ -5,8 +5,8 @@
 import numpy as np
 from .base import Prox
 
-from .build.prox import ProxPositiveDouble as _ProxPositiveDouble
-from .build.prox import ProxPositiveFloat as _ProxPositiveFloat
+from tick.tick_cpp import ProxPositiveDouble as _ProxPositiveDouble
+from tick.tick_cpp import ProxPositiveFloat as _ProxPositiveFloat
 
 __author__ = 'Stephane Gaiffas'
 

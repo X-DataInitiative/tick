@@ -5,7 +5,8 @@
 import unittest
 import numpy as np
 from numpy.linalg import norm
-from tick.array_test.build import array_test as test
+
+from tick import tick_cpp as test
 from scipy.sparse import csr_matrix
 import itertools
 

@@ -6,10 +6,10 @@ from scipy.linalg import qr, sqrtm, norm
 
 from tick.base import Base
 from tick.hawkes.inference.base import LearnerHawkesNoParam
-from tick.hawkes.inference.build.hawkes_inference import (HawkesCumulant as
+from tick.tick_cpp import (HawkesCumulant as
                                                           _HawkesCumulant)
 
-from tick.hawkes.inference.build.hawkes_inference import (HawkesTheoreticalCumulant as
+from tick.tick_cpp import (HawkesTheoreticalCumulant as
                                                           _HawkesTheoreticalCumulant)
 
 

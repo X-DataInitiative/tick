@@ -3,8 +3,8 @@
 from tick.prox.base import Prox
 import numpy as np
 
-from .build.prox import ProxSlopeDouble as _ProxSlopeDouble
-from .build.prox import ProxSlopeFloat as _ProxSlopeFloat
+from tick.tick_cpp import ProxSlopeDouble as _ProxSlopeDouble
+from tick.tick_cpp import ProxSlopeFloat as _ProxSlopeFloat
 
 dtype_map = {
     np.dtype("float64"): _ProxSlopeDouble,

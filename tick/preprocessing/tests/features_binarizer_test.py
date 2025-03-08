@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
-from scipy.sparse import csr
+import scipy.sparse as csr
 
 from tick.preprocessing.features_binarizer import FeaturesBinarizer
 
@@ -134,7 +134,7 @@ class Test(unittest.TestCase):
         """...Test binarizer fit
         """
         n_cuts = 3
-        enc = OneHotEncoder(sparse=True)
+        enc = OneHotEncoder(sparse_output=True)
         expected_binarization = enc.fit_transform(
             self.default_expected_intervals)
 
@@ -167,7 +167,7 @@ class Test(unittest.TestCase):
         """...Test binarizer fit when remove_first=True
         """
         n_cuts = 3
-        one_hot_encoder = OneHotEncoder(sparse=True)
+        one_hot_encoder = OneHotEncoder(sparse_output=True)
         expected_binarization = one_hot_encoder.fit_transform(
             self.default_expected_intervals)
 

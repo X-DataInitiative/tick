@@ -1,8 +1,8 @@
 # License: BSD 3 clause
 
 from .base import ProxWithGroups
-from .build.prox import ProxBinarsityDouble as _ProxBinarsityDouble
-from .build.prox import ProxBinarsityFloat as _ProxBinarsityFloat
+from tick.tick_cpp import ProxBinarsityDouble as _ProxBinarsityDouble
+from tick.tick_cpp import ProxBinarsityFloat as _ProxBinarsityFloat
 
 import numpy as np
 

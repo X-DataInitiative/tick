@@ -1,7 +1,7 @@
 # License: BSD 3 clause
 
 from tick.base import Base
-from tick.hawkes.simulation.build.hawkes_simulation import (HawkesKernel as
+from tick.tick_cpp import (HawkesKernel as
                                                             _HawkesKernel)
 
 

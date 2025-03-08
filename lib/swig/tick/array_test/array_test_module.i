@@ -2,6 +2,7 @@
 
 %module array_test
 
+%include tick/array/array_module.i
 %include tick/base/defs.i
 
 %{

@@ -117,13 +117,13 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
     PyObject *scipy_sparse_csr, *csr_matrix, *instance,
              *scipy_sparse_csc, *csc_matrix;
 
-    scipy_sparse_csr = PyImport_ImportModule("scipy.sparse.csr");
+    scipy_sparse_csr = PyImport_ImportModule("scipy.sparse");
     if(!scipy_sparse_csr) throw std::runtime_error("scipy_sparse_csr failed");
     csr_matrix = PyObject_GetAttrString(scipy_sparse_csr, "csr_matrix");
     if(!csr_matrix) throw std::runtime_error("csr_matrix failed");
     if(!PyCallable_Check(csr_matrix)) throw std::runtime_error("csr_matrix check failed");
 
-    scipy_sparse_csc = PyImport_ImportModule("scipy.sparse.csc");
+    scipy_sparse_csc = PyImport_ImportModule("scipy.sparse");
     if(!scipy_sparse_csc) throw std::runtime_error("scipy_sparse_csc failed");
     csc_matrix = PyObject_GetAttrString(scipy_sparse_csc, "csc_matrix");
     if(!csc_matrix) throw std::runtime_error("csc_matrix failed");
@@ -203,8 +203,15 @@ DLL_PUBLIC PyObject *_XSparseArray2d2NumpyArray(XSPARSEARRAY2D_TYPE *sig)
       throw std::runtime_error("SparseArray2d Reference count unexpected in SWIG layer - recompile with -DDEBUG_SHAREDARRAY and check");
     }
 
+    if (PyObject_SetAttrString(instance, "_indices", (PyObject *)indices))
+        throw std::runtime_error("set indices failed");
+    if (PyObject_SetAttrString(instance, "_row_indices", (PyObject *)row_indices))
+        throw std::runtime_error("set row_indices failed");
+
     // is required for arrays to be de-allocated properly when owned by python
     if(((PyObject *)array)->ob_refcnt > 2) Py_DECREF(array);
+    if(((PyObject *)indices)->ob_refcnt > 1) Py_DECREF(indices);
+    if(((PyObject *)row_indices)->ob_refcnt > 1) Py_DECREF(row_indices);
 
     return (PyObject *) instance;
 }

@@ -3,7 +3,7 @@
 import numpy as np
 import scipy.sparse as sps
 from tick.preprocessing.base import LongitudinalPreprocessor
-from .build.preprocessing import LongitudinalFeaturesLagger\
+from tick.tick_cpp import LongitudinalFeaturesLagger\
     as _LongitudinalFeaturesLagger
 from .utils import check_longitudinal_features_consistency,\
     check_censoring_consistency

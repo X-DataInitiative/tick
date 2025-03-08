@@ -4,7 +4,7 @@ import numpy as np
 
 from tick.base import TimeFunction
 from tick.hawkes.simulation.base import SimuPointProcess
-from tick.hawkes.simulation.build.hawkes_simulation import (
+from tick.tick_cpp import (
     InhomogeneousPoisson as _InhomogeneousPoisson)
 
 

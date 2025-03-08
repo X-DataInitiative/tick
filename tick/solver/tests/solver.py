@@ -208,7 +208,7 @@ class TestSolver(unittest.TestCase):
             self.assertEqual(np.isfinite(iterate_dense).all(), True, error_msg)
 
             places = 7
-            if self.dtype is "float32" or self.dtype is np.dtype("float32"):
+            if self.dtype == "float32" or self.dtype == np.dtype("float32"):
                 places = 4
             np.testing.assert_almost_equal(iterate_dense, iterate_sparse,
                                            err_msg=error_msg, decimal=places)
