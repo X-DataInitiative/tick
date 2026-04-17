@@ -78,7 +78,7 @@ void bind_sto_solver_base(py::module_ &m, const char *name) {
   using ModelType = TModel<Scalar, Scalar>;
   using ProxType = TProx<Scalar, Scalar>;
 
-  auto cls = py::class_<SolverType, std::shared_ptr<SolverType>>(m, name)
+  auto cls = py::class_<SolverType, py::smart_holder>(m, name)
       .def("set_model", &SolverType::set_model, py::arg("model"),
            py::return_value_policy::reference_internal)
       .def("set_prox", &SolverType::set_prox, py::arg("prox"),
@@ -124,7 +124,7 @@ void bind_sto_solver_base(py::module_ &m, const char *name) {
 
 template <typename SolverType, typename BaseType, typename Scalar>
 void bind_sgd_like(py::module_ &m, const char *name) {
-  auto cls = py::class_<SolverType, std::shared_ptr<SolverType>, BaseType>(m,
+  auto cls = py::class_<SolverType, py::smart_holder, BaseType>(m,
                                                                            name)
       .def(py::init<ulong, Scalar, RandType, Scalar, int, int>(),
            py::arg("epoch_size"), py::arg("tol"), py::arg("rand_type"),
@@ -141,7 +141,7 @@ void bind_sgd_like(py::module_ &m, const char *name) {
 
 template <typename SolverType, typename BaseType, typename Scalar>
 void bind_svrg_like(py::module_ &m, const char *name) {
-  auto cls = py::class_<SolverType, std::shared_ptr<SolverType>, BaseType>(m,
+  auto cls = py::class_<SolverType, py::smart_holder, BaseType>(m,
                                                                            name)
       .def(py::init<size_t, Scalar, RandType, Scalar, size_t, int, size_t,
                     SVRG_VarianceReductionMethod, SVRG_StepType>(),
@@ -167,7 +167,7 @@ void bind_svrg_like(py::module_ &m, const char *name) {
 
 template <typename SolverType, typename BaseType, typename Scalar>
 void bind_sdca_like(py::module_ &m, const char *name) {
-  auto cls = py::class_<SolverType, std::shared_ptr<SolverType>, BaseType>(m,
+  auto cls = py::class_<SolverType, py::smart_holder, BaseType>(m,
                                                                            name)
       .def(py::init<Scalar, ulong, Scalar, RandType, int, int>(),
            py::arg("l_l2sq"), py::arg("epoch_size") = 0, py::arg("tol") = 0,
@@ -186,7 +186,7 @@ void bind_sdca_like(py::module_ &m, const char *name) {
 
 template <typename SolverType, typename BaseType, typename Scalar>
 void bind_adagrad_like(py::module_ &m, const char *name) {
-  auto cls = py::class_<SolverType, std::shared_ptr<SolverType>, BaseType>(m,
+  auto cls = py::class_<SolverType, py::smart_holder, BaseType>(m,
                                                                            name)
       .def(py::init<ulong, Scalar, RandType, Scalar, int, int>(),
            py::arg("epoch_size"), py::arg("tol"), py::arg("rand_type"),
@@ -201,7 +201,7 @@ void bind_adagrad_like(py::module_ &m, const char *name) {
 
 template <typename SolverType, typename BaseType, typename Scalar>
 void bind_saga_like(py::module_ &m, const char *name) {
-  auto cls = py::class_<SolverType, std::shared_ptr<SolverType>, BaseType>(m,
+  auto cls = py::class_<SolverType, py::smart_holder, BaseType>(m,
                                                                            name)
       .def(py::init<ulong, Scalar, RandType, Scalar, int, int>(),
            py::arg("epoch_size"), py::arg("tol"), py::arg("rand_type"),
@@ -218,7 +218,7 @@ void bind_saga_like(py::module_ &m, const char *name) {
 
 template <typename SolverType, typename BaseType, typename Scalar>
 void bind_atomic_saga_like(py::module_ &m, const char *name) {
-  auto cls = py::class_<SolverType, std::shared_ptr<SolverType>, BaseType>(m,
+  auto cls = py::class_<SolverType, py::smart_holder, BaseType>(m,
                                                                            name)
       .def(py::init([](ulong epoch_size, Scalar tol, RandType rand_type,
                        Scalar step, int record_every, int seed,

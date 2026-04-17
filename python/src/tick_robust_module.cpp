@@ -16,7 +16,7 @@ namespace {
 
 template <typename ModelType, typename BaseType>
 void bind_glm_model(py::module_ &m, const char *name) {
-  auto cls = py::class_<ModelType, std::shared_ptr<ModelType>, BaseType>(m,
+  auto cls = py::class_<ModelType, py::smart_holder, BaseType>(m,
                                                                          name)
       .def(py::init<SBaseArrayDouble2dPtr, SArrayDoublePtr, bool, int>(),
            py::arg("features"), py::arg("labels"), py::arg("fit_intercept"),
@@ -30,7 +30,7 @@ void bind_glm_model(py::module_ &m, const char *name) {
 
 template <typename ModelType, typename BaseType>
 void bind_threshold_model(py::module_ &m, const char *name) {
-  auto cls = py::class_<ModelType, std::shared_ptr<ModelType>, BaseType>(m,
+  auto cls = py::class_<ModelType, py::smart_holder, BaseType>(m,
                                                                          name)
       .def(py::init<SBaseArrayDouble2dPtr, SArrayDoublePtr, bool, double, int>(),
            py::arg("features"), py::arg("labels"), py::arg("fit_intercept"),
@@ -52,8 +52,7 @@ PYBIND11_MODULE(robust, m) {
   m.doc() = "tick.robust pybind11 bindings";
 
   auto model_glm_with_intercepts =
-      py::class_<ModelGeneralizedLinearWithInterceptsDouble,
-                 std::shared_ptr<ModelGeneralizedLinearWithInterceptsDouble>,
+      py::class_<ModelGeneralizedLinearWithInterceptsDouble, py::smart_holder,
                  ModelGeneralizedLinearDouble>(
           m, "ModelGeneralizedLinearWithInterceptsDouble")
       .def(py::init<SBaseArrayDouble2dPtr, SArrayDoublePtr, bool, int>(),
@@ -74,7 +73,7 @@ PYBIND11_MODULE(robust, m) {
       m, "ModelEpsilonInsensitiveDouble");
 
   auto huber =
-      py::class_<ModelHuberDouble, std::shared_ptr<ModelHuberDouble>,
+      py::class_<ModelHuberDouble, py::smart_holder,
                  ModelGeneralizedLinearDouble, ModelLipschitzDouble>(
           m, "ModelHuberDouble")
       .def(py::init<SBaseArrayDouble2dPtr, SArrayDoublePtr, bool, double, int>(),
@@ -89,8 +88,7 @@ PYBIND11_MODULE(robust, m) {
   tick::pybind::enable_cereal_pickle<ModelHuberDouble>(huber);
 
   auto linreg_with_intercepts =
-      py::class_<ModelLinRegWithInterceptsDouble,
-                 std::shared_ptr<ModelLinRegWithInterceptsDouble>,
+      py::class_<ModelLinRegWithInterceptsDouble, py::smart_holder,
                  ModelGeneralizedLinearWithInterceptsDouble,
                  ModelLipschitzDouble>(m, "ModelLinRegWithInterceptsDouble")
       .def(py::init<SBaseArrayDouble2dPtr, SArrayDoublePtr, bool, int>(),
@@ -105,8 +103,7 @@ PYBIND11_MODULE(robust, m) {
       linreg_with_intercepts);
 
   auto modified_huber =
-      py::class_<ModelModifiedHuberDouble,
-                 std::shared_ptr<ModelModifiedHuberDouble>,
+      py::class_<ModelModifiedHuberDouble, py::smart_holder,
                  ModelGeneralizedLinearDouble, ModelLipschitzDouble>(
           m, "ModelModifiedHuberDouble")
       .def(py::init<SBaseArrayDouble2dPtr, SArrayDoublePtr, bool, int>(),

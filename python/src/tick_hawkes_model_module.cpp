@@ -14,9 +14,9 @@ namespace py = pybind11;
 namespace {
 
 template <typename ModelType>
-py::class_<ModelType, std::shared_ptr<ModelType>, ModelDouble> bind_hawkes_common(
+py::class_<ModelType, py::smart_holder, ModelDouble> bind_hawkes_common(
     py::module_ &m, const char *name) {
-  return py::class_<ModelType, std::shared_ptr<ModelType>, ModelDouble>(m, name)
+  return py::class_<ModelType, py::smart_holder, ModelDouble>(m, name)
       .def("get_n_coeffs", &ModelType::get_n_coeffs)
       .def("get_n_nodes", &ModelType::get_n_nodes)
       .def("get_n_total_jumps", &ModelType::get_n_total_jumps)
@@ -32,14 +32,14 @@ py::class_<ModelType, std::shared_ptr<ModelType>, ModelDouble> bind_hawkes_commo
 
 template <typename ModelType, typename... Bases>
 void bind_hawkes_leastsq_api(
-    py::class_<ModelType, std::shared_ptr<ModelType>, Bases...> &cls) {
+    py::class_<ModelType, py::smart_holder, Bases...> &cls) {
   cls.def("loss", &ModelType::loss, py::arg("coeffs"))
       .def("grad", &ModelType::grad, py::arg("coeffs"), py::arg("out"));
 }
 
 template <typename ModelType, typename... Bases>
 void bind_hawkes_loglik_api(
-    py::class_<ModelType, std::shared_ptr<ModelType>, Bases...> &cls) {
+    py::class_<ModelType, py::smart_holder, Bases...> &cls) {
   cls.def("loss", &ModelType::loss, py::arg("coeffs"))
       .def("grad", &ModelType::grad, py::arg("coeffs"), py::arg("out"))
       .def("loss_and_grad", &ModelType::loss_and_grad, py::arg("coeffs"),

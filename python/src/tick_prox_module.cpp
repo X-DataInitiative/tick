@@ -25,7 +25,7 @@ namespace {
 
 template <typename ProxType, typename Scalar>
 void bind_prox_base(py::module_ &m, const char *name) {
-  auto cls = py::class_<ProxType, std::shared_ptr<ProxType>>(m, name)
+  auto cls = py::class_<ProxType, py::smart_holder>(m, name)
       .def("call",
            [](ProxType &self, const Array<Scalar> &coeffs, Scalar step,
               Array<Scalar> &out) { self.call(coeffs, step, out); },
@@ -46,7 +46,7 @@ void bind_prox_base(py::module_ &m, const char *name) {
 
 template <typename ProxType, typename BaseType, typename Scalar>
 auto bind_basic_prox(py::module_ &m, const char *name) {
-  return py::class_<ProxType, std::shared_ptr<ProxType>, BaseType>(m, name)
+  return py::class_<ProxType, py::smart_holder, BaseType>(m, name)
       .def(py::init<Scalar, bool>(), py::arg("strength"),
            py::arg("positive"))
       .def(py::init<Scalar, ulong, ulong, bool>(), py::arg("strength"),
@@ -82,7 +82,7 @@ void bind_array_step_call(ClassType &cls) {
 
 template <typename ProxType, typename BaseType, typename Scalar>
 void bind_group_prox(py::module_ &m, const char *name) {
-  py::class_<ProxType, std::shared_ptr<ProxType>, BaseType>(m, name)
+  py::class_<ProxType, py::smart_holder, BaseType>(m, name)
       .def(py::init<Scalar, SArrayULongPtr, SArrayULongPtr, bool>(),
            py::arg("strength"), py::arg("blocks_start"),
            py::arg("blocks_length"), py::arg("positive"))
@@ -135,7 +135,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
 
   bind_prox_base<ProxBase, Scalar>(m, prox_name);
 
-  py::class_<ProxWithGroups, std::shared_ptr<ProxWithGroups>, ProxBase>(
+  py::class_<ProxWithGroups, py::smart_holder, ProxBase>(
       m, std::string(prox_name).append("WithGroups").c_str())
       .def("set_blocks_start", &ProxWithGroups::set_blocks_start,
            py::arg("blocks_start"))
@@ -143,7 +143,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
            py::arg("blocks_length"));
 
   auto prox_zero =
-      py::class_<ProxZero, std::shared_ptr<ProxZero>, ProxBase>(m,
+      py::class_<ProxZero, py::smart_holder, ProxBase>(m,
                                                                 prox_zero_name)
       .def(py::init<Scalar>(), py::arg("strength"))
       .def(py::init<Scalar, ulong, ulong>(), py::arg("strength"),
@@ -159,7 +159,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
   tick::pybind::enable_cereal_pickle<ProxZero>(prox_zero);
 
   auto prox_positive =
-      py::class_<ProxPositive, std::shared_ptr<ProxPositive>, ProxBase>(
+      py::class_<ProxPositive, py::smart_holder, ProxBase>(
           m, prox_positive_name)
       .def(py::init<Scalar>(), py::arg("strength"))
       .def(py::init<Scalar, ulong, ulong>(), py::arg("strength"),
@@ -193,7 +193,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
   tick::pybind::enable_cereal_pickle<ProxEquality>(prox_equality);
 
   auto prox_elasticnet =
-      py::class_<ProxElasticNet, std::shared_ptr<ProxElasticNet>, ProxBase>(
+      py::class_<ProxElasticNet, py::smart_holder, ProxBase>(
           m, prox_elasticnet_name)
       .def(py::init<Scalar, Scalar, bool>(), py::arg("strength"),
            py::arg("ratio"), py::arg("positive"))
@@ -213,7 +213,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
   tick::pybind::enable_cereal_pickle<ProxElasticNet>(prox_elasticnet);
 
   auto prox_l1w =
-      py::class_<ProxL1w, std::shared_ptr<ProxL1w>, ProxBase>(
+      py::class_<ProxL1w, py::smart_holder, ProxBase>(
           m, prox_l1w_name, py::dynamic_attr())
       .def(py::init<Scalar, std::shared_ptr<SArray<Scalar>>, bool>(),
            py::arg("strength"), py::arg("weights"), py::arg("positive"))
@@ -234,7 +234,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
   tick::pybind::enable_cereal_pickle<ProxL1w>(prox_l1w);
 
   auto prox_group_l1 =
-      py::class_<ProxGroupL1, std::shared_ptr<ProxGroupL1>, ProxWithGroups>(
+      py::class_<ProxGroupL1, py::smart_holder, ProxWithGroups>(
           m, prox_group_l1_name)
           .def(py::init<Scalar, SArrayULongPtr, SArrayULongPtr, bool>(),
                py::arg("strength"), py::arg("blocks_start"),
@@ -255,7 +255,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
   tick::pybind::enable_cereal_pickle<ProxGroupL1>(prox_group_l1);
 
   auto prox_binarsity =
-      py::class_<ProxBinarsity, std::shared_ptr<ProxBinarsity>, ProxWithGroups>(
+      py::class_<ProxBinarsity, py::smart_holder, ProxWithGroups>(
           m, prox_binarsity_name)
           .def(py::init<Scalar, SArrayULongPtr, SArrayULongPtr, bool>(),
                py::arg("strength"), py::arg("blocks_start"),
@@ -275,7 +275,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
                });
   tick::pybind::enable_cereal_pickle<ProxBinarsity>(prox_binarsity);
 
-  auto prox_multi = py::class_<ProxMulti, std::shared_ptr<ProxMulti>, ProxBase>(
+  auto prox_multi = py::class_<ProxMulti, py::smart_holder, ProxBase>(
                         m, prox_multi_name)
       .def(py::init<std::vector<std::shared_ptr<ProxBase>>>(), py::arg("proxs"))
       .def("compare",
@@ -289,7 +289,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
   tick::pybind::enable_cereal_pickle<ProxMulti>(prox_multi);
 
   auto prox_sorted_l1 =
-      py::class_<ProxSortedL1, std::shared_ptr<ProxSortedL1>, ProxBase>(
+      py::class_<ProxSortedL1, py::smart_holder, ProxBase>(
           m, prox_sorted_l1_name)
       .def(py::init<Scalar, WeightsType, bool>(), py::arg("strength"),
            py::arg("weights_type"), py::arg("positive"))
@@ -311,7 +311,7 @@ auto bind_prox_hierarchy(py::module_ &m, const char *prox_name,
   tick::pybind::enable_cereal_pickle<ProxSortedL1>(prox_sorted_l1);
 
   auto prox_slope =
-      py::class_<ProxSlope, std::shared_ptr<ProxSlope>, ProxSortedL1>(
+      py::class_<ProxSlope, py::smart_holder, ProxSortedL1>(
           m, prox_slope_name)
       .def(py::init<Scalar, Scalar, bool>(), py::arg("strength"),
            py::arg("false_discovery_rate"), py::arg("positive"))

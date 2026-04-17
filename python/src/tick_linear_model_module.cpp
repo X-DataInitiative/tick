@@ -18,7 +18,7 @@ template <typename ModelType, typename BaseGeneralizedLinear,
           typename BaseLipschitz, typename Array2dPtr, typename ArrayPtr,
           typename Scalar>
 void bind_model_glm(py::module_ &m, const char *name) {
-  auto cls = py::class_<ModelType, std::shared_ptr<ModelType>,
+  auto cls = py::class_<ModelType, py::smart_holder,
                         BaseGeneralizedLinear, BaseLipschitz>(m, name)
                  .def(py::init<Array2dPtr, ArrayPtr, bool, int>(), py::arg("features"),
                       py::arg("labels"), py::arg("fit_intercept"),
@@ -31,8 +31,7 @@ void bind_model_glm(py::module_ &m, const char *name) {
 }
 
 template <typename Scalar>
-void bind_sigmoid(py::class_<TModelLogReg<Scalar, Scalar>,
-                             std::shared_ptr<TModelLogReg<Scalar, Scalar>>,
+void bind_sigmoid(py::class_<TModelLogReg<Scalar, Scalar>, py::smart_holder,
                              TModelGeneralizedLinear<Scalar, Scalar>,
                              TModelLipschitz<Scalar, Scalar>> &cls) {
   cls.def_static(
@@ -46,7 +45,7 @@ void bind_sigmoid(py::class_<TModelLogReg<Scalar, Scalar>,
 template <typename ModelType, typename BaseGeneralizedLinear, typename Array2dPtr,
           typename ArrayPtr>
 void bind_model_poisreg(py::module_ &m, const char *name) {
-  auto cls = py::class_<ModelType, std::shared_ptr<ModelType>,
+  auto cls = py::class_<ModelType, py::smart_holder,
                         BaseGeneralizedLinear>(
       m, name)
       .def(py::init<Array2dPtr, ArrayPtr, LinkType, bool, int>(),
@@ -64,7 +63,7 @@ void bind_model_poisreg(py::module_ &m, const char *name) {
 template <typename ModelType, typename BaseGeneralizedLinear, typename Array2dPtr,
           typename ArrayPtr>
 void bind_model_hinge(py::module_ &m, const char *name) {
-  auto cls = py::class_<ModelType, std::shared_ptr<ModelType>,
+  auto cls = py::class_<ModelType, py::smart_holder,
                         BaseGeneralizedLinear>(m, name)
                  .def(py::init<Array2dPtr, ArrayPtr, bool, int>(),
                       py::arg("features"), py::arg("labels"),
@@ -80,7 +79,7 @@ template <typename ModelType, typename BaseGeneralizedLinear,
           typename BaseLipschitz, typename Array2dPtr, typename ArrayPtr,
           typename Scalar>
 void bind_model_smoothed_hinge(py::module_ &m, const char *name) {
-  auto cls = py::class_<ModelType, std::shared_ptr<ModelType>,
+  auto cls = py::class_<ModelType, py::smart_holder,
                         BaseGeneralizedLinear, BaseLipschitz>(m, name)
                  .def(py::init<Array2dPtr, ArrayPtr, bool, Scalar, int>(),
                       py::arg("features"), py::arg("labels"),
@@ -115,7 +114,7 @@ PYBIND11_MODULE(linear_model, m) {
                  float>(m, "ModelLinRegFloat");
 
   auto logreg_double =
-      py::class_<ModelLogRegDouble, std::shared_ptr<ModelLogRegDouble>,
+      py::class_<ModelLogRegDouble, py::smart_holder,
                  ModelGeneralizedLinearDouble, ModelLipschitzDouble>(
           m, "ModelLogRegDouble");
   logreg_double
@@ -129,8 +128,7 @@ PYBIND11_MODULE(linear_model, m) {
   bind_sigmoid<double>(logreg_double);
   tick::pybind::enable_cereal_pickle<ModelLogRegDouble>(logreg_double);
 
-  auto logreg_float = py::class_<ModelLogRegFloat,
-                                 std::shared_ptr<ModelLogRegFloat>,
+  auto logreg_float = py::class_<ModelLogRegFloat, py::smart_holder,
                                  ModelGeneralizedLinearFloat,
                                  ModelLipschitzFloat>(m, "ModelLogRegFloat");
   logreg_float

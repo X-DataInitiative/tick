@@ -23,8 +23,7 @@ PYBIND11_MODULE(preprocessing, m) {
   };
 
   auto lagger =
-      py::class_<LongitudinalFeaturesLagger,
-                 std::shared_ptr<LongitudinalFeaturesLagger>>(
+      py::class_<LongitudinalFeaturesLagger, py::smart_holder>(
           m, "LongitudinalFeaturesLagger")
           .def(py::init([&load_features](py::iterable features,
                                          SArrayULongPtr n_lags) {
@@ -65,8 +64,7 @@ PYBIND11_MODULE(preprocessing, m) {
               }));
 
   auto product =
-      py::class_<SparseLongitudinalFeaturesProduct,
-                 std::shared_ptr<SparseLongitudinalFeaturesProduct>>(
+      py::class_<SparseLongitudinalFeaturesProduct, py::smart_holder>(
           m, "SparseLongitudinalFeaturesProduct")
           .def(py::init([&load_features](py::iterable features) {
                  return std::make_shared<SparseLongitudinalFeaturesProduct>(

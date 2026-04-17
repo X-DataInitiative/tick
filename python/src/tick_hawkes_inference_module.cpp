@@ -41,7 +41,7 @@ VArrayDoublePtr compute_end_times(const SArrayDoublePtrList2D &timestamps_list) 
 }
 
 void bind_model_hawkes(py::module_ &m) {
-  py::class_<ModelHawkes, std::shared_ptr<ModelHawkes>>(m, "ModelHawkes")
+  py::class_<ModelHawkes, py::smart_holder>(m, "ModelHawkes")
       .def("get_n_nodes", &ModelHawkes::get_n_nodes)
       .def("set_n_nodes", &ModelHawkes::set_n_nodes, py::arg("n_nodes"))
       .def("get_n_total_jumps", &ModelHawkes::get_n_total_jumps)
@@ -52,7 +52,7 @@ void bind_model_hawkes(py::module_ &m) {
 
 void bind_model_hawkes_list(py::module_ &m) {
   auto cls =
-      py::class_<ModelHawkesList, std::shared_ptr<ModelHawkesList>,
+      py::class_<ModelHawkesList, py::smart_holder,
                  ModelHawkes>(m, "ModelHawkesList")
           .def(py::init<int, unsigned int>(), py::arg("max_n_threads") = 1,
                py::arg("optimization_level") = 0)
@@ -87,7 +87,7 @@ PYBIND11_MODULE(hawkes_inference, m) {
   bind_model_hawkes_list(m);
 
   auto hawkes_adm4 =
-      py::class_<HawkesADM4, std::shared_ptr<HawkesADM4>, ModelHawkesList>(
+      py::class_<HawkesADM4, py::smart_holder, ModelHawkesList>(
           m, "HawkesADM4")
           .def(py::init<double, double, int, unsigned int>(),
                py::arg("decay"), py::arg("rho"), py::arg("max_n_threads") = 1,
@@ -102,7 +102,7 @@ PYBIND11_MODULE(hawkes_inference, m) {
           .def("set_rho", &HawkesADM4::set_rho, py::arg("rho"));
 
   auto hawkes_em =
-      py::class_<HawkesEM, std::shared_ptr<HawkesEM>, ModelHawkesList>(
+      py::class_<HawkesEM, py::smart_holder, ModelHawkesList>(
           m, "HawkesEM")
           .def(py::init<double, ulong, int>(), py::arg("kernel_support"),
                py::arg("kernel_size"), py::arg("max_n_threads") = 1)
@@ -147,8 +147,7 @@ PYBIND11_MODULE(hawkes_inference, m) {
                    &HawkesEM::primitive_of_intensity_at_jump_times),
                py::arg("r_u"));
 
-  auto hawkes_basis_kernels = py::class_<HawkesBasisKernels,
-                                         std::shared_ptr<HawkesBasisKernels>,
+  auto hawkes_basis_kernels = py::class_<HawkesBasisKernels, py::smart_holder,
                                          ModelHawkesList>(m,
                                                           "HawkesBasisKernels")
                                  .def(py::init<double, ulong, ulong, double,
@@ -189,7 +188,7 @@ PYBIND11_MODULE(hawkes_inference, m) {
                                       &HawkesBasisKernels::get_kernel_discretization);
 
   auto hawkes_sum_gaussians =
-      py::class_<HawkesSumGaussians, std::shared_ptr<HawkesSumGaussians>,
+      py::class_<HawkesSumGaussians, py::smart_holder,
                  ModelHawkesList>(m, "HawkesSumGaussians")
           .def(py::init<ulong, double, double, double, double, ulong, int,
                         unsigned int>(),
@@ -225,7 +224,7 @@ PYBIND11_MODULE(hawkes_inference, m) {
                py::arg("strength_grouplasso"));
 
   auto hawkes_cumulant =
-      py::class_<HawkesCumulant, std::shared_ptr<HawkesCumulant>,
+      py::class_<HawkesCumulant, py::smart_holder,
                  ModelHawkesList>(m, "HawkesCumulant")
           .def(py::init<double>(), py::arg("integration_support"))
           .def("compute_A_and_I_ij", &HawkesCumulant::compute_A_and_I_ij,
@@ -246,8 +245,7 @@ PYBIND11_MODULE(hawkes_inference, m) {
                &HawkesCumulant::set_are_cumulants_ready,
                py::arg("are_cumulants_ready"));
 
-  py::class_<HawkesTheoreticalCumulant,
-             std::shared_ptr<HawkesTheoreticalCumulant>>(m,
+  py::class_<HawkesTheoreticalCumulant, py::smart_holder>(m,
                                                          "HawkesTheoreticalCumulant")
       .def(py::init<int>(), py::arg("dim"))
       .def("get_dimension", &HawkesTheoreticalCumulant::get_dimension)

@@ -22,7 +22,7 @@ namespace py = pybind11;
 namespace {
 
 void bind_point_process(py::module_ &m) {
-  py::class_<PP, std::shared_ptr<PP>>(m, "PP")
+  py::class_<PP, py::smart_holder>(m, "PP")
       .def(py::init<unsigned int, int>(), py::arg("n_nodes"),
            py::arg("seed") = -1)
       .def("activate_itr", &PP::activate_itr, py::arg("dt"))
@@ -58,7 +58,7 @@ void bind_point_process(py::module_ &m) {
 }
 
 void bind_hawkes_kernels(py::module_ &m) {
-  py::class_<HawkesKernel, HawkesKernelPtr>(m, "HawkesKernel")
+  py::class_<HawkesKernel, py::smart_holder>(m, "HawkesKernel")
       .def(py::init<double>(), py::arg("support") = 0.0)
       .def("is_zero", &HawkesKernel::is_zero)
       .def("get_support", &HawkesKernel::get_support)
@@ -78,7 +78,7 @@ void bind_hawkes_kernels(py::module_ &m) {
       .def("get_norm", &HawkesKernel::get_norm, py::arg("nsteps") = 10000);
 
   auto hawkes_kernel_exp =
-      py::class_<HawkesKernelExp, std::shared_ptr<HawkesKernelExp>,
+      py::class_<HawkesKernelExp, py::smart_holder,
                  HawkesKernel>(
           m, "HawkesKernelExp")
           .def(py::init<double, double>(), py::arg("intensity"),
@@ -91,7 +91,7 @@ void bind_hawkes_kernels(py::module_ &m) {
   tick::pybind::enable_cereal_pickle<HawkesKernelExp>(hawkes_kernel_exp);
 
   auto hawkes_kernel_sum_exp =
-      py::class_<HawkesKernelSumExp, std::shared_ptr<HawkesKernelSumExp>,
+      py::class_<HawkesKernelSumExp, py::smart_holder,
                  HawkesKernel>(
           m, "HawkesKernelSumExp")
           .def(py::init<const ArrayDouble &, const ArrayDouble &>(),
@@ -113,7 +113,7 @@ void bind_hawkes_kernels(py::module_ &m) {
       hawkes_kernel_sum_exp);
 
   auto hawkes_kernel_power_law =
-      py::class_<HawkesKernelPowerLaw, std::shared_ptr<HawkesKernelPowerLaw>,
+      py::class_<HawkesKernelPowerLaw, py::smart_holder,
                  HawkesKernel>(
           m, "HawkesKernelPowerLaw")
           .def(py::init<double, double, double, double, double>(),
@@ -126,7 +126,7 @@ void bind_hawkes_kernels(py::module_ &m) {
       hawkes_kernel_power_law);
 
   auto hawkes_kernel_time_func =
-      py::class_<HawkesKernelTimeFunc, std::shared_ptr<HawkesKernelTimeFunc>,
+      py::class_<HawkesKernelTimeFunc, py::smart_holder,
                  HawkesKernel>(
           m, "HawkesKernelTimeFunc")
           .def(py::init<const TimeFunction &>(), py::arg("time_function"))
@@ -138,14 +138,14 @@ void bind_hawkes_kernels(py::module_ &m) {
       hawkes_kernel_time_func);
 
   auto hawkes_kernel_0 =
-      py::class_<HawkesKernel0, std::shared_ptr<HawkesKernel0>, HawkesKernel>(
+      py::class_<HawkesKernel0, py::smart_holder, HawkesKernel>(
           m, "HawkesKernel0")
           .def(py::init<>());
   tick::pybind::enable_cereal_pickle<HawkesKernel0>(hawkes_kernel_0);
 }
 
 void bind_poisson(py::module_ &m) {
-  py::class_<Poisson, std::shared_ptr<Poisson>, PP>(m, "Poisson")
+  py::class_<Poisson, py::smart_holder, PP>(m, "Poisson")
       .def(py::init<double, int>(), py::arg("intensity"), py::arg("seed") = -1)
       .def(py::init<SArrayDoublePtr, int>(), py::arg("intensities"),
            py::arg("seed") = -1)
@@ -153,7 +153,7 @@ void bind_poisson(py::module_ &m) {
 }
 
 void bind_inhomogeneous_poisson(py::module_ &m) {
-  py::class_<InhomogeneousPoisson, std::shared_ptr<InhomogeneousPoisson>, PP>(
+  py::class_<InhomogeneousPoisson, py::smart_holder, PP>(
       m, "InhomogeneousPoisson")
       .def(py::init<const TimeFunction &, int>(), py::arg("intensity_function"),
            py::arg("seed") = -1)
@@ -164,7 +164,7 @@ void bind_inhomogeneous_poisson(py::module_ &m) {
 }
 
 void bind_hawkes(py::module_ &m) {
-  auto hawkes = py::class_<Hawkes, std::shared_ptr<Hawkes>, PP>(m, "Hawkes")
+  auto hawkes = py::class_<Hawkes, py::smart_holder, PP>(m, "Hawkes")
                     .def(py::init<unsigned int, int>(), py::arg("dimension"),
                          py::arg("seed") = -1)
                     .def("set_kernel", &Hawkes::set_kernel, py::arg("i"),

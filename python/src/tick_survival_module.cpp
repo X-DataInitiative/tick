@@ -15,7 +15,7 @@ namespace {
 template <typename ModelType, typename BaseType, typename FeaturesPtr,
           typename TimesPtr>
 void bind_cox_model(py::module_ &m, const char *name) {
-  auto cls = py::class_<ModelType, std::shared_ptr<ModelType>, BaseType>(m,
+  auto cls = py::class_<ModelType, py::smart_holder, BaseType>(m,
                                                                          name)
                  .def(py::init<FeaturesPtr, TimesPtr, SArrayUShortPtr>(),
                       py::arg("features"), py::arg("times"),
@@ -44,7 +44,7 @@ PYBIND11_MODULE(survival, m) {
                  SArrayFloatPtr>(m, "ModelCoxRegPartialLikFloat");
 
   auto model_sccs =
-      py::class_<ModelSCCS, std::shared_ptr<ModelSCCS>, ModelLipschitzDouble>(
+      py::class_<ModelSCCS, py::smart_holder, ModelLipschitzDouble>(
           m, "ModelSCCS")
           .def(py::init<SBaseArrayDouble2dPtrList1D, SArrayIntPtrList1D,
                         SArrayULongPtr, SArrayULongPtr>(),
