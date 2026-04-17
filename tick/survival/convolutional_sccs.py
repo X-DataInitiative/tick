@@ -766,14 +766,10 @@ class ConvSCCS(ABC, Base):
         """All creatioon of solver by class type, removes values from constructor parameter
            list that do not exist on the class construct to be called
          """
-        # inspect must be first assign
-        _, _, _, kvs = inspect.getargvalues(inspect.currentframe())
-        constructor_map = kvs.copy()
-        args = inspect.getfullargspec(clazz.__init__)[0]
-        for k, v in kvs.items():
-            if k not in args:
-                del constructor_map[k]
-        return SVRG(**constructor_map)
+        all_args = locals()  # plain dict snapshot — safe on all Python versions
+        clazz_params = set(inspect.signature(clazz.__init__).parameters)
+        constructor_map = {k: v for k, v in all_args.items() if k in clazz_params}
+        return clazz(**constructor_map)
 
 
     def _construct_generator_obj(self, C_tv_range, C_group_l1_range,

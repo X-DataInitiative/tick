@@ -1,4 +1,5 @@
 
+import inspect
 from tick.survival.convolutional_sccs import *
 
 
@@ -21,10 +22,10 @@ class BatchConvSCCS(ConvSCCS):
                  tol: float = 1e-5, max_iter: int = 100, verbose: bool = False,
                  print_every: int = 10, record_every: int = 10,
                  random_state: int = None, batch_size = 1):
-        _, _, _, kvs = inspect.getargvalues(inspect.currentframe())
+        _locals = locals()  # plain dict snapshot — safe on all Python versions
         object.__setattr__(self, "batch_size", batch_size)
-        del kvs['batch_size']
-        ConvSCCS.__init__(**kvs)
+        parent_params = set(inspect.signature(ConvSCCS.__init__).parameters) - {'self'}
+        ConvSCCS.__init__(self, **{k: v for k, v in _locals.items() if k in parent_params})
 
     def _multi_fit(self, model_list, coeffs_list, C_s, n_folds):
         solvers, proxes = ([] for i in range(2)) # 2 on the left
@@ -171,5 +172,4 @@ class BatchConvSCCS(ConvSCCS):
         return Confidence_intervals(
             self._format_coeffs(coeffs), self._format_coeffs(lower_bound),
             self._format_coeffs(upper_bound), confidence)
-
 

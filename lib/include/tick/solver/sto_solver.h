@@ -51,14 +51,14 @@ class DLL_PUBLIC TStoSolver {
   // This is useful to know in what range random sampling must be done
   // (n_samples for generalized linear models, n_nodes for Hawkes processes,
   // etc.)
-  ulong rand_max;
+  ulong rand_max = 0;
 
   // Number of steps within an epoch
   ulong epoch_size;
 
   // Current index in the permutation (useful when using random permutation
   // sampling)
-  ulong i_perm;
+  ulong i_perm = 0;
 
   // Tolerance for convergence. Not used yet.
   T tol;
@@ -249,6 +249,7 @@ class DLL_PUBLIC TStoSolver {
     ar(CEREAL_NVP(rand_seed));
   }
 
+ public:
   BoolStrReport compare(const TStoSolver<T, K> &that, std::stringstream &ss) {
     return BoolStrReport(TICK_CMP_REPORT(ss, t) && TICK_CMP_REPORT(ss, iterate) &&
                              TICK_CMP_REPORT(ss, rand_max) && TICK_CMP_REPORT(ss, epoch_size) &&

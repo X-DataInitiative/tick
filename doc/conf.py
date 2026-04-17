@@ -14,6 +14,11 @@
 
 import sys
 import os
+
+# Make doc-local Sphinx extensions importable before importing them below.
+sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath('.'))
+
 import sphinxext.google_analytics
 try:
   import sphinx_bootstrap_theme
@@ -27,8 +32,6 @@ except ImportError:
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('../'))
-sys.path.insert(0, os.path.abspath('.'))
 
 
 # -- General configuration ----------------------------------------------------
@@ -213,10 +216,7 @@ html_show_copyright = True
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'tickdoc'
 
-# Add this context to all produce html files
-html_context = {
-    'css_files': ['_static/css/custom.css'],
-}
+html_css_files = ['css/custom.css']
 
 googleanalytics_id = 'UA-97947441-1'
 
@@ -366,4 +366,3 @@ def autodoc_skip_member(app, what, name, obj, skip, options):
 
 def setup(app):
     app.connect('autodoc-skip-member', autodoc_skip_member)
-

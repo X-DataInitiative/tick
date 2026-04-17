@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-# python setup.py build_ext --inplace
+# python -m pip install -e .
 
 ##
 # This file exists to check if the system
@@ -12,7 +12,7 @@
 ##
 
 """
-setup.py file
+Build helper
 """
 
 import distutils

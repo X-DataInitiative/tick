@@ -33,7 +33,7 @@ class DLL_PUBLIC TModelHuber : public virtual TModelGeneralizedLinear<T, K>,
   T threshold, threshold_squared_over_two;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelHuber() : TModelHuber(nullptr, nullptr, false, 1) {}
 
   TModelHuber(const std::shared_ptr<BaseArray2d<T> > features,

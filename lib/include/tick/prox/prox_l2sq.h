@@ -18,7 +18,7 @@ class DLL_PUBLIC TProxL2Sq : public TProxSeparable<T, K> {
   using TProxSeparable<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxL2Sq() : TProxL2Sq<T, K>(0, 0, 1, false) {}
 
   TProxL2Sq(T strength, bool positive)

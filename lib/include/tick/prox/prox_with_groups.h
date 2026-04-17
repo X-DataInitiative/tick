@@ -42,7 +42,7 @@ class TProxWithGroups : public TProx<T, K> {
                                                    ulong end, bool positive);
 
  protected:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxWithGroups() {}
 
  public:

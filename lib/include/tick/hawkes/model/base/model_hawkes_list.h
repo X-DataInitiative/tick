@@ -48,13 +48,81 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
 
  public:
   template <class Archive>
-  void serialize(Archive &ar) {
+  void load(Archive &ar) {
     ar(cereal::make_nvp("ModelHawkes", cereal::base_class<ModelHawkes>(this)));
 
     ar(CEREAL_NVP(n_realizations));
-    ar(CEREAL_NVP(timestamps_list));
-    ar(CEREAL_NVP(end_times));
-    ar(CEREAL_NVP(n_jumps_per_realization));
+
+    std::vector<std::vector<ArrayDouble> > serialized_timestamps_list;
+    ar(CEREAL_NVP(serialized_timestamps_list));
+
+    bool has_end_times = false;
+    ar(CEREAL_NVP(has_end_times));
+    if (has_end_times) {
+      ArrayDouble serialized_end_times;
+      ar(cereal::make_nvp("end_times", serialized_end_times));
+      end_times = VArrayDouble::new_ptr(serialized_end_times);
+    } else {
+      end_times = nullptr;
+    }
+
+    bool has_n_jumps_per_realization = false;
+    ar(CEREAL_NVP(has_n_jumps_per_realization));
+    if (has_n_jumps_per_realization) {
+      ArrayULong serialized_n_jumps_per_realization;
+      ar(cereal::make_nvp("n_jumps_per_realization",
+                          serialized_n_jumps_per_realization));
+      n_jumps_per_realization =
+          VArrayULong::new_ptr(serialized_n_jumps_per_realization);
+    } else {
+      n_jumps_per_realization = nullptr;
+    }
+
+    timestamps_list.clear();
+    timestamps_list.reserve(serialized_timestamps_list.size());
+    for (auto &serialized_realization : serialized_timestamps_list) {
+      SArrayDoublePtrList1D realization;
+      realization.reserve(serialized_realization.size());
+      for (auto &serialized_timestamps : serialized_realization) {
+        realization.push_back(SArrayDouble::new_ptr(serialized_timestamps));
+      }
+      timestamps_list.push_back(std::move(realization));
+    }
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(cereal::make_nvp("ModelHawkes", cereal::base_class<ModelHawkes>(this)));
+
+    ar(CEREAL_NVP(n_realizations));
+
+    std::vector<std::vector<ArrayDouble> > serialized_timestamps_list;
+    serialized_timestamps_list.reserve(timestamps_list.size());
+    for (const auto &realization : timestamps_list) {
+      std::vector<ArrayDouble> serialized_realization;
+      serialized_realization.reserve(realization.size());
+      for (const auto &timestamps : realization) {
+        serialized_realization.emplace_back(*timestamps);
+      }
+      serialized_timestamps_list.push_back(std::move(serialized_realization));
+    }
+    ar(CEREAL_NVP(serialized_timestamps_list));
+
+    const bool has_end_times = end_times != nullptr;
+    ar(CEREAL_NVP(has_end_times));
+    if (has_end_times) {
+      const ArrayDouble serialized_end_times(*end_times);
+      ar(cereal::make_nvp("end_times", serialized_end_times));
+    }
+
+    const bool has_n_jumps_per_realization = n_jumps_per_realization != nullptr;
+    ar(CEREAL_NVP(has_n_jumps_per_realization));
+    if (has_n_jumps_per_realization) {
+      const ArrayULong serialized_n_jumps_per_realization(
+          *n_jumps_per_realization);
+      ar(cereal::make_nvp("n_jumps_per_realization",
+                          serialized_n_jumps_per_realization));
+    }
   }
 
   BoolStrReport compare(const ModelHawkesList &that, std::stringstream &ss) {
@@ -71,5 +139,8 @@ class DLL_PUBLIC ModelHawkesList : public ModelHawkes {
   }
   BoolStrReport operator==(const ModelHawkesList &that) { return ModelHawkesList::compare(that); }
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesList,
+                                   cereal::specialization::member_load_save)
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_BASE_MODEL_HAWKES_LIST_H_

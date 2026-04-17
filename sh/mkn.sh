@@ -61,8 +61,6 @@ MKN_C_FLAGS=" $TICK_INDICES"
 [ -n "$CXXFLAGS" ] && MKN_C_FLAGS+=" ${CXXFLAGS} "
 [ "$DEBUG" == "1" ] && MKN_C_FLAGS+=" -DDEBUG_COSTLY_THROW"
 
-[ -n "$SWIG" ] && [ "$SWIG" != "0" ] && source $ROOT/sh/swig.sh
-
 cd $ROOT
 
 MKN_PROFILES=$(IFS=,; echo "${PROFILES[*]}")

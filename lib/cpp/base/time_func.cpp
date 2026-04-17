@@ -8,6 +8,9 @@
 #include <float.h>
 #define FLOOR_THRESHOLD 1e-10
 
+const TimeFunction::InterMode TimeFunction::DEFAULT_INTER;
+const TimeFunction::BorderType TimeFunction::DEFAULT_BORDER;
+
 TimeFunction::TimeFunction(double y) {
   // Little trick so that it will predict y after 0 and 0 before
   // 2* is needed to ensure that 0 > last_value_before_border + FLOOR_THRESHOLD
@@ -238,10 +241,11 @@ double TimeFunction::value(double t) {
     return 0.0;
   }
 
-  const ulong i_left = _idx_left(t);
-  const ulong i_right = _idx_right(t);
+  const ulong sample_size = sampled_y->size();
+  const ulong i_left = std::min(_idx_left(t), sample_size - 1);
+  const ulong i_right = std::min(_idx_right(t), sample_size - 1);
   const double t_left = _t_left(t);
-  const double t_right = _t_right(t);
+  const double t_right = get_t_from_index_(i_right);
   const double y_left = (*sampled_y)[i_left];
   const double y_right = (*sampled_y)[i_right];
   return interpolation(t_left, y_left, t_right, y_right, t);
@@ -329,10 +333,11 @@ double TimeFunction::future_bound(double t) {
     return (*future_max)[0];
   }
 
-  const ulong i_left = _idx_left(t);
-  const ulong i_right = _idx_right(t);
+  const ulong sample_size = future_max->size();
+  const ulong i_left = std::min(_idx_left(t), sample_size - 1);
+  const ulong i_right = std::min(_idx_right(t), sample_size - 1);
   const double t_left = _t_left(t);
-  const double t_right = _t_right(t);
+  const double t_right = get_t_from_index_(i_right);
   const double y_left = (*future_max)[i_left];
   const double y_right = (*future_max)[i_right];
 
@@ -348,12 +353,26 @@ SArrayDoublePtr TimeFunction::future_bound(ArrayDouble &array) {
 }
 
 double TimeFunction::max_error(double t) {
-  const ulong i_left = get_index_(t);
+  const ulong sample_size = sampled_y->size();
+  if (sample_size < 2) {
+    return 0;
+  }
+
+  ulong i_left = _idx_left(t);
+  ulong i_right = _idx_right(t);
+
+  if (i_right >= sample_size) {
+    i_right = sample_size - 1;
+    i_left = sample_size - 2;
+  } else if (i_left >= sample_size - 1) {
+    i_left = sample_size - 2;
+    i_right = sample_size - 1;
+  }
 
   const double t_left = get_t_from_index_(i_left);
   const double y_left = (*sampled_y)[i_left];
-  const double t_right = get_t_from_index_(i_left + 1);
-  const double y_right = (*sampled_y)[i_left + 1];
+  const double t_right = get_t_from_index_(i_right);
+  const double y_right = (*sampled_y)[i_right];
 
   switch (inter_mode) {
     case (InterMode::InterLinear):
@@ -431,16 +450,18 @@ double TimeFunction::linear_interpolation(double t_left, double y_left, double t
 
 double TimeFunction::interpolation(double t_left, double y_left, double t_right, double y_right,
                                    double t) {
-  if ((t < t_left) || (t > t_right)) {
+  if ((t < t_left - FLOOR_THRESHOLD) || (t > t_right + FLOOR_THRESHOLD)) {
     std::cout << "TimeFunction::interpolation Error: evaluation points error " << std::endl
               << "t_left: " << t_left << std::endl
               << "t: " << t << std::endl
               << "t_right: " << t_right << std::endl;
   }
-  if (t < t_left)
+  if (t < t_left - FLOOR_THRESHOLD)
     throw std::runtime_error("TimeFunction::interpolation error: t_left  cannot be larger than t");
-  if (t > t_right)
+  if (t > t_right + FLOOR_THRESHOLD)
     throw std::runtime_error("TimeFunction::interpolation error: t_right cannot be smaller than t");
+  if (std::abs(t - t_left) < FLOOR_THRESHOLD) t = t_left;
+  if (std::abs(t - t_right) < FLOOR_THRESHOLD) t = t_right;
   // Second do the right interpolation
   switch (inter_mode) {
     case (InterMode::InterLinear):

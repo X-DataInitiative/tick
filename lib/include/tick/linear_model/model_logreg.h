@@ -29,7 +29,7 @@ class DLL_PUBLIC TModelLogReg : public TModelGeneralizedLinear<T, K>,
   using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelLogReg() : TModelLogReg<T, K>(nullptr, nullptr, 0, 0) {}
 
   TModelLogReg(const std::shared_ptr<BaseArray2d<T> > features,

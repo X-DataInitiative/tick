@@ -13,14 +13,14 @@
 
 // clang-format off
 // Don't touch this! - it messes with the "strings" inside the macros
-#ifndef TICK_SWIG_INCLUDE
+#ifndef TICK_PYTHON_BINDINGS
 DISABLE_WARNING(unused, exceptions, 42)
 DISABLE_WARNING(unused, unused-private-field, 42)
 DISABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)
 #endif
 #include "cereal/archives/portable_binary.hpp"
 #include <iomanip>
-#ifndef TICK_SWIG_INCLUDE
+#ifndef TICK_PYTHON_BINDINGS
 ENABLE_WARNING(unused, exceptions, 42)
 ENABLE_WARNING(unused, unused-private-field, 42)
 ENABLE_WARNING(delete-non-virtual-dtor, delete-non-virtual-dtor, 42)

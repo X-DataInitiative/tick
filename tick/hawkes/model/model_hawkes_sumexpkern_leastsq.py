@@ -173,3 +173,8 @@ class ModelHawkesSumExpKernLeastSq(ModelHawkes):
     def baseline_intervals(self):
         return np.arange(self.n_baselines) * (
             self._model.get_period_length() / self.n_baselines)
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        return _ModelHawkesSumExpKernLeastSq(
+            self.decays, self.n_baselines, self.cast_period_length(),
+            self.n_threads, self.approx)

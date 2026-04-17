@@ -18,7 +18,7 @@ class DLL_PUBLIC TProxElasticNet : public TProxSeparable<T, K> {
   T ratio = 0;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxElasticNet() : TProxElasticNet<T, K>(0, 0, false) {}
 
   TProxElasticNet(T strength, T ratio, bool positive)

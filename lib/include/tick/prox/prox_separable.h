@@ -24,7 +24,7 @@ class DLL_PUBLIC TProxSeparable : public TProx<T, K> {
   using TProx<T, K>::is_in_range;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxSeparable() : TProxSeparable<T, K>(0, 0, 1, 0) {}
 
   TProxSeparable(T strength, bool positive) : TProx<T, K>(strength, positive) {}

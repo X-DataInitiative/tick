@@ -4,35 +4,23 @@
 
 ### Requirements
 
-_tick_ currently works on Linux/OSX (Windows is experimental) systems and requires Python 3.6 or newer. Please have the required Python dependencies in your Python environment:
+_tick_ currently works on Linux, macOS, and Windows systems and requires Python 3.11 or newer. Please have the required Python dependencies in your Python environment:
 
 - numpy
 - scipy
-- numpydoc
 - scikit-learn
-- matplotlib
 - pandas
 - dill
+- pybind11
+- cmake
 
 If you build and install _tick_ via _pip_ these dependencies will automatically be resolved. If not, you can install all of these dependencies easily using:
 
-    pip install -r requirements.txt
-
-[Swig](http://www.swig.org/Doc4.0/SWIGDocumentation.html) might also be necessary if precompiled binaries are not available for your distribution.
+    pip install -r requirements/runtime.txt
 
 ### Source installations
 
-For source installations, a C++ compiler capable of compiling C++11 source code (such as recent versions of [gcc](https://gcc.gnu.org/) or [clang](https://clang.llvm.org/)) must be available. In addition, SWIG version 4.0 or newer must also be available. It is also recommended to build swig if necessary without PCRE
-
-The following script is provided as is with not assurance for working, and may require "sudo" permissions:
-
-    git clone https://github.com/swig/swig -b rel-4.0.0 swig && \
-    cd swig && ./autogen.sh && ./configure --without-pcre && \
-    make && make install
-
-It also may require the following (styled for a Debian type system)
-
-    apt-get install -y autotools-dev automake gawk bison flex
+For source installations, a C++ compiler capable of compiling C++17 source code and CMake 3.24 or newer must be available.
 
 ### Install using _pip_
 
@@ -52,9 +40,9 @@ and then initialize its submodules (such as cereal) with
 
     git submodule update --init
 
-It's possible to manually build and install tick via the setup.py script. To do both in one step, do:
+Install the project directly from the checkout with:
 
-    python setup.py build install
+    python -m pip install .
 
 This will build all required C++ extensions, and install the extensions in your current site-packages directory.
 
@@ -64,10 +52,7 @@ This will build all required C++ extensions, and install the extensions in your 
 
     https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2019
 
-  Download python and swig, and add their respective installation directories to the PATH environment variable.
-
-    python  3.6   - https://www.python.org/downloads/windows/
-    swigwin 4.0.* - http://www.swig.org/download.html
+  Download Python 3.11 or newer and add it to the PATH environment variable.
 
   Download wheel files from http://www.lfd.uci.edu/~gohlke/pythonlibs - this is not required for Anaconda
 
@@ -94,14 +79,10 @@ This will build all required C++ extensions, and install the extensions in your 
 
     C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvarsall.bat [amd64,x86]
 
-  Build Tick C++ sources
+  Build and test Tick
 
-    python setup.py build_ext --inplace
-
-  Test your build
-
-    SET PYTHONPATH=%cd%
-    python setup.py pytest
+    python -m pip install .[dev]
+    python -m pytest -q
 
 ####  Automated windows installation process (Requires CYGWIN or MSYS)
 
@@ -115,18 +96,14 @@ This will build all required C++ extensions, and install the extensions in your 
 
 If you wish to work with the source code of _tick_ it's convenient to have the extensions installed inside the source directory. This way you will not have to install the module for each iteration of the code. Simply do:
 
-    python setup.py build_ext --inplace
+    python -m pip install -e .[dev]
 
-This will build all extensions, and install them directly in the source directory. To use the package outside of the build directory, the build path should be added to the `PYTHONPATH` environment variable (replace `$PWD` with the full path to the build directory if necessary):
-
-    export PYTHONPATH=$PYTHONPATH:$PWD
+This will build all extensions and install them in editable mode for the current environment.
 
 Note also that special scripts, intended for developers, are available. `./clean_build_test.sh` removes all compiled binaries and runs the full compilation process, with all `C++` and `Python` unit-tests. This can take some time.
 Similarly, `./build_test.sh` runs the full compilation process, without removing first binaries, while `full_clean.sh` only removes them.
 
-It is possible to build with support for Intel MKL in the tick C++ libraries, to do so requires having the intel MKL libraries installed and running the build command like so (example provided is for linux with MKL installed to /opt/intel)
-
-    MKLROOT=/opt/intel/mkl python setup.py build_ext --inplace
+It is possible to build with support for Intel MKL in the tick C++ libraries. This requires having the Intel MKL libraries installed and configuring the CMake build accordingly.
 
 On MacOS it's possible an error may occur when trying to find a "intel_thread.dyld"
 To fix this try:
@@ -164,8 +141,6 @@ Logging from mkn can be enabled with the "KLOG" environment variable
 If there is a compile error it should be displayed without KLOG being set.
 
 
-### Python 3.5
+### Python support
 
-Python 3.5 is not officially supported any more, but it should still work.
-To build with it, edit "python_min_ver = (3, 6, 0)" in setup.py.
-
+tick targets Python 3.11 and newer.

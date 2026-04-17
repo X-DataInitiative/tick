@@ -9,6 +9,13 @@ from scipy.sparse import csr
 from tick.preprocessing.features_binarizer import FeaturesBinarizer
 
 
+def make_one_hot_encoder():
+    try:
+        return OneHotEncoder(sparse_output=True)
+    except TypeError:
+        return OneHotEncoder(sparse=True)
+
+
 class Test(unittest.TestCase):
     def setUp(self):
 
@@ -134,7 +141,7 @@ class Test(unittest.TestCase):
         """...Test binarizer fit
         """
         n_cuts = 3
-        enc = OneHotEncoder(sparse=True)
+        enc = make_one_hot_encoder()
         expected_binarization = enc.fit_transform(
             self.default_expected_intervals)
 
@@ -167,7 +174,7 @@ class Test(unittest.TestCase):
         """...Test binarizer fit when remove_first=True
         """
         n_cuts = 3
-        one_hot_encoder = OneHotEncoder(sparse=True)
+        one_hot_encoder = make_one_hot_encoder()
         expected_binarization = one_hot_encoder.fit_transform(
             self.default_expected_intervals)
 

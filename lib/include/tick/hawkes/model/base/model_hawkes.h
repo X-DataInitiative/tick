@@ -59,12 +59,36 @@ class DLL_PUBLIC ModelHawkes : public Model {
 
  public:
   template <class Archive>
-  void serialize(Archive &ar) {
+  void load(Archive &ar) {
     ar(CEREAL_NVP(max_n_threads));
     ar(CEREAL_NVP(optimization_level));
     ar(CEREAL_NVP(weights_computed));
     ar(CEREAL_NVP(n_nodes));
-    ar(CEREAL_NVP(n_jumps_per_node));
+
+    bool has_n_jumps_per_node = false;
+    ar(CEREAL_NVP(has_n_jumps_per_node));
+    if (has_n_jumps_per_node) {
+      ArrayULong serialized_n_jumps_per_node;
+      ar(cereal::make_nvp("n_jumps_per_node", serialized_n_jumps_per_node));
+      n_jumps_per_node = SArrayULong::new_ptr(serialized_n_jumps_per_node);
+    } else {
+      n_jumps_per_node = nullptr;
+    }
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(CEREAL_NVP(max_n_threads));
+    ar(CEREAL_NVP(optimization_level));
+    ar(CEREAL_NVP(weights_computed));
+    ar(CEREAL_NVP(n_nodes));
+
+    const bool has_n_jumps_per_node = n_jumps_per_node != nullptr;
+    ar(CEREAL_NVP(has_n_jumps_per_node));
+    if (has_n_jumps_per_node) {
+      const ArrayULong serialized_n_jumps_per_node(*n_jumps_per_node);
+      ar(cereal::make_nvp("n_jumps_per_node", serialized_n_jumps_per_node));
+    }
   }
 
   BoolStrReport compare(const ModelHawkes &that, std::stringstream &ss) {
@@ -81,5 +105,8 @@ class DLL_PUBLIC ModelHawkes : public Model {
   }
   BoolStrReport operator==(const ModelHawkes &that) { return ModelHawkes::compare(that); }
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkes,
+                                   cereal::specialization::member_load_save)
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_BASE_MODEL_HAWKES_H_

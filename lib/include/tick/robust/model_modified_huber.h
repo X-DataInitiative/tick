@@ -30,7 +30,7 @@ class DLL_PUBLIC TModelModifiedHuber
   using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelModifiedHuber() : TModelModifiedHuber(nullptr, nullptr, false) {}
 
   TModelModifiedHuber(const std::shared_ptr<BaseArray2d<T>> features,

@@ -8,7 +8,9 @@
 
 template <class T, class K>
 TSGD<T, K>::TSGD(ulong epoch_size, T tol, RandType rand_type, T step, int record_every, int seed)
-    : TStoSolver<T, K>(epoch_size, tol, rand_type, record_every, seed), step(step) {}
+    : TStoSolver<T, K>(epoch_size, tol, rand_type, record_every, seed),
+      step_t(0),
+      step(step) {}
 
 template <class T, class K>
 void TSGD<T, K>::solve_one_epoch() {

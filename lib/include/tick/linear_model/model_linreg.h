@@ -28,7 +28,7 @@ class DLL_PUBLIC TModelLinReg : public virtual TModelGeneralizedLinear<T, K>,
   using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelLinReg() : TModelLinReg<T, K>(nullptr, nullptr, 0, 0) {}
 
   TModelLinReg(const std::shared_ptr<BaseArray2d<T> > features,

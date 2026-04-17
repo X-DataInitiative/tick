@@ -332,7 +332,7 @@ class SimuSCCS(Simu):
                     comb = idx(comb)
 
                 for i, j in comb:
-                    adjacency[i, j] = np.random.random(1)
+                    adjacency[i, j] = np.random.random()
 
             self._set(
                 'hawkes_exp_kernels',

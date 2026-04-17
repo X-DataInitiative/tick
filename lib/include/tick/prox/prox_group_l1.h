@@ -15,7 +15,7 @@ class DLL_PUBLIC TProxGroupL1 : public TProxWithGroups<T, K> {
                                            bool positive) override;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxGroupL1() {}
 
   TProxGroupL1(T strength, SArrayULongPtr blocks_start,

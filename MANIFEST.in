@@ -1,7 +1,5 @@
-# Setuptools is not aware of source headers, or non-module SWIG files, so we
-# grab them here
+# Include native sources and headers needed for source builds
 global-include *.h
-global-include *.i
 global-include *.inl
 
 # Getting the Cereal header-only library

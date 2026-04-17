@@ -23,7 +23,7 @@ class DLL_PUBLIC TAdaGrad : public TStoSolver<T> {
   T step;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TAdaGrad() : TAdaGrad<T>(0, 0, RandType::unif, 0, 0) {}
 
   TAdaGrad(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1,

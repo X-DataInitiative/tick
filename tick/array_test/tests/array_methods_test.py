@@ -342,7 +342,7 @@ class Test(unittest.TestCase):
             #
             # 2- The typemap_out of SArrayDouble2d, SSparseArray, SSparseArray2d,
             #   SBaseArrayDouble and SBaseArrayDouble2d
-            #   (see file array/swig/sarray_typemap_out to see how the typemap out of
+            #   (the native binding layer keeps the owner alive while exposing
             #   SArrayDouble is written)
             if array_type != 'ArrayDouble':
                 continue

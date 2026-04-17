@@ -8,7 +8,7 @@
  * Debugging utilities for 'tick'
  *
  * Available debug flags
- * (if you use the Python interface, these should be set in the setup.py file)
+ * (if you use the Python interface, these should be set in the extension build)
 
  * - DEBUG_C_ARRAY       : count #allocations of C-arrays
  * - DEBUG_ARRAY         : Track creation/destruction of Array objects

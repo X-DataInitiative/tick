@@ -67,6 +67,8 @@ class DLL_PUBLIC ModelHawkesSingle : public ModelHawkes {
   }
 };
 
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesSingle,
+                                   cereal::specialization::member_serialize)
 CEREAL_REGISTER_TYPE(ModelHawkesSingle);
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_BASE_MODEL_HAWKES_SINGLE_H_

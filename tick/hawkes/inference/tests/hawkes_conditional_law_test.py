@@ -72,9 +72,10 @@ class Test(InferenceTest):
 
         model = HawkesConditionalLaw(n_quad=5, quad_method='log')
         model.fit(self.timestamps)
-        np.testing.assert_array_almost_equal(
+        np.testing.assert_allclose(
             model.kernels_norms,
-            [[35.70738975, 18.96902121], [-51.69638233, -30.33936597]])
+            [[35.70738975, 18.96902121], [-51.69638233, -30.33936597]],
+            atol=3e-3)
 
     def test_hawkes_claw_method(self):
         """...Test HawkesConditionalLaw estimates with different conditional

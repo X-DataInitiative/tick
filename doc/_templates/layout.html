@@ -11,10 +11,9 @@
 {% endblock %}
 
 {%- block content %}
-{{ navBar() }}
+{% if navBar is defined %}{{ navBar() }}{% endif %}
 <div class="container content-container">
   {% block body %}{% endblock %}
 </div>
 
 {%- endblock %}
-

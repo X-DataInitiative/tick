@@ -1,6 +1,8 @@
 _*.so
 bin/
 build
+_skbuild/
+dist/
 !*build/__init__.py
 
 # All hidden files except for gitignore
@@ -16,7 +18,7 @@ build
 
 *_log.txt
 
-# SWIG common generated files
+# Legacy generated binding files
 *_wrap.c
 *_wrap.cpp
 *_wrap.cxx

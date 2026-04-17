@@ -15,7 +15,7 @@ class DLL_PUBLIC TProxL2 : public TProx<T, K> {
   using TProx<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxL2() : TProxL2<T, K>(0, 0, 1, false) {}
 
   TProxL2(T strength, bool positive) : TProx<T, K>(strength, positive) {}

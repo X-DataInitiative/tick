@@ -5,6 +5,8 @@
 // License: BSD 3 clause
 
 #include "model.h"
+#include "tick/array/sarray2d.h"
+#include "tick/array/ssparsearray2d.h"
 
 template <class T, class K = T>
 class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T, K> {
@@ -53,15 +55,72 @@ class DLL_PUBLIC TModelLabelsFeatures : public virtual TModel<T, K> {
   void compute_columns_sparsity();
 
   template <class Archive>
-  void serialize(Archive &ar) {
+  void load(Archive &ar) {
     ar(cereal::make_nvp("Model", cereal::base_class<TModel<T, K> >(this)));
     ar(CEREAL_NVP(n_samples));
     ar(CEREAL_NVP(n_features));
     ar(CEREAL_NVP(ready_columns_sparsity));
     ar(CEREAL_NVP(column_sparsity));
 
-    ar(cereal::make_nvp("labels", labels));
-    ar(cereal::make_nvp("features", features));
+    bool has_labels = false;
+    ar(CEREAL_NVP(has_labels));
+    if (has_labels) {
+      Array<T> serialized_labels;
+      ar(cereal::make_nvp("labels", serialized_labels));
+      labels = SArray<T>::new_ptr(serialized_labels);
+    } else {
+      labels = nullptr;
+    }
+
+    bool has_features = false;
+    ar(CEREAL_NVP(has_features));
+    if (has_features) {
+      bool features_are_sparse = false;
+      ar(CEREAL_NVP(features_are_sparse));
+      if (features_are_sparse) {
+        SparseArray2d<T> serialized_features;
+        ar(cereal::make_nvp("features", serialized_features));
+        features = SSparseArray2d<T>::new_ptr(serialized_features);
+      } else {
+        Array2d<T> serialized_features;
+        ar(cereal::make_nvp("features", serialized_features));
+        features = SArray2d<T>::new_ptr(serialized_features);
+      }
+    } else {
+      features = nullptr;
+    }
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(cereal::make_nvp("Model", cereal::base_class<TModel<T, K> >(this)));
+    ar(CEREAL_NVP(n_samples));
+    ar(CEREAL_NVP(n_features));
+    ar(CEREAL_NVP(ready_columns_sparsity));
+    ar(CEREAL_NVP(column_sparsity));
+
+    const bool has_labels = labels != nullptr;
+    ar(CEREAL_NVP(has_labels));
+    if (has_labels) {
+      const Array<T> serialized_labels(*labels);
+      ar(cereal::make_nvp("labels", serialized_labels));
+    }
+
+    const bool has_features = features != nullptr;
+    ar(CEREAL_NVP(has_features));
+    if (has_features) {
+      const bool features_are_sparse = features->is_sparse();
+      ar(CEREAL_NVP(features_are_sparse));
+      if (features_are_sparse) {
+        const auto &serialized_features =
+            static_cast<const SparseArray2d<T> &>(*features);
+        ar(cereal::make_nvp("features", serialized_features));
+      } else {
+        const auto &serialized_features =
+            static_cast<const Array2d<T> &>(*features);
+        ar(cereal::make_nvp("features", serialized_features));
+      }
+    }
   }
 
  protected:
@@ -80,10 +139,20 @@ using ModelLabelsFeatures = TModelLabelsFeatures<double, double>;
 
 using ModelLabelsFeaturesDouble = TModelLabelsFeatures<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesDouble,
-                                   cereal::specialization::member_serialize);
+                                   cereal::specialization::member_load_save);
 
 using ModelLabelsFeaturesFloat = TModelLabelsFeatures<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesFloat,
-                                   cereal::specialization::member_serialize);
+                                   cereal::specialization::member_load_save);
+
+using ModelLabelsFeaturesAtomicDouble =
+    TModelLabelsFeatures<double, std::atomic<double> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesAtomicDouble,
+                                   cereal::specialization::member_load_save);
+
+using ModelLabelsFeaturesAtomicFloat =
+    TModelLabelsFeatures<float, std::atomic<float> >;
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelLabelsFeaturesAtomicFloat,
+                                   cereal::specialization::member_load_save);
 
 #endif  // LIB_INCLUDE_TICK_BASE_MODEL_MODEL_LABELS_FEATURES_H_

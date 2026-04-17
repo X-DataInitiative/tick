@@ -1,7 +1,7 @@
 /*! \mainpage API Guidelines
 
 This documentation gives you the main guidelines for using the C++ part of the package
-and for the interface between C++ and Python (using swig).
+and for the interface between C++ and Python.
 You should definitely read them if you intend to extend the package using C++.
 
 This documentation is divided into several sections
@@ -140,22 +140,22 @@ ArrayDoubleList1D & and not directly ArrayDoubleList1D.
 \subsection array_py_sec Using Array and Array2d and the corresponding list classes templates with
 Python
 
- Let's make the last code (test.cpp) a Python extension using SWIG. You first need a .h file
+ Let's make the last code (test.cpp) available from Python. You first need a .h file
  \code
  // File test.h
  
  extern double test_array_double(ArrayDouble &array);
  \endcode
- Then a SWIG interface file
+ Then a binding declaration
  \code{.unparsed}
 %{
    #include "tick_python.h"
    #include "test.h"
 %}
 
-%import(module="tick.base") base.i
+\endcode
 
-%include test.h
+Then expose the function from the relevant pybind11 module and rebuild the extension.
 \endcode
  
 Then you just need to build your setup file (see example in directory). 
@@ -189,16 +189,15 @@ Here is an example with lists
  
  extern double test_list_array_double(ArrayDoubleList1D &array_list);
  \endcode
- The SWIG interface file
+ The binding declaration
  \code{.unparsed}
 %{
    #include "tick_python.h"
    #include "test_list.h"
 %}
 
-%import(module="tick.base") base.i
-
-%include test_list.h
+\endcode
+And then expose it from the relevant pybind11 module.
 \endcode
 And in Python  
 Then you just need to build your setup file (see example in directory). 
@@ -324,21 +323,20 @@ double test_varrayptr_double(VArrayDoublePtr varrayptr)
 \endcode
 
 \section varrayptr_py_sec Using VArrayPtr in Python extension
-Let's make the last code a Python extension using SWIG. You first need a .h file
+Let's make the last code available as a Python extension. You first need a .h file
 \code
 // File test.h
 
 extern double test_varrayptr_double(VArrayDoublePtr array);
 \endcode
-Then a SWIG interface file
+Then a binding declaration
 \code{.unparsed}
 %{
 #include "tick_python.h"
 #include "test.h"
 %}
-%import(module="tick.base") base.i
-
-%include test.h
+\endcode
+Then expose it from the relevant pybind11 module.
 \endcode
 
 Then you just need to build your setup file (see example in directory).

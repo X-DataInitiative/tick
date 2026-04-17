@@ -91,7 +91,6 @@ class ASAGATest(object):
                                              decimal=4)
         self.assertGreater(np.linalg.norm(saga.solution[:-1]), 0)
 
-
 class SAGATestFloat32(TestSolver, SAGATest):
     def __init__(self, *args, **kwargs):
         TestSolver.__init__(self, *args, dtype="float32", **kwargs)

@@ -117,7 +117,7 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSqSingle : public ModelHawkesSingle {
 
  public:
   template <class Archive>
-  void serialize(Archive &ar) {
+  void load(Archive &ar) {
     ar(cereal::make_nvp("ModelHawkesSingle",
                         cereal::base_class<ModelHawkesSingle>(this)));
 
@@ -125,7 +125,34 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSqSingle : public ModelHawkesSingle {
     ar(CEREAL_NVP(Dg));
     ar(CEREAL_NVP(Dg2));
     ar(CEREAL_NVP(C));
-    ar(CEREAL_NVP(decays));
+
+    bool has_decays = false;
+    ar(CEREAL_NVP(has_decays));
+    if (has_decays) {
+      ArrayDouble2d serialized_decays;
+      ar(cereal::make_nvp("decays", serialized_decays));
+      decays = SArrayDouble2d::new_ptr(serialized_decays);
+    } else {
+      decays = nullptr;
+    }
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(cereal::make_nvp("ModelHawkesSingle",
+                        cereal::base_class<ModelHawkesSingle>(this)));
+
+    ar(CEREAL_NVP(E));
+    ar(CEREAL_NVP(Dg));
+    ar(CEREAL_NVP(Dg2));
+    ar(CEREAL_NVP(C));
+
+    const bool has_decays = decays != nullptr;
+    ar(CEREAL_NVP(has_decays));
+    if (has_decays) {
+      const ArrayDouble2d serialized_decays(*decays);
+      ar(cereal::make_nvp("decays", serialized_decays));
+    }
   }
 
   BoolStrReport compare(const ModelHawkesExpKernLeastSqSingle &that, std::stringstream &ss) {
@@ -148,7 +175,7 @@ class DLL_PUBLIC ModelHawkesExpKernLeastSqSingle : public ModelHawkesSingle {
 };
 
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesExpKernLeastSqSingle,
-                                   cereal::specialization::member_serialize)
+                                   cereal::specialization::member_load_save)
 CEREAL_REGISTER_TYPE(ModelHawkesExpKernLeastSqSingle);
 
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_MODEL_HAWKES_EXPKERN_LEASTSQ_SINGLE_H_

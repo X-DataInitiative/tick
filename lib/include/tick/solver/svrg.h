@@ -62,7 +62,7 @@ class DLL_PUBLIC TSVRG : public TStoSolver<T, K> {
                                    TProxSeparable<T, K>*& casted_prox);
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TSVRG() : TSVRG<T, K>(0, 0, RandType::unif, 0) {}
 
   TSVRG(size_t epoch_size, T tol, RandType rand_type, T step,

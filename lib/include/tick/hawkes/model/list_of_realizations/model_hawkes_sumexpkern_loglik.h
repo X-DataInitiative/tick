@@ -18,7 +18,7 @@ class DLL_PUBLIC ModelHawkesSumExpKernLogLik : public ModelHawkesLogLik {
   ArrayDouble decays;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   ModelHawkesSumExpKernLogLik() : ModelHawkesSumExpKernLogLik(ArrayDouble(), 0) {}
 
   /**

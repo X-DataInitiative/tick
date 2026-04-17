@@ -32,21 +32,22 @@ class Test(TestSolver):
         }
 
         for mod in model_map:
-            model = mod(fit_intercept=False)
+            with self.subTest(model=mod.__name__):
+                model = mod(fit_intercept=False)
 
-            coeffs0 = weights_sparse_gauss(20, nnz=5)
-            interc0 = None
+                coeffs0 = weights_sparse_gauss(20, nnz=5)
+                interc0 = None
 
-            features, labels = model_map[mod](coeffs0, interc0, n_samples=100,
-                                              verbose=False,
-                                              seed=123).simulate()
-            model.fit(features, labels)
+                features, labels = model_map[mod](
+                    coeffs0, interc0, n_samples=100, verbose=False,
+                    seed=123).simulate()
+                model.fit(features, labels)
 
-            pickled = pickle.loads(pickle.dumps(model))
+                pickled = pickle.loads(pickle.dumps(model))
 
-            self.assertTrue(model._model.compare(pickled._model))
-            self.assertEqual(
-                model.loss(features[0]), pickled.loss(features[0]))
+                self.assertTrue(model._model.compare(pickled._model))
+                self.assertEqual(
+                    model.loss(features[0]), pickled.loss(features[0]))
 
     def test_sparse_linear_model_serialization(self):
         """...Test serialization of linear models with sparse features
@@ -61,21 +62,23 @@ class Test(TestSolver):
         }
 
         for mod in model_map:
-            model = mod(fit_intercept=False)
+            with self.subTest(model=mod.__name__):
+                model = mod(fit_intercept=False)
 
-            coeffs0 = weights_sparse_gauss(20, nnz=5)
-            interc0 = None
-            features = scipy.sparse.random(100, len(coeffs0), format='csr')
-            features, labels = model_map[mod](coeffs0, interc0, features,
-                                              n_samples=100, verbose=False,
-                                              seed=123).simulate()
+                coeffs0 = weights_sparse_gauss(20, nnz=5)
+                interc0 = None
+                features = scipy.sparse.random(100, len(coeffs0), format='csr')
+                features, labels = model_map[mod](coeffs0, interc0, features,
+                                                  n_samples=100,
+                                                  verbose=False,
+                                                  seed=123).simulate()
 
-            model.fit(features, labels)
-            pickled = pickle.loads(pickle.dumps(model))
+                model.fit(features, labels)
+                pickled = pickle.loads(pickle.dumps(model))
 
-            self.assertTrue(model._model.compare(pickled._model))
-            coeffs = np.random.rand(pickled.n_coeffs)
-            self.assertEqual(model.loss(coeffs), pickled.loss(coeffs))
+                self.assertTrue(model._model.compare(pickled._model))
+                coeffs = np.random.rand(pickled.n_coeffs)
+                self.assertEqual(model.loss(coeffs), pickled.loss(coeffs))
 
 if __name__ == "__main__":
     unittest.main()
