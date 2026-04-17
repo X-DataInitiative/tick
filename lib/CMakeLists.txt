@@ -5,8 +5,14 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-if (NOT MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ffast-math")
+option(TICK_ENABLE_FAST_MATH "Enable fast-math compiler flags" ON)
+
+if (TICK_ENABLE_FAST_MATH)
+    if (MSVC)
+        add_compile_options(/fp:fast)
+    else ()
+        add_compile_options(-ffast-math)
+    endif ()
 endif ()
 
 include_directories(${CMAKE_SOURCE_DIR}/..)
@@ -37,7 +43,7 @@ elseif (${USE_BLAS})
     message(STATUS "Using BLAS")
 
     set(TICK_BLAS_LIBRARIES ${BLAS_LIBRARIES})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTICK_USE_CBLAS")
+    add_compile_definitions(TICK_USE_CBLAS)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
 
     message(STATUS "BLAS Libraries: " ${BLAS_LIBRARIES})
