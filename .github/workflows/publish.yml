@@ -3,6 +3,11 @@ name: Build and publish wheels
 on:
   release:
     types: [published]
+  pull_request:
+    paths:
+      - '.github/workflows/publish.yml'
+      - 'pyproject.toml'
+  workflow_dispatch:
 
 env:
   TICK_DEBUG: 0
@@ -38,6 +43,7 @@ jobs:
   upload_pypi:
     name: Upload to PyPI
     needs: [build_wheels]
+    if: github.event_name == 'release'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
