@@ -1,0 +1,60 @@
+name: Build Tick on macOS
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  TICK_DEBUG: 0
+  TICK_WERROR: 0
+
+jobs:
+  build:
+    name: Python ${{ matrix.python-version }} on ${{ matrix.runner }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        python-version: ['3.11', '3.12', '3.13']
+        runner: ['macos-15', 'macos-15-intel']
+        exclude:
+          - python-version: '3.12'
+            runner: 'macos-15-intel'
+          - python-version: '3.13'
+            runner: 'macos-15-intel'
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        submodules: true
+
+    - uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: pip
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install .[dev]
+        python -m pip install pytest-timeout
+
+    - name: build
+      run: |
+        python -m build --wheel
+
+    - name: smoke test wheel install
+      run: |
+        python -m pip install --force-reinstall dist/*.whl
+        cd /tmp
+        python -c "import tick; print(tick)"
+
+    - name: pytest
+      env:
+        PYTHONFAULTHANDLER: 1
+      run: |
+        python -m pytest -q --durations=50 --timeout=300

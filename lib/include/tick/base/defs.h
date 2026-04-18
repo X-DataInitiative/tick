@@ -28,7 +28,9 @@
 #define NOMINMAX
 #endif  // NOMINMAX
 
-#ifdef BUILDING_DLL
+#ifdef TICK_STATIC_LIBS
+#define DLL_PUBLIC
+#elif defined(BUILDING_DLL)
 #ifdef __GNUC__
 #define DLL_PUBLIC __attribute__((dllexport))
 #else

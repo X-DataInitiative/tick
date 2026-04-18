@@ -1,0 +1,79 @@
+[build-system]
+requires = [
+  "scikit-build-core>=0.11",
+  "pybind11>=3.0",
+  "numpy>=2.0",
+]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "tick"
+version = "0.8.0.0"
+description = "Module for statistical learning, with a particular emphasis on time-dependent modelling"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "BSD-3-Clause" }
+authors = [
+  { name = "Emmanuel Bacry" },
+  { name = "Stephane Gaiffas" },
+  { name = "Martin Bompaire" },
+  { name = "Søren V. Poulsen" },
+  { name = "Maryan Morel" },
+  { name = "Simon Bussy" },
+  { name = "Philip Deegan" },
+]
+dependencies = [
+  "numpy>=2.0",
+  "scipy>=1.13",
+  "pandas>=2.2",
+  "dill>=0.3.8",
+  "scikit-learn>=1.5",
+  "packaging>=24.0",
+  "matplotlib>=3.8",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Programming Language :: C++",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Operating System :: POSIX",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "License :: OSI Approved :: BSD License",
+  "Topic :: Scientific/Engineering",
+]
+
+[project.optional-dependencies]
+docs = [
+  "numpydoc>=1.8",
+  "sphinx>=8.0",
+  "sphinx-bootstrap-theme>=0.8",
+]
+dev = [
+  "pytest>=8.3",
+  "psutil>=5.9",
+  "build>=1.2",
+  "twine>=5.1",
+  "ruff>=0.11",
+  "numpydoc>=1.8",
+]
+
+[tool.scikit-build]
+cmake.version = ">=3.24"
+wheel.packages = ["tick"]
+build-dir = "_skbuild/{wheel_tag}"
+sdist.include = [
+  "CMakeLists.txt",
+  "python/src/**",
+  "lib/**",
+  "tick/**",
+  "requirements/**",
+  "README.md",
+  "LICENSE.txt",
+  "MANIFEST.in",
+]

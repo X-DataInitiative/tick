@@ -1,0 +1,8 @@
+-r runtime.txt
+-r plot.txt
+-r docs.txt
+pytest
+psutil
+build
+twine
+ruff

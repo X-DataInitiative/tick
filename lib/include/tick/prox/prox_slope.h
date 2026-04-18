@@ -23,7 +23,7 @@ class DLL_PUBLIC TProxSlope : public TProxSortedL1<T, K> {
   void compute_weights(void) override;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxSlope() : TProxSlope(0, 0, 0, 1, false) {}
 
   TProxSlope(T strength, T false_discovery_rate, bool positive)

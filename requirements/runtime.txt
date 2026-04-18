@@ -1,0 +1,7 @@
+numpy
+scipy
+pandas
+dill
+scikit-learn
+packaging
+

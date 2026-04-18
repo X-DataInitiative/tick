@@ -12,40 +12,21 @@ jobs:
   build:
     name: build python packages
     runs-on: ubuntu-latest
-    container: jeandet/manylinuxcpp2017
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
       with:
         submodules: true
 
-    - run: |
-          git clone https://github.com/swig/swig -b rel-4.0.2 swig
-          cd swig && ./autogen.sh && ./configure --without-pcre
-          make && make install && cd .. && rm -rf swig
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
 
     - run: |
-        $PYTHON37/bin/python -m pip install twine pip --upgrade
-        $PYTHON37/bin/python -m pip install wheel -r requirements.txt
-        $PYTHON37/bin/python setup.py bdist_wheel
-
-    - run: |
-        $PYTHON38/bin/python -m pip install twine pip --upgrade
-        $PYTHON38/bin/python -m pip install wheel -r requirements.txt
-        $PYTHON38/bin/python setup.py bdist_wheel
-
-    - run: |
-        $PYTHON39/bin/python -m pip install twine pip --upgrade
-        $PYTHON39/bin/python -m pip install wheel -r requirements.txt
-        $PYTHON39/bin/python setup.py bdist_wheel
-
-    - run: |
-        $PYTHON310/bin/python -m pip install twine pip --upgrade
-        $PYTHON310/bin/python -m pip install wheel -r requirements.txt
-        $PYTHON310/bin/python setup.py bdist_wheel
-
-    - run: for wheel in $(ls dist); do auditwheel repair dist/$wheel; done
+        python -m pip install --upgrade pip
+        python -m pip install build twine
+        python -m build --wheel
 
     - env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      run: $PYTHON38/bin/twine upload wheelhouse/*
+      run: python -m twine upload dist/*

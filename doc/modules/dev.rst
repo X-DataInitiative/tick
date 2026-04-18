@@ -14,7 +14,7 @@ Main highlights
 
 * **Python 3 only**!
 * Fast, most computation are done in C++11 (including multi-threading)
-* Interplay between Python and C++ is done using swig
+* Interplay between Python and C++ is done using pybind11-backed extension modules
 
 
 .. contents::
@@ -162,8 +162,8 @@ Another useful feature is the possibility to add a direct linking between a
 Python attribute and its C++ equivalent.
 
 In many cases our code consists in a Python object which encompasses a C++
-object used for intense computations. Find more details in the SWIG part
-of this documentation. In this setting we might want to update our C++ object
+object used for intense computations. Find more details in the native binding
+part of this documentation. In this setting we might want to update our C++ object
 each time our Python object is. We can do so by specifying which setter to
 call when an attribute is modified in Python.
 
@@ -308,88 +308,57 @@ In tick these files are stored in the lib/cpp and lib/include folders
 Link it with Python
 ^^^^^^^^^^^^^^^^^^^
 
-Create SWIG file
+Create a binding
 ~~~~~~~~~~~~~~~~
 
 Now that our proximal operator is defined in C++ we need to make it available
-in Python. We do it thanks to `SWIG <http://www.swig.org/Doc4.0/>`_.
-Hence we have to create a .i file. In tick we store them in the lib/swig folder.
+in Python. In the modern codebase we do that with pybind11 in
+``python/src/tick_prox_module.cpp``.
 
-This .i file looks a lot like our .h file.
+A minimal binding looks like:
 
 .. code-block:: cpp
 
-    %include <std_shared_ptr.i>
-    %shared_ptr(ProxL2Sq);
+    py::class_<ProxL2Sq, std::shared_ptr<ProxL2Sq>, Prox>(module, "ProxL2Sq")
+        .def(py::init<double>())
+        .def("value", &ProxL2Sq::value)
+        .def("call", &ProxL2Sq::call)
+        .def("set_strength", &ProxL2Sq::set_strength);
 
-    %{
-    #include "prox_l2sq.h"
-    %}
-
-    class ProxL2Sq {
-    public:
-        ProxL2Sq(double strength);
-        double value(ArrayDouble &coeffs) const;
-        void call(ArrayDouble &coeffs, double step, ArrayDouble &out) const;
-        virtual void set_strength(double strength);
-    };
-
-In this file our goal is to explain to Python what it can do with this class. In
-our example it will be able to instantiate it by calling its constructor
-with a double, and call three methods, `value`, `call` and `set_strength`.
+In this binding our goal is to explain to Python what it can do with this
+class. In our example it will be able to instantiate it by calling its
+constructor with a double, and call three methods, `value`, `call` and
+`set_strength`.
 
 .. note::
   * There is no interest in mentioning here any private method or attribute of
     the class as this is what Python see and Python would not be able to call
     them.
-  * We need to include the file in which is declared the class we are talking
-    about in the .i file. This what we do with `#include "prox_l2sq.h"`.
+  * We need to include the file in which the class is declared in the binding
+    translation unit.
   * Finally, as we will want to share our proximal operator and as it might be
     used by several objects, we wrap it in class from the standard library: the
-    shared pointer. To make SWIG aware that this class will be used with shared
-    pointers we must add `%shared_ptr(ProxL2Sq);` which must be done after
-    `%include \<std_shared_ptr.i\>`.
+    shared pointer. In pybind11 we express that directly in the `py::class_`
+    declaration.
 
 .. note::
   In tick our ProxL2Sq class is not really identical as it inherits
-  from Prox abstract class. Hence some of this logic might not be present in
-  the exact same file. Everything that concerns prox, is imported through
-  `prox_module.i`.
+  from the abstract `Prox` class. Hence some of this logic might not be
+  present in the exact same file. Everything that concerns prox is grouped
+  in the pybind11 module implementation.
 
-Reference it in Python build
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Reference it in the build
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now that we have written our .i file we should add our files to our python
-script that builds the extension : `setup.py`.
+Now that we have written the binding we should add it to the pybind11 build.
+In tick that means:
 
-Most of the time, we add a file that belongs to a module that has already
-been created. In this case we only need to add its source files at the right
-place in `setup.py`.
+* adding the C++ implementation to the relevant library target under ``lib/cpp``
+* exposing the class in the corresponding file under ``python/src``
+* wiring the extension target in ``CMakeLists.txt``
 
-Let's supposed we already had two prox in our module (abstract class Prox and
-prox L1), we need to add `prox_l2sq.cpp` and `prox_l2sq.h` that we have just
-created at the following place.
-
-.. code-block:: python
-    :emphasize-lines: 4, 7
-
-    prox_core_info = {
-        "cpp_files": ["prox.cpp",
-                      "prox_l1.cpp",
-                      "prox_l2sq.cpp"],
-        "h_files": ["prox.h",
-                    "prox_l1.h",
-                    "prox_l2sq.h"],
-        "swig_files": ["prox_module.i", ],
-        "module_dir": "./tick/optim/prox/",
-        "extension_name": "prox",
-        "include_modules": base_modules
-    }
-
-.. note::
-  We do not need to add `prox_l2sq.i` file here as it is imported
-  in `prox_module.i` with a `%include` operator. This operator works like a
-  copy/paste of the code of the included file.
+Most of the time, we add a class that belongs to a module that already exists,
+so the only build change is to extend the existing library and binding target.
 
 Use class in Python
 ^^^^^^^^^^^^^^^^^^^
@@ -479,44 +448,9 @@ In the example above we also add the values of the base class (in this case
 `HawkesKernel`). Here we manually specify the value name with
 `cereal::make_nvp`.
 
-This takes care of the C++-part of serialization. We add Pickle functionality
-directly in the SWIG interface file:
-
-.. code-block:: cpp
-
-    %{
-    #include "hawkes.h"
-    %}
-
-    %include serialization.i
-
-    class HawkesKernelSumExp : public HawkesKernel {
-     public:
-      ...
-
-      HawkesKernelSumExp();
-
-      ...
-    };
-
-    TICK_MAKE_PICKLABLE(HawkesKernelSumExp);
-
-A convenience macro `TICK_MAKE_PICKLABLE` is available to add all the necessary
-bits to a SWIG definition in order to make it picklable in Python.
-
-`TICK_MAKE_PICKLABLE` takes any number of arguments. The first being the class
-name of the class to be pickled. Any following arguments will be forwarded to
-the Python constructor of the class for initialization (used when
-unpickling/reconstructing an object). In the example above, no parameters are
-given to the constructor.
-
-The macro adds a block of Python code with a `__getstate__` method to return a
-serialized copy of the object, and a `__setstate__` method to reconstruct the
-object from a string value (this is where the initialization/constructor
-parameters play in).
-
-Similarly, `TICK_MAKE_TEMPLATED_PICKLABLE` is provided if needed to specify
-a type with templated parameters.
+This takes care of the C++-part of serialization. Pickle functionality is then
+added directly in the pybind11 binding using ``py::pickle`` or by rebuilding
+the wrapped native object from Python state in the owning Python class.
 
 It's important to consider the initialization of the Python object. In some
 cases it might be convenient to add a parameter-less C++ constructor that
@@ -642,12 +576,11 @@ be caught by Python. The interface is almost identical to `TICK_DEBUG()` and
 
     TICK_ERROR("A fatal error occurred because of this array: " << arr);
 
-This will throw an exception which (if used via the Python interface) will be
-caught in the SWIG interface layer and raised as an error in Python.
+This will throw an exception which, when used via the Python interface, will be
+caught in the binding layer and raised as an error in Python.
 
 The exception thrown can include a backtrace to the point of error. For this to
-happen, the compilation of the library must include the DEBUG_VERBOSE flag
-(see `setup.py`).
+happen, the compilation of the library must include the DEBUG_VERBOSE flag.
 
 Deprecation
 ^^^^^^^^^^^

@@ -29,6 +29,7 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
   using TBaseSAGA<T, T>::save_history;
   using TBaseSAGA<T, T>::last_record_epoch;
   using TBaseSAGA<T, T>::last_record_time;
+  using TBaseSAGA<T, T>::objectives;
 
  public:
   using TBaseSAGA<T, T>::set_starting_iterate;
@@ -37,7 +38,7 @@ class DLL_PUBLIC AtomicSAGA : public TBaseSAGA<T, T> {
   using TBaseSAGA<T, T>::get_class_name;
 
  private:
-  int n_threads = 0;      // SWIG doesn't support uints
+  int n_threads = 0;      // Keep a signed type for Python binding compatibility
   size_t un_threads = 0;  //   uint == int = Werror
 
   // This overrides base SAGA class gradients arrays

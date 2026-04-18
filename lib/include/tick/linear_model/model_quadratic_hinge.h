@@ -25,7 +25,7 @@ class DLL_PUBLIC TModelQuadraticHinge
   using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelQuadraticHinge()
       : TModelQuadraticHinge<T, K>(nullptr, nullptr, false) {}
 

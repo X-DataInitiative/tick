@@ -10,25 +10,25 @@ on:
 env:
   TICK_DEBUG: 0
   TICK_WERROR: 0
-  MKN_GCC_PREFERRED: 1
 
 jobs:
   build:
     name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    timeout-minutes: 90
 
     strategy:
       fail-fast: false
       max-parallel: 4
       matrix:
-        python-version: ['3.7', '3.9', '3.10', '3.11'] # '3.8' has "'tp_print' is deprecated [-Werror,-Wdeprecated-declarations]"
+        python-version: ['3.11', '3.12', '3.13']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v6
       with:
         submodules: true
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -37,28 +37,18 @@ jobs:
 
 
 
-    - name: info
-      run: |
-        python3 -V
-        gcc -v
-        swig -version
-
     - name: pip
       run: |
-        python3 -m pip install wheel pip --upgrade
-        python3 -m pip install -r requirements.txt
-        python3 -m pip install tensorflow-cpu
+        python3 -m pip install --upgrade pip
+        python3 -m pip install .[dev]
+        python3 -m pip install pytest-timeout
 
     - name: build
       run: |
-        curl -Lo mkn https://github.com/mkn/mkn/releases/download/latest/mkn_nix
-        chmod +x mkn
-        PATH=$PWD:$PATH KLOG=3 ./sh/mkn.sh
-
-    - name: cpptest
-      run: |
-        PATH=$PWD:$PATH KLOG=3 ./sh/gtest.sh
+        python3 -m build --wheel
 
     - name: pytest
+      env:
+        PYTHONFAULTHANDLER: 1
       run: |
-        python3 setup.py pytest
+        python3 -m pytest -q --durations=50 --timeout=600

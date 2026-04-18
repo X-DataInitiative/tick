@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 WORKDIR /tick
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y build-essential cmake curl git swig patchelf unzip libssl-dev zlib1g-dev libbz2-dev \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y build-essential cmake curl git patchelf unzip libssl-dev zlib1g-dev libbz2-dev \
 libreadline-dev libsqlite3-dev curl llvm libncurses5-dev libncursesw5-dev \
 xz-utils tk-dev
 

@@ -722,8 +722,8 @@ class HawkesConditionalLaw(Base):
                  for (a, b) in itertools.product(self._quad_x, repeat=2)])
             xs2 = np.append(xe, xs2)
             xs2 = np.append(self._quad_x, xs2)
-            xs2 = np.array(np.lib.arraysetops.unique(xs2))
-            xs2 = np.array(np.core.fromnumeric.sort(xs2))
+            xs2 = np.array(np.unique(xs2))
+            xs2 = np.sort(xs2)
             xs2 = xs2[xs2 >= 0.]
             ys2 = np.zeros(len(xs2))
             j = 0

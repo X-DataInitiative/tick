@@ -30,7 +30,7 @@ class DLL_PUBLIC TModelLinRegWithIntercepts
   using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelLinRegWithIntercepts()
       : TModelLinRegWithIntercepts(nullptr, nullptr, false) {}
 

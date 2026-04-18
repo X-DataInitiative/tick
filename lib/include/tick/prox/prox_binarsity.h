@@ -21,7 +21,7 @@ class DLL_PUBLIC TProxBinarsity : public TProxWithGroups<T, K> {
                                            bool positive) override;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxBinarsity() : TProxBinarsity(0, nullptr, nullptr, false) {}
 
   TProxBinarsity(T strength, SArrayULongPtr blocks_start,

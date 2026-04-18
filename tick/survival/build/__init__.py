@@ -1,21 +1,17 @@
 # License: BSD 3 clause
 
-# Templating update - 19/02/2018
-#  Importing DLLs has gotten a bit strange and now requires
-#  updating the path for DLLs to be found before hand
-#  As observed here both "base_model" and "linear_model" are required
+from tick.base.opsys import add_to_path_if_windows, load_extension, \
+    resolve_repo_root
 
-from tick.base.opsys import add_to_path_if_windows
+add_to_path_if_windows(__file__)
+_REPO_ROOT = resolve_repo_root(__file__, levels_up=2)
 
-def required():
-    import os, sys
-    root = os.path.dirname(os.path.realpath(os.path.join(__file__, "../..")))
 
-    deps = ["base_model", "linear_model", "solver"]
+def _load_extension(module_name):
+    module = load_extension(module_name, __name__, __file__,
+                            repo_root=_REPO_ROOT)
+    globals()[module_name] = module
+    return module
 
-    for dep in deps:
-        if "tick." + dep + ".build" not in sys.modules:
-            p = os.path.realpath(os.path.join(root, dep + "/build"))
-            os.environ["PATH"] = p + os.pathsep + os.environ["PATH"]
 
-add_to_path_if_windows(__file__, [required])
+survival = _load_extension("survival")

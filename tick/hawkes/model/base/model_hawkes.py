@@ -1,7 +1,8 @@
 # License: BSD 3 clause
 
 import numpy as np
-from scipy.sparse import sputils, csr_matrix
+from scipy.sparse import csr_matrix
+from scipy.sparse._sputils import get_index_dtype
 
 from tick.base_model import N_CALLS_LOSS, PASS_OVER_DATA
 from tick.base_model.model_first_order import ModelFirstOrder
@@ -153,9 +154,6 @@ class ModelHawkes(ModelFirstOrder):
         if not self._fitted:
             raise ValueError("call ``fit`` before using ``hessian``")
 
-        # What kind of integers does scipy use fr sparse indices?
-        sparse_dtype = sputils.get_index_dtype()
-
         n_baselines = self.n_nodes
         # number of alphas per dimension
         if isinstance(
@@ -168,6 +166,7 @@ class ModelHawkes(ModelFirstOrder):
         dim = self.n_nodes
         row_indices_size = n_baselines + dim * n_alphas_i + 1
         data_size = (n_baselines + dim * n_alphas_i) * (1 + n_alphas_i)
+        sparse_dtype = get_index_dtype(maxval=max(row_indices_size, data_size))
 
         # looks like [0  3  6  9 12 15 18] in dimension 2
         row_indices = np.arange(row_indices_size,

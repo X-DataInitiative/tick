@@ -1,7 +1,19 @@
 cmake_minimum_required(VERSION 3.7)
 project(tick)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -ffast-math")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+option(TICK_ENABLE_FAST_MATH "Enable fast-math compiler flags" ON)
+
+if (TICK_ENABLE_FAST_MATH)
+    if (MSVC)
+        add_compile_options(/fp:fast)
+    else ()
+        add_compile_options(-ffast-math)
+    endif ()
+endif ()
 
 include_directories(${CMAKE_SOURCE_DIR}/..)
 
@@ -31,7 +43,7 @@ elseif (${USE_BLAS})
     message(STATUS "Using BLAS")
 
     set(TICK_BLAS_LIBRARIES ${BLAS_LIBRARIES})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTICK_USE_CBLAS")
+    add_compile_definitions(TICK_USE_CBLAS)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${BLAS_LINKER_FLAGS}")
 
     message(STATUS "BLAS Libraries: " ${BLAS_LIBRARIES})
@@ -80,6 +92,26 @@ add_subdirectory(cpp/solver)
 add_subdirectory(cpp/robust)
 add_subdirectory(cpp/survival)
 add_subdirectory(cpp/preprocessing)
+
+if (WIN32 AND ${TICK_REBUILD_LIBS})
+    foreach(tick_target
+            ${TICK_LIB_BASE}
+            ${TICK_LIB_ARRAY}
+            ${TICK_LIB_BASE_MODEL}
+            ${TICK_LIB_LINEAR_MODEL}
+            ${TICK_LIB_CRANDOM}
+            ${TICK_LIB_ARRAY_TEST}
+            ${TICK_LIB_HAWKES_INFERENCE}
+            ${TICK_LIB_HAWKES_MODEL}
+            ${TICK_LIB_HAWKES_SIMULATION}
+            ${TICK_LIB_PREPROCESSING}
+            ${TICK_LIB_PROX}
+            ${TICK_LIB_ROBUST}
+            ${TICK_LIB_SOLVER}
+            ${TICK_LIB_SURVIVAL})
+        target_compile_definitions(${tick_target} PRIVATE BUILDING_DLL)
+    endforeach()
+endif ()
 
 if (APPLE)
     set(TICK_INSTALL_RPATH "${CMAKE_CURRENT_SOURCE_DIR}/../tick/array/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/base_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/linear_model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/random/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/prox/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/solver/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/inference/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/model/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/hawkes/simulation/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/robust/build;${CMAKE_CURRENT_SOURCE_DIR}/../tick/survival/build;${TICK_EXTRA_RPATH}")

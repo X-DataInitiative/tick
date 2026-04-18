@@ -34,11 +34,11 @@ class LongitudinalSamplesFilter(LongitudinalPreprocessor):
     >>> features.__class__
     <class 'list'>
     >>> [x.toarray() for x in features]
-   [array([[0., 1., 0.],
-           [0., 0., 0.],
-           [0., 0., 1.]]), array([[1., 1., 0.],
-           [0., 0., 1.],
-           [0., 0., 0.]])]
+    [array([[0., 1., 0.],
+            [0., 0., 0.],
+            [0., 0., 1.]]), array([[1., 1., 0.],
+                                   [0., 0., 1.],
+                                   [0., 0., 0.]])]
     >>> labels
     [array([0, 1, 0], dtype=uint64), array([0, 0, 0], dtype=uint64)]
     >>> censoring

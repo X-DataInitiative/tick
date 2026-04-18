@@ -12,10 +12,11 @@ from tick.solver.build.solver import SVRG_VarianceReductionMethod_Random
 
 from tick.solver.build.solver import SVRG_StepType_Fixed
 from tick.solver.build.solver import SVRG_StepType_BarzilaiBorwein
+from tick.solver.build.solver import multi_solve_svrg_double
+from tick.solver.build.solver import multi_solve_svrg_float
 
 from .build.solver import SVRGDouble as _SVRGDouble
 from .build.solver import SVRGFloat as _SVRGFloat
-from .build.solver import MultiSVRGDouble as MultiSVRG, SVRGDoublePtrVector
 
 __author__ = "Stephane Gaiffas"
 
@@ -33,6 +34,11 @@ step_types_mapper = {
 dtype_class_mapper = {
     np.dtype('float32'): _SVRGFloat,
     np.dtype('float64'): _SVRGDouble
+}
+
+dtype_multi_solve_mapper = {
+    np.dtype('float32'): multi_solve_svrg_float,
+    np.dtype('float64'): multi_solve_svrg_double,
 }
 
 
@@ -288,7 +294,8 @@ class SVRG(SolverFirstOrderSto):
         self._set(
             '_solver',
             solver_class(epoch_size, self.tol, self._rand_type, step,
-                         self.record_every, self.seed, self.n_threads))
+                         self.record_every, self.seed,
+                         self.n_threads))
 
         self.variance_reduction = self._var_red_str
         self.step_type = self._step_type_str
@@ -296,7 +303,7 @@ class SVRG(SolverFirstOrderSto):
     def multi_solve(self, coeffes, solvers, max_iter, threads = None, set_start = True):
         """Complete function for calling solve on multiple independent SVRG C++ instances
            Requires valid solvers setup with model and prox. Vectors of instances are
-           peculiar with SWIG, so we use a vector of pointers, populate the C++ vector from
+           awkward to expose directly in Python, so we use a vector of pointers, populate it from
            Python, then run the solve on each object behind the pointer in C++
 
         Parameters
@@ -318,21 +325,25 @@ class SVRG(SolverFirstOrderSto):
 
         if len(coeffes) != len(solvers):
             raise ValueError("size mismatch between coeffes and solvers")
+
+        native_multi_solve = dtype_multi_solve_mapper[solvers[0].dtype]
+
         mins = []
-        sss = SVRGDoublePtrVector(0)
         for i in range(len(solvers)):
             solvers[i]._solver.reset()
             mins.append(coeffes[i].copy())
             if threads is None and set_start:
                 solvers[i]._solver.set_starting_iterate(mins[-1])
-            MultiSVRG.push_solver(sss, solvers[i]._solver) # push SVRG C++ pointer to vector sss
             solvers[i]._start_solve()
-        if threads is None:
-            MultiSVRG.multi_solve(sss, max_iter)
-        elif set_start:
-            MultiSVRG.multi_solve(sss, coeffes, max_iter, threads)
-        else:
-            MultiSVRG.multi_solve(sss, max_iter, threads)
+
+        starters = coeffes if threads is not None and set_start else None
+        native_multi_solve(
+            [solver._solver for solver in solvers],
+            max_iter,
+            threads=threads,
+            starters=starters,
+        )
+
         for i in range(len(solvers)):
             solvers[i]._set("time_elapsed", solvers[i]._solver.get_time_history()[-1])
             if solvers[i].verbose:
@@ -340,4 +351,3 @@ class SVRG(SolverFirstOrderSto):
                       str(solvers[i].time_elapsed) + " seconds")
             solvers[i]._post_solve_and_record_in_cpp(mins[i], solvers[i]._solver.get_first_obj())
         return mins
-

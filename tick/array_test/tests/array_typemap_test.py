@@ -9,6 +9,13 @@ from tick.array_test.build import array_test as test
 
 
 class Test(unittest.TestCase):
+    @staticmethod
+    def _with_int64_sparse_indices(matrix):
+        matrix = matrix.copy()
+        matrix.indices = matrix.indices.astype(np.int64)
+        matrix.indptr = matrix.indptr.astype(np.int64)
+        return matrix
+
     def setUp(self):
 
         self.correspondence_dict = {
@@ -155,6 +162,12 @@ class Test(unittest.TestCase):
             info['python_sparse_array_list_2d'] = python_sparse_array_list_2d
             info['python_sparse_array2d_list_2d'] = \
                 python_sparse_array2d_list_2d
+            info['python_sparse_array_2d_int64_indices'] = \
+                self._with_int64_sparse_indices(python_sparse_array_2d)
+            info['python_sparse_array2d_list_1d_int64_indices'] = [
+                self._with_int64_sparse_indices(array)
+                for array in python_sparse_array2d_list_1d
+            ]
 
             # corresponding test functions
             # for typemap in
@@ -501,6 +514,13 @@ class Test(unittest.TestCase):
                              extract_function(python_sparse_array))
             self.assertEqual(info['number'], extract_function(info['number']))
 
+    def test_sbasearray2d_ptr_typemap_in_accepts_int64_sparse_indices(self):
+        for array_type, info in self.correspondence_dict.items():
+            python_sparse_array = info['python_sparse_array_2d_int64_indices']
+            extract_function = info['typemap_in_base_array_2d_ptr']
+            self.assertEqual(python_sparse_array.data.sum(),
+                             extract_function(python_sparse_array))
+
     def test_basearray_list_1d_typemap_in(self):
         """...Test we can pass a list of base Arrays as argument
         """
@@ -591,6 +611,15 @@ class Test(unittest.TestCase):
             self.assertEqual(python_sparse_array[0].sum(),
                              extract_function(python_sparse_array))
             self.assertEqual(info['number'], extract_function(info['number']))
+
+    def test_basearray2d_ptr_list_1d_typemap_in_accepts_int64_sparse_indices(
+            self):
+        for array_type, info in self.correspondence_dict.items():
+            python_sparse_array = \
+                info['python_sparse_array2d_list_1d_int64_indices']
+            extract_function = info['typemap_in_base_array2d_ptr_list_1d']
+            self.assertEqual(python_sparse_array[0].sum(),
+                             extract_function(python_sparse_array))
 
     def test_basearray2d_ptr_list_2d_typemap_in(self):
         """...Test we can pass a list of list of base Arrays 2D as argument
@@ -738,7 +767,7 @@ class Test(unittest.TestCase):
                 extract_function(np.zeros((5, 5, 5)))
 
     def test_array_2d_type_error(self):
-        """...Test array2d interfacing between SWIG and Python
+        """...Test array2d interfacing between native extensions and Python
         """
         for array_type, info in self.correspondence_dict.items():
             extract_function = info['typemap_in_array_2d_not_ol']

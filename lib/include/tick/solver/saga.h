@@ -45,7 +45,7 @@ class DLL_PUBLIC TBaseSAGA : public TStoSolver<T, K> {
   void compute_step_corrections();
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TBaseSAGA() : TBaseSAGA<T, K>(0, 0, RandType::unif, 0, 0) {}
 
   TBaseSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1,
@@ -131,7 +131,7 @@ class DLL_PUBLIC TSAGA : public TBaseSAGA<T, T> {
   void solve_sparse_proba_updates(bool use_intercept, ulong n_features);
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TSAGA() : TSAGA<T>(0, 0, RandType::unif, 0, 0) {}
 
   TSAGA(ulong epoch_size, T tol, RandType rand_type, T step, int record_every = 1, int seed = -1);

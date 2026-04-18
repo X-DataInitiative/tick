@@ -30,7 +30,7 @@ class DLL_PUBLIC TModelEpsilonInsensitive
   T threshold;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelEpsilonInsensitive()
       : TModelEpsilonInsensitive(nullptr, nullptr, false, 1) {}
 

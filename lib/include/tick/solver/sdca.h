@@ -48,7 +48,7 @@ class DLL_PUBLIC TSDCA : public TStoSolver<T, K> {
   Array<T> dual_vector;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TSDCA() : TSDCA<T, K>(0, 0, 0) {}
 
   explicit TSDCA(T l_l2sq, ulong epoch_size = 0, T tol = 0.,

@@ -27,7 +27,7 @@ class DLL_PUBLIC TModelAbsoluteRegression
   using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelAbsoluteRegression()
       : TModelAbsoluteRegression(nullptr, nullptr, false) {}
 

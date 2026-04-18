@@ -25,8 +25,10 @@ TModelCoxRegPartialLik<T, K>::TModelCoxRegPartialLik(
 
   // Will contain inner products for loss and gradient computations
   inner_prods = Array<T>(n_samples);
+  inner_prods.init_to_zero();
   // Used for gradient computations
   s1 = Array<T>(n_features);
+  s1.init_to_zero();
 
   // Get the indices that sort the times by decreasing order in idx
   idx = ArrayULong(n_samples);

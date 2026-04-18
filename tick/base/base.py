@@ -8,9 +8,13 @@ from abc import ABCMeta
 import json
 import pydoc
 import numpy as np
-import numpydoc as nd
-from numpydoc import docscrape
-import copy
+
+try:
+    from numpydoc import docscrape
+except ModuleNotFoundError as exc:
+    if exc.name != 'numpydoc':
+        raise
+    docscrape = None
 
 # The metaclass inherits from ABCMeta and not type, since we'd like to
 # do abstract classes in tick that inherits from ABC
@@ -255,7 +259,7 @@ class BaseMeta(ABCMeta):
         documented and their documentation
         """
         # If a class is not documented we return an empty list
-        if '__doc__' not in attrs:
+        if '__doc__' not in attrs or docscrape is None:
             return []
 
         current_class_doc = inspect.cleandoc(attrs['__doc__'])

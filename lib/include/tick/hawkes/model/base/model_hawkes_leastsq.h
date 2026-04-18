@@ -103,4 +103,7 @@ class DLL_PUBLIC ModelHawkesLeastSq : public ModelHawkesList {
   }
 };
 
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ModelHawkesLeastSq,
+                                   cereal::specialization::member_serialize)
+
 #endif  // LIB_INCLUDE_TICK_HAWKES_MODEL_BASE_MODEL_HAWKES_LEASTSQ_H_

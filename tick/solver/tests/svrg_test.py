@@ -59,6 +59,20 @@ class SVRGTest(object):
         model_spars = ModelLinReg(fit_intercept).fit(X_sparse, y)
         return model_dense, model_spars
 
+    def make_svrg_multi_solve_setup(self):
+        X, y = self.simu_linreg_data(dtype=self.dtype, n_samples=300,
+                                     n_features=8)
+        model = ModelLinReg().fit(X, y)
+        step = 1. / model.get_lip_max()
+        prox = ProxL1(strength=1e-3).astype(self.dtype)
+
+        def create_solver(seed):
+            solver = SVRG(step=step, tol=0., max_iter=6, verbose=False,
+                          seed=seed)
+            return solver.set_model(model).set_prox(prox)
+
+        return model, create_solver
+
     def test_solver_svrg(self):
         """...Check SVRG solver for a Logistic Regression with Ridge
         penalization
@@ -273,6 +287,43 @@ class SVRGTest(object):
                         seed=TestSolver.sto_seed, verbose=False)
 
         self._test_solver_astype_consistency(create_solver)
+
+    def test_multi_solve_matches_individual_solves_with_starting_iterates(self):
+        model, create_solver = self.make_svrg_multi_solve_setup()
+        starters = [
+            np.linspace(-0.4, 0.4, model.n_coeffs, dtype=self.dtype),
+            np.linspace(0.3, -0.3, model.n_coeffs, dtype=self.dtype),
+        ]
+
+        expected = []
+        for seed, starter in zip([123, 456], starters):
+            solver = create_solver(seed)
+            solver._solver.set_starting_iterate(starter.copy())
+            expected.append(solver.solve().copy())
+
+        solvers = [create_solver(123), create_solver(456)]
+        result = solvers[0].multi_solve(starters, solvers, max_iter=6,
+                                        threads=2, set_start=True)
+
+        for actual, target in zip(result, expected):
+            np.testing.assert_array_almost_equal(actual, target, decimal=2)
+
+    def test_multi_solve_matches_individual_solves_without_starting_iterates(self):
+        _, create_solver = self.make_svrg_multi_solve_setup()
+        seeds = [321, 654]
+
+        expected = []
+        for seed in seeds:
+            solver = create_solver(seed)
+            expected.append(solver.solve().copy())
+
+        solvers = [create_solver(seed) for seed in seeds]
+        coeffes = [np.zeros_like(target) for target in expected]
+        result = solvers[0].multi_solve(coeffes, solvers, max_iter=6,
+                                        threads=2, set_start=False)
+
+        for actual, target in zip(result, expected):
+            np.testing.assert_array_almost_equal(actual, target)
 
 
 class SVRGTestFloat32(TestSolver, SVRGTest):

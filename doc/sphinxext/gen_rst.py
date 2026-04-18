@@ -10,6 +10,7 @@ Files that generate images should start with 'plot'
 from __future__ import division, print_function
 from time import time
 import ast
+import json
 import os
 import re
 import shutil
@@ -20,7 +21,7 @@ import gzip
 import posixpath
 import subprocess
 import warnings
-from sklearn.externals import six
+from functools import lru_cache
 from docutils.core import publish_string
 
 # Try Python 2 first, otherwise load from Python 3
@@ -55,6 +56,8 @@ except NameError:
 import token
 import tokenize
 import numpy as np
+
+PY2 = sys.version_info[0] == 2
 
 try:
     # make sure that the Agg backend is set before importing any
@@ -115,7 +118,50 @@ def _get_data(url):
 
     return data
 
-mem = joblib.Memory(cachedir='_build')
+mem = joblib.Memory(location='_build')
+
+
+@lru_cache(maxsize=1)
+def _get_boston_dataset():
+    from sklearn.datasets import fetch_openml
+
+    bunch = fetch_openml(name='boston', version=1, as_frame=False)
+    return np.asarray(bunch.data, dtype=np.float64), np.asarray(
+        bunch.target, dtype=np.float64)
+
+
+def _install_sklearn_compat():
+    try:
+        import sklearn.datasets as datasets
+        from sklearn.utils import Bunch
+    except Exception:
+        return
+
+    try:
+        datasets.load_boston
+        return
+    except (ImportError, AttributeError):
+        pass
+
+    def load_boston(return_X_y=False):
+        data, target = _get_boston_dataset()
+        if return_X_y:
+            return data, target
+        feature_names = [
+            "CRIM", "ZN", "INDUS", "CHAS", "NOX", "RM", "AGE",
+            "DIS", "RAD", "TAX", "PTRATIO", "B", "LSTAT",
+        ]
+        return Bunch(
+            data=data,
+            target=target,
+            feature_names=np.array(feature_names, dtype=object),
+            DESCR="Compatibility loader for the removed scikit-learn "
+                  "Boston dataset.",
+            filename=None,
+            data_module="sklearn.datasets",
+        )
+
+    datasets.load_boston = load_boston
 get_data = mem.cache(_get_data)
 
 
@@ -194,6 +240,15 @@ def parse_sphinx_searchindex(searchindex):
     if hasattr(searchindex, 'decode'):
         searchindex = searchindex.decode('UTF-8')
 
+    match = re.search(r'Search\.setIndex\((.*)\)\s*$', searchindex, re.S)
+    if match is not None:
+        try:
+            payload = json.loads(match.group(1))
+        except ValueError:
+            pass
+        else:
+            return payload['filenames'], payload['objects']
+
     # parse objects
     query = 'objects:'
     pos = searchindex.find(query)
@@ -233,6 +288,7 @@ class SphinxDocLinkResolver(object):
 
     def __init__(self, doc_url, searchindex='searchindex.js',
                  extra_modules_test=None, relative=False):
+        doc_url = os.fspath(doc_url)
         self.doc_url = doc_url
         self.relative = relative
         self._link_cache = {}
@@ -271,11 +327,18 @@ class SphinxDocLinkResolver(object):
             value = self._searchindex['objects'][full_name]
             if isinstance(value, dict):
                 value = value[next(iter(value.keys()))]
+            elif isinstance(value, list) and value and isinstance(value[0], list):
+                value = value[0]
             fname_idx = value[0]
         elif cobj['module_short'] in self._searchindex['objects']:
             value = self._searchindex['objects'][cobj['module_short']]
-            if cobj['name'] in value.keys():
+            if isinstance(value, dict) and cobj['name'] in value.keys():
                 fname_idx = value[cobj['name']][0]
+            elif isinstance(value, list):
+                for entry in value:
+                    if entry[-1] == cobj['name']:
+                        fname_idx = entry[0]
+                        break
 
         if fname_idx is not None:
             fname = self._searchindex['filenames'][fname_idx]
@@ -366,6 +429,7 @@ class SphinxDocLinkResolver(object):
 
 ###############################################################################
 rst_template = """
+%(orphan_prefix)s
 
 .. _example_%(short_fname)s:
 
@@ -378,6 +442,7 @@ rst_template = """
     """
 
 plot_rst_template = """
+%(orphan_prefix)s
 
 .. _example_%(short_fname)s:
 
@@ -430,7 +495,7 @@ carousel_thumbs = {'plot_classifier_comparison_001.png': (1, 600),
 def extract_docstring(filename, ignore_heading=False):
     """ Extract a module-level docstring, if any
     """
-    if six.PY2:
+    if PY2:
         lines = open(filename).readlines()
     else:
         lines = open(filename, encoding='utf-8').readlines()
@@ -543,7 +608,7 @@ Examples
 def extract_line_count(filename, target_dir):
     # Extract the line count of a file
     example_file = os.path.join(target_dir, filename)
-    if six.PY2:
+    if PY2:
         lines = open(example_file).readlines()
     else:
         lines = open(example_file, encoding='utf-8').readlines()
@@ -569,13 +634,13 @@ def line_count_sort(file_list, target_dir):
     # Sort the list of examples by line-count
     new_list = [x for x in file_list if x.endswith('.py')]
     unsorted = np.zeros(shape=(len(new_list), 2))
-    unsorted = unsorted.astype(np.object)
+    unsorted = unsorted.astype(object)
     for count, exmpl in enumerate(new_list):
         docstr_lines, total_lines = extract_line_count(exmpl, target_dir)
         unsorted[count][1] = total_lines - docstr_lines
         unsorted[count][0] = exmpl
-    index = np.lexsort((unsorted[:, 0].astype(np.str),
-                        unsorted[:, 1].astype(np.float)))
+    index = np.lexsort((unsorted[:, 0].astype(str),
+                        unsorted[:, 1].astype(float)))
     if not len(unsorted):
         return []
     return np.array(unsorted[index][:, 0]).tolist()
@@ -651,9 +716,11 @@ def generate_dir_rst(directory, fhindex, example_dir, root_dir, plot_gallery,
             backrefs = generate_file_rst(fname, target_dir, src_dir, root_dir, plot_gallery)
             new_fname = os.path.join(src_dir, fname)
             _, snippet, _ = extract_docstring(new_fname, True)
-            if display:
+            include_in_gallery = not display or fname.startswith('plot')
+            if display and include_in_gallery:
                 fhindex.write(_thumbnail_div(directory, directory, fname, snippet))
-            fhindex.write("""
+            if include_in_gallery:
+                fhindex.write("""
 
 .. toctree::
    :hidden:
@@ -707,9 +774,11 @@ def make_thumbnail(in_fname, out_fname, width, height):
 
     width_sc = int(round(scale * width_in))
     height_sc = int(round(scale * height_in))
+    resample = Image.Resampling.LANCZOS if hasattr(Image, "Resampling") \
+        else Image.ANTIALIAS
 
     # resize the image
-    img.thumbnail((width_sc, height_sc), Image.ANTIALIAS)
+    img.thumbnail((width_sc, height_sc), resample)
 
     # insert centered
     thumb = Image.new('RGB', (width, height), (255, 255, 255))
@@ -824,6 +893,7 @@ def generate_file_rst(fname, target_dir, src_dir, root_dir, plot_gallery):
     """
     base_image_name = os.path.splitext(fname)[0]
     image_fname = '%s_%%03d.png' % base_image_name
+    orphan_prefix = ':orphan:\n' if not fname.startswith('plot') else ''
 
     this_template = rst_template
     last_dir = os.path.split(src_dir)[-1]
@@ -881,6 +951,7 @@ def generate_file_rst(fname, target_dir, src_dir, root_dir, plot_gallery):
                 my_buffer = StringIO()
                 my_stdout = Tee(sys.stdout, my_buffer)
                 sys.stdout = my_stdout
+                _install_sklearn_compat()
                 my_globals = {'pl': plt}
                 execfile(os.path.basename(src_file), my_globals)
                 time_elapsed = time() - t0
@@ -1005,7 +1076,7 @@ def generate_file_rst(fname, target_dir, src_dir, root_dir, plot_gallery):
 
 
 def get_backref(example_file):
-    if six.PY2:
+    if PY2:
         example_code_obj = identify_names(open(example_file).read())
     else:
         example_code_obj = \
@@ -1028,7 +1099,9 @@ def embed_code_links(app, exception):
         return
 
     # No documentation links for doctest
-    if app.builder.outdir.endswith('doctest'):
+    builder_outdir = os.fspath(app.builder.outdir)
+
+    if builder_outdir.endswith('doctest'):
         return
 
     print('Embedding documentation hyperlinks in examples..')
@@ -1039,8 +1112,13 @@ def embed_code_links(app, exception):
 
     # Add resolvers for the packages for which we want to show links
     doc_resolvers = {}
-    doc_resolvers['tick'] = SphinxDocLinkResolver(app.builder.outdir,
-                                                  relative=True)
+    try:
+        doc_resolvers['tick'] = SphinxDocLinkResolver(builder_outdir,
+                                                      relative=True)
+    except (OSError, ValueError, KeyError) as e:
+        print("Warning: unable to load local search index for code links:")
+        print(repr(e))
+        return
 
     resolver_urls = {
         'sklearn': "http://scikit-learn.org/stable",

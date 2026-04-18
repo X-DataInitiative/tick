@@ -454,8 +454,12 @@ class SimuCoxRegWithCutPoints(SimuWithFeatures):
         for j in range(n_features):
             feature_j = features[:, j]
             quantile_cuts = np.linspace(10, 90, 10)
-            candidates = np.percentile(feature_j, quantile_cuts,
-                                       interpolation="nearest")
+            try:
+                candidates = np.percentile(feature_j, quantile_cuts,
+                                           method="nearest")
+            except TypeError:
+                candidates = np.percentile(feature_j, quantile_cuts,
+                                           interpolation="nearest")
             cut_points_j = np.random.choice(candidates, n_cut_points[j],
                                             replace=False)
             cut_points_j = np.sort(cut_points_j)

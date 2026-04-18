@@ -27,7 +27,7 @@ class DLL_PUBLIC TModelSmoothedHinge
   T smoothness;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelSmoothedHinge() : TModelSmoothedHinge<T, K>(nullptr, nullptr, 0) {}
 
   TModelSmoothedHinge(const std::shared_ptr<BaseArray2d<T> > features,

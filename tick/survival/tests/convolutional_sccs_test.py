@@ -3,6 +3,7 @@ import numpy as np
 from tick.survival import SimuSCCS, ConvSCCS
 from scipy.sparse import csr_matrix
 from tick.survival.sccs import *
+from tick.solver import BFGS
 
 class Test(unittest.TestCase):
     def setUp(self):
@@ -131,6 +132,15 @@ class Test(unittest.TestCase):
         fit(ConvSCCS)
         fit(BatchConvSCCS)
         fit(StreamConvSCCS)
+
+    def test_construct_solver_obj_with_class_filters_args(self):
+        solver = ConvSCCS._construct_solver_obj_with_class(
+            step=1e-3, max_iter=7, tol=1e-4, print_every=2, record_every=3,
+            verbose=False, seed=123, clazz=BFGS)
+        self.assertIsInstance(solver, BFGS)
+        self.assertEqual(solver.max_iter, 7)
+        self.assertEqual(solver.print_every, 2)
+        self.assertEqual(solver.record_every, 3)
 
     def test_LearnerSCCS_score(self):
         lrn = ConvSCCS(n_lags=self.n_lags, penalized_features=[],

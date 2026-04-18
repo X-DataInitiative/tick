@@ -206,4 +206,5 @@ class SAGA(SolverFirstOrderSto):
             self._set(
                 '_solver',
                 solver_class(epoch_size, self.tol, self._rand_type, step,
-                             self.record_every, self.seed, self.n_threads))
+                             self.record_every, self.seed,
+                             self.n_threads))

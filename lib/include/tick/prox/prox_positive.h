@@ -17,7 +17,7 @@ class DLL_PUBLIC TProxPositive : public TProxSeparable<T, K> {
   T call_single(T x, T step, ulong n_times) const override;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxPositive() : TProxPositive(0) {}
 
   explicit TProxPositive(T strength) : TProxSeparable<T, K>(strength, true) {}

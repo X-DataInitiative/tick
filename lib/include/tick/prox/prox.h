@@ -38,7 +38,7 @@ class DLL_PUBLIC TProx {
   T strength;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProx() {}
 
   TProx(T strength, bool positive);

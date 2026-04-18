@@ -20,7 +20,7 @@ class DLL_PUBLIC TModelHinge : public virtual TModelGeneralizedLinear<T, K> {
   using TModelGeneralizedLinear<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelHinge() : TModelHinge<T, K>(nullptr, nullptr, false) {}
 
   TModelHinge(const std::shared_ptr<BaseArray2d<T> > features,

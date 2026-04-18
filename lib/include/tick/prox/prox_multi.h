@@ -21,7 +21,7 @@ class DLL_PUBLIC TProxMulti : public TProx<T, K> {
   ProxTPtrVector proxs;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxMulti() {}
 
   explicit TProxMulti(ProxTPtrVector proxs);

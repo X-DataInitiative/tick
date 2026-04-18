@@ -26,7 +26,7 @@ class DLL_PUBLIC TProxL1 : public TProxSeparable<T, K> {
   T value_single(T x) const override;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxL1() : TProxL1<T, K>(0, 0) {}
 
   TProxL1(T strength, bool positive)

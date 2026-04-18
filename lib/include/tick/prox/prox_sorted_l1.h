@@ -28,7 +28,7 @@ class DLL_PUBLIC TProxSortedL1 : public TProx<T, K> {
                       Array<T>& x) const;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxSortedL1() : TProxSortedL1(0, WeightsType::bh, 0, 1, false) {}
 
   TProxSortedL1(T strength, WeightsType weights_type, bool positive)

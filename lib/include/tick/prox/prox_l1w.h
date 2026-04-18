@@ -27,7 +27,7 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T, K> {
   SArrayTPtr weights;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxL1w() : TProxL1w<T, K>(0, nullptr, 0) {}
 
   TProxL1w(T strength, std::shared_ptr<SArray<T>> weights, bool positive)
@@ -62,11 +62,31 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T, K> {
   void set_weights(SArrayTPtr weights) { this->weights = weights; }
 
   template <class Archive>
-  void serialize(Archive &ar) {
+  void load(Archive &ar) {
+    ar(cereal::make_nvp("ProxSeparable",
+                        cereal::base_class<TProxSeparable<T, K>>(this)));
+    bool has_weights = false;
+    ar(CEREAL_NVP(has_weights));
+    if (has_weights) {
+      Array<T> serialized_weights;
+      ar(cereal::make_nvp("weights", serialized_weights));
+      weights = SArray<T>::new_ptr(serialized_weights);
+    } else {
+      weights = nullptr;
+    }
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
     ar(cereal::make_nvp("ProxSeparable",
                         cereal::base_class<TProxSeparable<T, K>>(this)));
 
-    ar(CEREAL_NVP(weights));
+    const bool has_weights = weights != nullptr;
+    ar(CEREAL_NVP(has_weights));
+    if (has_weights) {
+      const Array<T> serialized_weights(*weights);
+      ar(cereal::make_nvp("weights", serialized_weights));
+    }
   }
 
   BoolStrReport compare(const TProxL1w<T, K> &that) {
@@ -94,12 +114,12 @@ class DLL_PUBLIC TProxL1w : public TProxSeparable<T, K> {
 
 using ProxL1wDouble = TProxL1w<double, double>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL1wDouble,
-                                   cereal::specialization::member_serialize)
+                                   cereal::specialization::member_load_save)
 CEREAL_REGISTER_TYPE(ProxL1wDouble)
 
 using ProxL1wFloat = TProxL1w<float, float>;
 CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(ProxL1wFloat,
-                                   cereal::specialization::member_serialize)
+                                   cereal::specialization::member_load_save)
 CEREAL_REGISTER_TYPE(ProxL1wFloat)
 
 #endif  // LIB_INCLUDE_TICK_PROX_PROX_L1W_H_

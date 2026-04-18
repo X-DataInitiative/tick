@@ -320,7 +320,7 @@ def _normalize_functions(y_values_list, t_values):
     """
     y_values_list = np.array(y_values_list)
     normalizations = [
-        1. / np.trapz(y_values, t_values) for y_values in y_values_list
+        1. / np.trapezoid(y_values, t_values) for y_values in y_values_list
     ]
     normalized_y_values_list = (y_values_list.T * normalizations).T
     return normalized_y_values_list, normalizations
@@ -403,7 +403,7 @@ def plot_basis_kernels(learner, support=None, basis_kernels=None, n_points=300,
             _normalize_functions(learner.basis_kernels, t_values)
 
         kernel_diff = np.array([[
-            np.trapz(np.abs(nbf - ne), t_values)
+            np.trapezoid(np.abs(nbf - ne), t_values)
             for nbf in normalized_basis_kernels
         ] for ne in normalized_estimates])
 

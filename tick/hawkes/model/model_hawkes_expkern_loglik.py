@@ -121,6 +121,9 @@ class ModelHawkesExpKernLogLik(ModelHawkes, ModelSecondOrder,
     def _get_sc_constant(self) -> float:
         return 2.0
 
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        return _ModelHawkesExpKernLogLik(self.decay, self.n_threads)
+
     @property
     def decays(self):
         return self.decay

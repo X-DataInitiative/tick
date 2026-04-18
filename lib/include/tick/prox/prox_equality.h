@@ -14,7 +14,7 @@ class DLL_PUBLIC TProxEquality : public TProx<T, K> {
   using TProx<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxEquality() : TProxEquality<T, K>(0, false) {}
 
   explicit TProxEquality(T strength, bool positive)

@@ -103,10 +103,20 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
     ar(cereal::make_nvp("ModelSCCS",
                         typename cereal::base_class<TModelLipschitz<double, double>>(this)));
     ar(n_samples, n_features, n_observations, n_lagged_features, n_intervals);
-    ar(n_lags, col_offset, labels);
+    ArrayULong serialized_n_lags;
+    std::vector<ArrayInt> serialized_labels;
+    ar(serialized_n_lags, col_offset, serialized_labels);
+    n_lags = serialized_n_lags.as_sarray_ptr();
+    labels.clear();
+    labels.reserve(serialized_labels.size());
+    for (auto &label : serialized_labels) {
+      labels.push_back(label.as_sarray_ptr());
+    }
 
     std::vector<BaseArrayDouble2d> tmp_features;
     ar(tmp_features);
+    features.clear();
+    features.reserve(tmp_features.size());
     for (auto f : tmp_features) features.emplace_back(f.as_sarray2d_ptr());
 
     ArrayULong tmp_censoring;
@@ -119,7 +129,11 @@ class DLL_PUBLIC ModelSCCS : public ModelLipschitz {
     ar(cereal::make_nvp("ModelSCCS",
                         typename cereal::base_class<TModelLipschitz<double, double>>(this)));
     ar(n_samples, n_features, n_observations, n_lagged_features, n_intervals);
-    ar(n_lags, col_offset, labels);
+    const ArrayULong serialized_n_lags(*n_lags);
+    std::vector<ArrayInt> serialized_labels;
+    serialized_labels.reserve(labels.size());
+    for (const auto &label : labels) serialized_labels.emplace_back(*label);
+    ar(serialized_n_lags, col_offset, serialized_labels);
 
     std::vector<BaseArrayDouble2d> tmp_features;
     for (auto f : features) tmp_features.emplace_back(*f);

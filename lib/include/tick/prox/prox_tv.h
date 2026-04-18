@@ -15,7 +15,7 @@ class DLL_PUBLIC TProxTV : public TProx<T, K> {
   using TProx<T, K>::get_class_name;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TProxTV() : TProxTV<T, K>(0, 0, 1, false) {}
 
   TProxTV(T strength, bool positive) : TProx<T, K>(strength, positive) {}

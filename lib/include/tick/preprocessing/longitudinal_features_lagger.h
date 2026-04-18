@@ -34,9 +34,23 @@ class LongitudinalFeaturesLagger {
                                ulong censoring) const;
 
   template <class Archive>
-  void serialize(Archive &ar) {
+  void load(Archive &ar) {
     ar(CEREAL_NVP(n_intervals));
-    ar(CEREAL_NVP(n_lags));
+    ArrayULong serialized_n_lags;
+    ar(cereal::make_nvp("n_lags", serialized_n_lags));
+    n_lags = SArrayULong::new_ptr(serialized_n_lags);
+    ar(CEREAL_NVP(col_offset));
+    ar(CEREAL_NVP(n_samples));
+    ar(CEREAL_NVP(n_observations));
+    ar(CEREAL_NVP(n_features));
+    ar(CEREAL_NVP(n_lagged_features));
+  }
+
+  template <class Archive>
+  void save(Archive &ar) const {
+    ar(CEREAL_NVP(n_intervals));
+    const ArrayULong serialized_n_lags(*n_lags);
+    ar(cereal::make_nvp("n_lags", serialized_n_lags));
     ar(CEREAL_NVP(col_offset));
     ar(CEREAL_NVP(n_samples));
     ar(CEREAL_NVP(n_observations));
@@ -44,5 +58,8 @@ class LongitudinalFeaturesLagger {
     ar(CEREAL_NVP(n_lagged_features));
   }
 };
+
+CEREAL_SPECIALIZE_FOR_ALL_ARCHIVES(LongitudinalFeaturesLagger,
+                                   cereal::specialization::member_load_save)
 
 #endif  // LIB_INCLUDE_TICK_PREPROCESSING_LONGITUDINAL_FEATURES_LAGGER_H_

@@ -1,8 +1,6 @@
 """
-================================================
-Plot estimated intensity of Hawkes processes and
-assess goodness of fit via QQ plots
-=================================================
+Plot estimated intensity of Hawkes processes and assess goodness of fit via QQ plots
+====================================================================================
 
 This examples shows how the estimated intensity of a learned Hawkes process
 can be plotted. In this example, the data has been generated so we are able

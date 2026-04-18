@@ -40,7 +40,7 @@ class DLL_PUBLIC TModelGeneralizedLinearWithIntercepts
                       const bool fill) override;
 
  public:
-  // This exists soley for cereal/swig
+  // This exists solely for cereal/python bindings
   TModelGeneralizedLinearWithIntercepts()
       : TModelGeneralizedLinearWithIntercepts(nullptr, nullptr, false) {}
 

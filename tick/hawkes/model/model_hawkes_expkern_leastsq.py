@@ -89,7 +89,7 @@ class ModelHawkesExpKernLeastSq(ModelHawkes):
         if isinstance(decays, (int, float)):
             decays = np.array([[decays]], dtype=float)
         elif isinstance(decays, list):
-            decays = np.array(decays)
+            decays = np.array(decays, dtype=float)
         elif decays.dtype != float:
             decays = decays.astype(float)
 
@@ -116,6 +116,17 @@ class ModelHawkesExpKernLeastSq(ModelHawkes):
         if isinstance(decays, (int, float)):
             decays_matrix = np.zeros((self.n_nodes, self.n_nodes)) + decays
             self._model.set_decays(decays_matrix)
+
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        decays = self.decays
+        if isinstance(decays, (int, float)):
+            decays = np.array([[decays]], dtype=float)
+        elif isinstance(decays, list):
+            decays = np.array(decays, dtype=float)
+        elif decays.dtype != float:
+            decays = decays.astype(float)
+        return _ModelHawkesExpKernLeastSq(decays.copy(), self.n_threads,
+                                          self.approx)
 
     def incremental_fit(self, events, end_time=None):
         """Incrementally fit model with data by adding one Hawkes realization.

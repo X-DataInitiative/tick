@@ -290,7 +290,8 @@ class DLL_PUBLIC PP {
 
   template <class Archive>
   void load(Archive &ar) {
-    ar(CEREAL_NVP(timestamps));
+    std::vector<ArrayDouble> serialized_timestamps;
+    ar(CEREAL_NVP(serialized_timestamps));
     ar(CEREAL_NVP(time));
     ar(CEREAL_NVP(n_total_jumps));
     ar(CEREAL_NVP(n_nodes));
@@ -302,19 +303,65 @@ class DLL_PUBLIC PP {
     ar(CEREAL_NVP(threshold_negative_intensity));
     ar(CEREAL_NVP(itr_time));
     ar(CEREAL_NVP(itr_time_step));
-    ar(CEREAL_NVP(itr));
-    ar(CEREAL_NVP(itr_times));
-    ar(CEREAL_NVP(ctr));
+    std::vector<ArrayDouble> serialized_itr;
+    ar(CEREAL_NVP(serialized_itr));
+    ArrayDouble serialized_itr_times;
+    ar(CEREAL_NVP(serialized_itr_times));
+    std::vector<ArrayDouble> serialized_ctr;
+    ar(CEREAL_NVP(serialized_ctr));
 
     int rand_seed;
     ar(CEREAL_NVP(rand_seed));
+
+    timestamps.clear();
+    timestamps.reserve(serialized_timestamps.size());
+    for (auto &values : serialized_timestamps) {
+      timestamps.push_back(VArrayDouble::new_ptr(values));
+    }
+
+    itr.clear();
+    itr.reserve(serialized_itr.size());
+    for (auto &values : serialized_itr) {
+      itr.push_back(VArrayDouble::new_ptr(values));
+    }
+
+    itr_times = VArrayDouble::new_ptr(serialized_itr_times);
+
+    ctr.clear();
+    ctr.reserve(serialized_ctr.size());
+    for (auto &values : serialized_ctr) {
+      ctr.push_back(VArrayDouble::new_ptr(values));
+    }
 
     rand = Rand(rand_seed);
   }
 
   template <class Archive>
   void save(Archive &ar) const {
-    ar(CEREAL_NVP(timestamps));
+    std::vector<ArrayDouble> serialized_timestamps;
+    serialized_timestamps.reserve(timestamps.size());
+    for (const auto &values : timestamps) {
+      serialized_timestamps.emplace_back(*values);
+    }
+
+    std::vector<ArrayDouble> serialized_itr;
+    serialized_itr.reserve(itr.size());
+    for (const auto &values : itr) {
+      serialized_itr.emplace_back(*values);
+    }
+
+    ArrayDouble serialized_itr_times;
+    if (itr_times != nullptr) {
+      serialized_itr_times = ArrayDouble(*itr_times);
+    }
+
+    std::vector<ArrayDouble> serialized_ctr;
+    serialized_ctr.reserve(ctr.size());
+    for (const auto &values : ctr) {
+      serialized_ctr.emplace_back(*values);
+    }
+
+    ar(CEREAL_NVP(serialized_timestamps));
     ar(CEREAL_NVP(time));
     ar(CEREAL_NVP(n_total_jumps));
     ar(CEREAL_NVP(n_nodes));
@@ -326,9 +373,9 @@ class DLL_PUBLIC PP {
     ar(CEREAL_NVP(threshold_negative_intensity));
     ar(CEREAL_NVP(itr_time));
     ar(CEREAL_NVP(itr_time_step));
-    ar(CEREAL_NVP(itr));
-    ar(CEREAL_NVP(itr_times));
-    ar(CEREAL_NVP(ctr));
+    ar(CEREAL_NVP(serialized_itr));
+    ar(CEREAL_NVP(serialized_itr_times));
+    ar(CEREAL_NVP(serialized_ctr));
 
     // Note that only the seed is part of the serialization.
     //

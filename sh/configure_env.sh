@@ -9,7 +9,6 @@
 # Variables
 #  $PY = "python" binary
 #  $PCONF = "python-config" binary
-#  $SWIG  = "swig" binary
 #  $LDARGS=Linking arguments
 #  $LIB_POSTFIX= python library format
 #  $LIB_POSTEXT= system library file extention
@@ -142,12 +141,6 @@ else
   [ -z "$LIB_POSTEXT" ] && LIB_POSTEXT="${LIB_POSTFIX##*.}"
 fi
 LIB_POSTFIX="${LIB_POSTFIX%.*}"
-
-# Finding the installed version of "swig" to later find
-# To override export SWIG variable with full path to swig binary
-[ -z "$SWIG"  ] && which swig &> /dev/null && SWIG="swig"
-[ -z "$SWIG"  ] && echo "swig not found on PATH, exiting with error" && exit 1;
-[ -z "$SWIG_C_FLAGS" ] && SWIG_C_FLAGS="-DDEBUG_COSTLY_THROW"
 
 # Here: "sed" is used to remove unnecessary parts of the link flags
 #  given to us by python-config
@@ -333,5 +326,3 @@ echo "Finished configure_env.sh for python (${PYVER}) with the following args"
 echo "LDARGS = ${LDARGS}"
 echo ""
 ##
-
-

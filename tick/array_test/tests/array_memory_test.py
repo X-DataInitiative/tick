@@ -1,6 +1,9 @@
 # License: BSD 3 clause
 
 import gc
+import os
+import platform
+import sys
 import unittest
 import weakref
 
@@ -11,6 +14,9 @@ from scipy.sparse import csr_matrix
 from tick.array.build.array import tick_double_sparse2d_from_file
 from tick.array.build.array import tick_double_sparse2d_to_file
 from tick.array_test.build import array_test as test
+
+IS_MACOS_ARM64 = sys.platform == "darwin" and \
+    platform.machine().lower() in {"arm64", "aarch64"}
 
 
 class Test(unittest.TestCase):
@@ -94,11 +100,12 @@ class Test(unittest.TestCase):
         self.assertIsNone(r())
         del a
 
+    @unittest.skipIf(IS_MACOS_ARM64,
+                     "RSS-based memory checks are unstable on macOS arm64")
     def test_sarray_memory_leaks(self):
         """...Test brute force method in order to see if we have a memory leak
         during typemap out
         """
-        import os
         try:
             import psutil
         except ImportError:
@@ -131,13 +138,13 @@ class Test(unittest.TestCase):
             self.assertAlmostEqual(first_filled_memory - initial_memory,
                                    filled_memory - initial_memory,
                                    delta=1.1 * bytes_size)
-        #print("\nfirst_filled_memory %.2g, filled_memory %.2g, initial_memory %.2g, array_bytes_size %.2g" % (first_filled_memory, filled_memory, initial_memory, bytes_size))
 
+    @unittest.skipIf(IS_MACOS_ARM64,
+                     "RSS-based memory checks are unstable on macOS arm64")
     def test_sarray_memory_leaks2(self):
         """...Test brute force method in order to see if we have a memory leak
         during typemap in or out
         """
-        import os
         try:
             import psutil
         except ImportError:
@@ -173,11 +180,12 @@ class Test(unittest.TestCase):
                                    filled_memory - initial_memory,
                                    delta=1.1 * bytes_size)
 
+    @unittest.skipIf(IS_MACOS_ARM64,
+                     "RSS-based memory checks are unstable on macOS arm64")
     def test_sarray2d_memory_leaks(self):
         """...Test brute force method in order to see if we have a memory leak
         during typemap out
         """
-        import os
         try:
             import psutil
         except ImportError:
@@ -212,12 +220,12 @@ class Test(unittest.TestCase):
                                    filled_memory - initial_memory,
                                    delta=1.1 * bytes_size)
 
+    @unittest.skipIf(IS_MACOS_ARM64,
+                     "RSS-based memory checks are unstable on macOS arm64")
     def test_s_sparse_array2d_memory_leaks(self):
         """...Test brute force method in order to see if we have a memory leak
         during typemap out
         """
-        import os
-
         try:
             import psutil
         except ImportError:

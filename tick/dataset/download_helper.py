@@ -111,6 +111,7 @@ def fetch_tick_dataset(dataset_path, data_home=None, n_features=None,
     """Fetch dataset from tick_datasets github repository.
 
     Uses cache if this dataset has already been downloaded.
+
     Parameters
     ----------
     dataset_path : `str`
@@ -157,7 +158,8 @@ def fetch_tick_dataset(dataset_path, data_home=None, n_features=None,
 
 
 def load_dataset(dataset_path, data_home=None, n_features=None):
-    """Load dataset from given path
+    """Load dataset from given path.
+
     Parameters
     ----------
     dataset_path : `str`

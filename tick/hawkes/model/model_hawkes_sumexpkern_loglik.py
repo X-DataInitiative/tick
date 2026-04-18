@@ -125,6 +125,9 @@ class ModelHawkesSumExpKernLogLik(ModelHawkes, ModelSecondOrder,
     def _get_sc_constant(self) -> float:
         return 2.0
 
+    def _build_cpp_model(self, dtype_or_object_with_dtype):
+        return _ModelHawkesSumExpKernLogLik(self.decays, self.n_threads)
+
     @property
     def _epoch_size(self):
         # This gives the typical size of an epoch when using a
