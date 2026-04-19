@@ -71,6 +71,7 @@ test-command = "python -c \"import tick; print(tick.__version__)\""
 
 [tool.cibuildwheel.linux]
 archs = ["x86_64"]
+manylinux-x86_64-image = "manylinux_2_28"
 
 [tool.cibuildwheel.macos]
 archs = ["auto"]
