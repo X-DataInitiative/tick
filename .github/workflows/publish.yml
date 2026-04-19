@@ -3,10 +3,6 @@ name: Build and publish wheels
 on:
   release:
     types: [published]
-  pull_request:
-    paths:
-      - '.github/workflows/publish.yml'
-      - 'pyproject.toml'
   workflow_dispatch:
 
 env:
