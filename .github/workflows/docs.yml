@@ -39,7 +39,7 @@ jobs:
 
     - name: Build HTML docs
       run: |
-        make SPHINXBUILD="python -m sphinx" html-noplot
+        make SPHINXBUILD="python -m sphinx" html
       working-directory: doc
 
     - name: Upload Pages artifact
