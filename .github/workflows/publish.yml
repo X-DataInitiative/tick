@@ -1,0 +1,60 @@
+name: Build and publish wheels
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+env:
+  TICK_DEBUG: 0
+  TICK_WERROR: 0
+
+jobs:
+  build_wheels:
+    name: Wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-latest, macos-15, macos-15-intel, windows-2022]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: runner.os == 'Windows'
+        with:
+          arch: amd64
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.21
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
+
+  upload_pypi:
+    name: Upload to PyPI
+    needs: [build_wheels]
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheels-*
+          path: dist
+          merge-multiple: true
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          python -m pip install --upgrade pip twine
+          python -m twine upload dist/*

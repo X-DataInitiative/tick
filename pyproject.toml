@@ -8,7 +8,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "tick"
-version = "0.8.0.0"
+version = "0.8.0.1"
 description = "Module for statistical learning, with a particular emphasis on time-dependent modelling"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -62,6 +62,23 @@ dev = [
   "ruff>=0.11",
   "numpydoc>=1.8",
 ]
+
+[tool.cibuildwheel]
+build = "cp311-* cp312-* cp313-*"
+skip = "*-musllinux_* *-win32 *-manylinux_i686"
+build-verbosity = 1
+test-command = "python -c \"import tick; print(tick.__version__)\""
+
+[tool.cibuildwheel.linux]
+archs = ["x86_64"]
+manylinux-x86_64-image = "manylinux_2_28"
+
+[tool.cibuildwheel.macos]
+archs = ["auto"]
+environment = { MACOSX_DEPLOYMENT_TARGET = "11.0" }
+
+[tool.cibuildwheel.windows]
+archs = ["AMD64"]
 
 [tool.scikit-build]
 cmake.version = ">=3.24"
