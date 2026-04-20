@@ -9,6 +9,7 @@ dist/
 .*
 !.gitignore
 !.gitmodules
+!.github/
 !.travis.yml
 !.travis_install_linux.sh
 !.travis_install_mac.sh

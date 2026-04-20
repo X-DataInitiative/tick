@@ -1,0 +1,59 @@
+name: Build Docs
+
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      MPLCONFIGDIR: /tmp/mplconfig
+      TICK_DATASETS: /tmp/tick-datasets
+      XDG_CACHE_HOME: /tmp
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        submodules: true
+
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+
+    - name: Install docs dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install .[docs,plot]
+
+    - name: Build HTML docs
+      run: |
+        make SPHINXBUILD="python -m sphinx" html-noplot
+      working-directory: doc
+
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v5
+      with:
+        path: doc/_build/html
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - id: deployment
+      uses: actions/deploy-pages@v5
