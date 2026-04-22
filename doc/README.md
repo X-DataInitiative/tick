@@ -5,7 +5,7 @@ This contains the full documentation of tick, as displayed on the
 [https://x-datainitiative.github.io/tick](https://x-datainitiative.github.io/tick).
 To reproduce the published documentation locally, use Python 3.11+ and run
 
-    python -m pip install .[docs,plot]
+    python -m pip install .[docs]
     make SPHINXBUILD="python -m sphinx" html
 
 This build executes the example gallery and the inline module plots, so if your
