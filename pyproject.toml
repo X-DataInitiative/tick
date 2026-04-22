@@ -53,6 +53,7 @@ docs = [
   "numpydoc>=1.8",
   "sphinx>=8.0",
   "sphinx-bootstrap-theme>=0.8",
+  "statsmodels>=0.14",
 ]
 dev = [
   "pytest>=8.3",
