@@ -41,6 +41,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Operating System :: POSIX",
   "Operating System :: MacOS",
   "Operating System :: Microsoft :: Windows",
@@ -65,7 +66,7 @@ dev = [
 ]
 
 [tool.cibuildwheel]
-build = "cp311-* cp312-* cp313-*"
+build = "cp311-* cp312-* cp313-* cp314-*"
 skip = "*-musllinux_* *-win32 *-manylinux_i686"
 build-verbosity = 1
 test-command = "python -c \"import tick; print(tick.__version__)\""
