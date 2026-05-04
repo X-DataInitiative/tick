@@ -8,7 +8,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "tick"
-version = "0.8.0.1"
+version = "0.8.0.2"
 description = "Module for statistical learning, with a particular emphasis on time-dependent modelling"
 readme = "README.md"
 requires-python = ">=3.11"
