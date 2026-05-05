@@ -118,11 +118,17 @@ class History(Base):
                 self.values[key].append(value)
 
     def _format(self, name, index):
+        value = self.values.get(name, None)
+        if value is None:
+            print(f'{name} not found in self.values')
+            return ''
+        if index >= len(value):
+            return ''
         try:
             formatted_str = self._print_style[name] % \
-                            self.values[name][index]
+                value[index]
         except TypeError:
-            formatted_str = str(self.values[name][index])
+            formatted_str = str(value[index])
         return formatted_str
 
     def _print_header(self):
@@ -159,8 +165,9 @@ class History(Base):
         """Verbose the whole history
         """
         self._print_header()
+        if not self.values:
+            return
         n_lines = len(next(iter(self.values.values())))
-
         for i in range(n_lines):
             self._print_line(i)
 
