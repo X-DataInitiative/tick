@@ -103,6 +103,8 @@ class SparseArray2d : public BaseArray2d<T, MAJ> {
   //! called on a view
   std::shared_ptr<SSparseArray2d<T, MAJ>> as_ssparsearray2d_ptr();
 
+  static std::shared_ptr<SparseArray2d<T, MAJ>> RANDOM(size_t rows, size_t cols, T density, T seed = -1);
+
   template <class Archive>
   void save(Archive &ar) const {
     ar(this->_size_sparse);
@@ -276,5 +278,7 @@ SPARSE_ARRAY2D_DEFINE_TYPE(ulong, ULong);
 /**
  * @}
  */
+
+#include "tick/array/sparse2d/random2d.h"
 
 #endif  // LIB_INCLUDE_TICK_ARRAY_SPARSEARRAY2D_H_
