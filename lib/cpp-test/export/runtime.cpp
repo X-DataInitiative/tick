@@ -46,10 +46,6 @@
 #include "tick/hawkes/simulation/simu_hawkes.h"
 #include "tick/hawkes/simulation/simu_poisson_process.h"
 
-#ifdef _MKN_WITH_MKN_KUL_
-#include "kul/log.hpp"
-#include "kul/signal.hpp"
-#endif
 
 #define DEBUG std::cout << __LINE__ << std::endl
 
@@ -87,9 +83,6 @@ SArrayDouble2dPtr get_features() {
 
 #ifdef ADD_MAIN
 int main(int argc, char** argv) {
-#ifdef _MKN_WITH_MKN_KUL_
-  kul::Signal sig;
-#endif
   SArrayULongPtr start, length;
   std::shared_ptr<SArray<double>> weights;
 

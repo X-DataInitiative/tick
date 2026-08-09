@@ -114,33 +114,6 @@ Replacing "/opt/intel/lib" to "$MKLROOT/../lib" if necessary.
 
 Upgrading to the latest version of MKL may also resolve this.
 
-### Alternative installation method
-
-Also supported is the build tool [maiken](https://github.com/dekken/maiken) which works with various compilers on major platforms.
-
-To use maiken, either download a provided [binary](https://github.com/dekken/maiken/tree/binaries) or compile the source following the instructions in the maiken README @ [Part 3: How to build Maiken]( )
-
-Once "mkn" is installed on your system, you should execture the shell script "./mkn.sh" to compile tick.
-
-As with tick in general, this requires python3 and all python pre-requisites. numpy/scipy/etc
-
-This method is provided mainly for developers to decrease compilation times.
-
-To use [ccache](https://ccache.samba.org/) (or similar) with mkn, edit your ~/.maiken/settings.yaml file so it looks like one [here](https://github.com/Dekken/maiken/wiki/Alternative-configs) - this can greatly decrease repeated compilation times. ccache is a third party tool which may have to be installed manually on your system. ccache does not work on Windows.
-
-On windows it may be required to configure the maiken settings.yaml manually if the environment variables exported by the Visual Studio batch file "vcvars" are not found, example configurations can be found [here](https://github.com/Dekken/maiken/wiki)
-
-Notes:
-
-Logging from mkn can be enabled with the "KLOG" environment variable
-
-    KLOG=1 # INFO
-    KLOG=2 # ERROR
-    KLOG=3 # DEBUG
-
-If there is a compile error it should be displayed without KLOG being set.
-
-
 ### Python support
 
 tick targets Python 3.11 and newer.
