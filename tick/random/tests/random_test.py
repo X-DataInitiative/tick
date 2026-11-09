@@ -171,7 +171,7 @@ class Test(unittest.TestCase):
         sample = test_gaussian(mu, sigma, self.stat_size, self.test_seed)
         s_threshold = 0.05
         p_threshold = 0.05
-        s, p = stats.kstest(sample, 'norm', (mu, sigma))
+        s, p = stats.kstest(sample, stats.norm(loc=mu, scale=sigma).cdf)
         self.assertLess(s, s_threshold,
                         "Kolmogorov–Smirnov stat is larger than threshold"
                         )

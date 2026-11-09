@@ -4,9 +4,7 @@ from tick.base import Base
 
 
 def extract_dtype(dtype_or_object_with_dtype):
-    import six
-    if (isinstance(dtype_or_object_with_dtype, six.string_types)
-            or isinstance(dtype_or_object_with_dtype, np.dtype)):
+    if isinstance(dtype_or_object_with_dtype, (str, np.dtype)):
         return np.dtype(dtype_or_object_with_dtype)
     elif hasattr(dtype_or_object_with_dtype, 'dtype'):
         return np.dtype(dtype_or_object_with_dtype.dtype)
