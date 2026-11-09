@@ -6,6 +6,7 @@ CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PYTHON_EXEC=${TICK_PYTHON:=python3}
 
 rm -rf $CWD/../build
+rm -rf $CWD/../_skbuild
 rm -rf $CWD/../dist
 rm -rf $CWD/../lib/bin
 find $CWD/.. -maxdepth 2 -name '*.egg-info' -exec rm -rf {} +
