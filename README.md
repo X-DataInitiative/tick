@@ -5,8 +5,9 @@
 
 | Operating system  | Build Status |
 | ------------- | ------------- |
-| Linux/Mac  | [![Linux/Mac Build](https://travis-ci.org/X-DataInitiative/tick.svg?branch=master)](https://travis-ci.org/X-DataInitiative/tick)  |
-| Windows  | [![Windows Build](https://ci.appveyor.com/api/projects/status/abjfv0rawliv0qqn/branch/master?svg=true)](https://ci.appveyor.com/project/Dekken/tick-cyjm4)  |
+| Linux  | [![Linux Build](https://github.com/X-DataInitiative/tick/actions/workflows/build_nix.yml/badge.svg?branch=master)](https://github.com/X-DataInitiative/tick/actions/workflows/build_nix.yml)  |
+| macOS  | [![macOS Build](https://github.com/X-DataInitiative/tick/actions/workflows/build_osx.yml/badge.svg?branch=master)](https://github.com/X-DataInitiative/tick/actions/workflows/build_osx.yml)  |
+| Windows  | [![Windows Build](https://github.com/X-DataInitiative/tick/actions/workflows/build_win.yml/badge.svg?branch=master)](https://github.com/X-DataInitiative/tick/actions/workflows/build_win.yml)  |
 
 
 # tick
