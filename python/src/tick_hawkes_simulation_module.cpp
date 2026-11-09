@@ -26,10 +26,13 @@ void bind_point_process(py::module_ &m) {
       .def(py::init<unsigned int, int>(), py::arg("n_nodes"),
            py::arg("seed") = -1)
       .def("activate_itr", &PP::activate_itr, py::arg("dt"))
-      .def("simulate", py::overload_cast<double>(&PP::simulate),
-           py::arg("run_time"))
+      // ulong overload must be registered before double: newer pybind11
+      // lets a Python int match `double` without conversion, so with
+      // double first simulate(100) ran until t=100 instead of 100 jumps.
       .def("simulate", py::overload_cast<ulong>(&PP::simulate),
            py::arg("n_points"))
+      .def("simulate", py::overload_cast<double>(&PP::simulate),
+           py::arg("run_time"))
       .def("simulate", py::overload_cast<double, ulong>(&PP::simulate),
            py::arg("run_time"), py::arg("n_points"))
       .def("reset", &PP::reset)
