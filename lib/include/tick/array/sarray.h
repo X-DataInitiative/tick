@@ -247,7 +247,7 @@ void SArray<T>::clear() {
 
 // Destructor
 template <typename T>
-SArray<T>::~SArray<T>() {
+SArray<T>::~SArray() {
 #ifdef DEBUG_SHAREDARRAY
   n_allocs--;
   std::cout << "SArray<" << typeid(T).name() << "> Destructor (->#" << n_allocs

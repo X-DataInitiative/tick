@@ -28,4 +28,4 @@ On most systems, this will suffice:
     git clone https://github.com/google/googletest.git
     (cd googletest && mkdir -p build && cd build && cmake .. && make && make install)
 
-Our continuous integration tool (Travis CI) will also run these checks upon submission of a pull request.
+Our continuous integration (GitHub Actions) will also run these checks upon submission of a pull request.

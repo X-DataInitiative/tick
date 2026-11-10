@@ -1,146 +1,62 @@
-
-
 ## Installation
-
-### Requirements
-
-_tick_ currently works on Linux, macOS, and Windows systems and requires Python 3.11 or newer. Please have the required Python dependencies in your Python environment:
-
-- numpy
-- scipy
-- scikit-learn
-- pandas
-- dill
-- pybind11
-- cmake
-
-If you build and install _tick_ via _pip_ these dependencies will automatically be resolved. If not, you can install all of these dependencies easily using:
-
-    pip install -r requirements/runtime.txt
-
-### Source installations
-
-For source installations, a C++ compiler capable of compiling C++17 source code and CMake 3.24 or newer must be available.
 
 ### Install using _pip_
 
-_tick_ is available via _pip_. In your local Python environment (or global, with sudo rights), do:
+Pre-built wheels are published on PyPI for Linux (x86_64), macOS (x86_64 and arm64) and Windows (x64), for Python 3.11 to 3.14. In your Python environment (a virtualenv is recommended), run:
 
     pip install tick
 
-Installation may take a few minutes to build and link C++ extensions. At this point _tick_ should be ready to use available (if necessary, you can add _tick_ to the `PYTHONPATH` as explained below).
+Runtime dependencies (numpy, scipy, pandas, scikit-learn, dill, packaging, matplotlib) are resolved automatically by _pip_.
 
-### Manual Install - Linux -OSX
+### Installing from source
 
-First you need to clone the repository with
+#### Requirements
+
+- Python 3.11 or newer
+- A C++ compiler supporting C++17 (GCC, Clang, or MSVC)
+- CMake 3.24 or newer (installed automatically by the build backend if missing)
+
+The build uses [scikit-build-core](https://scikit-build-core.readthedocs.io) and [pybind11](https://pybind11.readthedocs.io); both are fetched automatically as build dependencies.
+
+#### Linux and macOS
+
+Clone the repository and initialize its submodules (such as cereal):
 
     git clone https://github.com/X-DataInitiative/tick.git
-
-and then initialize its submodules (such as cereal) with
-
+    cd tick
     git submodule update --init
 
-Install the project directly from the checkout with:
+Then build and install from the checkout:
 
     python -m pip install .
 
-This will build all required C++ extensions, and install the extensions in your current site-packages directory.
+This compiles all C++ extensions and installs _tick_ into the current environment.
 
-### Manual Install on Windows (Experimental)
+#### Windows
 
-  Download and install Microsoft Windows Visual Build Tools
+Install the [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) with the "Desktop development with C++" workload, then build from a "x64 Native Tools Command Prompt" (or after running `vcvarsall.bat amd64`), so that the MSVC environment is available:
 
-    https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2019
+    git clone https://github.com/X-DataInitiative/tick.git
+    cd tick
+    git submodule update --init
+    python -m pip install .
 
-  Download Python 3.11 or newer and add it to the PATH environment variable.
+### Development setup
 
-  Download wheel files from http://www.lfd.uci.edu/~gohlke/pythonlibs - this is not required for Anaconda
+To work on the source code, install _tick_ in editable mode with the development extras:
 
-    numpy-1.13.*+mkl-cp36-cp36m-win_amd64.whl
-    numpydoc-0.7.0-py2.py3-none-any.whl
-    scipy-0.19.*-cp36-cp36m-win_amd64.whl
+    python -m pip install -e ".[dev]"
 
-  Note: To ascertain which version of the wheel files to download you can run
+and run the test suite with:
 
-    python3 -c "import distutils; from distutils import sysconfig; print(sysconfig.get_config_var('SO'))"
-
-  Install the wheel files with pip - this is not required for Anaconda
-
-    pip install wheel
-    pip install numpy-1.13.*+mkl-cp36-cp36m-win_amd64.whl
-    pip install numpydoc-0.7.0-py2.py3-none-any.whl
-    pip install scipy-0.19.*-cp36-cp36m-win_amd64.whl
-
-  Export Visual Studio environment variables for your architecture
-
-    /path/to/VS/VC/Auxiliary/Build/vcvarsall.bat [amd64,x86]
-
-  The default path for "vcvarsall.bat" for Visual Studio Build Tools:
-
-    C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvarsall.bat [amd64,x86]
-
-  Build and test Tick
-
-    python -m pip install .[dev]
     python -m pytest -q
 
-####  Automated windows installation process (Requires CYGWIN or MSYS)
+Helper scripts are available in the `sh` directory:
 
-  Some scripts have been put together to facilitate in the system setup for Windows
-  This does also require manually downloading the wheel files.
-  This can be used but executing the following file:
+- `sh/build_test.sh` installs in editable mode with the `dev` extras and runs the Python test suite.
+- `sh/full_clean.sh` removes build artifacts.
+- `sh/clean_build_test.sh` runs `full_clean.sh` followed by `build_test.sh`.
 
-    ./tools/windows/install.sh
+These scripts use the Python executable given by the `TICK_PYTHON` environment variable, if set.
 
-#### In-place installation (for developers)
-
-If you wish to work with the source code of _tick_ it's convenient to have the extensions installed inside the source directory. This way you will not have to install the module for each iteration of the code. Simply do:
-
-    python -m pip install -e .[dev]
-
-This will build all extensions and install them in editable mode for the current environment.
-
-Note also that special scripts, intended for developers, are available. `./clean_build_test.sh` removes all compiled binaries and runs the full compilation process, with all `C++` and `Python` unit-tests. This can take some time.
-Similarly, `./build_test.sh` runs the full compilation process, without removing first binaries, while `full_clean.sh` only removes them.
-
-It is possible to build with support for Intel MKL in the tick C++ libraries. This requires having the Intel MKL libraries installed and configuring the CMake build accordingly.
-
-On MacOS it's possible an error may occur when trying to find a "intel_thread.dyld"
-To fix this try:
-
-export DYLD_LIBRARY_PATH="/opt/intel/lib:$DYLD_LIBRARY_PATH"
-
-Replacing "/opt/intel/lib" to "$MKLROOT/../lib" if necessary.
-
-Upgrading to the latest version of MKL may also resolve this.
-
-### Alternative installation method
-
-Also supported is the build tool [maiken](https://github.com/dekken/maiken) which works with various compilers on major platforms.
-
-To use maiken, either download a provided [binary](https://github.com/dekken/maiken/tree/binaries) or compile the source following the instructions in the maiken README @ [Part 3: How to build Maiken]( )
-
-Once "mkn" is installed on your system, you should execture the shell script "./mkn.sh" to compile tick.
-
-As with tick in general, this requires python3 and all python pre-requisites. numpy/scipy/etc
-
-This method is provided mainly for developers to decrease compilation times.
-
-To use [ccache](https://ccache.samba.org/) (or similar) with mkn, edit your ~/.maiken/settings.yaml file so it looks like one [here](https://github.com/Dekken/maiken/wiki/Alternative-configs) - this can greatly decrease repeated compilation times. ccache is a third party tool which may have to be installed manually on your system. ccache does not work on Windows.
-
-On windows it may be required to configure the maiken settings.yaml manually if the environment variables exported by the Visual Studio batch file "vcvars" are not found, example configurations can be found [here](https://github.com/Dekken/maiken/wiki)
-
-Notes:
-
-Logging from mkn can be enabled with the "KLOG" environment variable
-
-    KLOG=1 # INFO
-    KLOG=2 # ERROR
-    KLOG=3 # DEBUG
-
-If there is a compile error it should be displayed without KLOG being set.
-
-
-### Python support
-
-tick targets Python 3.11 and newer.
+To build the documentation, install the `docs` extras (`python -m pip install -e ".[docs]"`) and run `make html` from the `doc` directory.

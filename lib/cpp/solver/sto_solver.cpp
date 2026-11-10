@@ -72,7 +72,6 @@ void TStoSolver<T, K>::shuffle() {
 
 template <class T, class K>
 void TStoSolver<T, K>::solve(size_t n_epochs) {
-  KUL_DBG_FUNC_ENTER
   double initial_time = last_record_time;
   size_t initial_epoch = last_record_epoch;
   auto start = std::chrono::steady_clock::now();
